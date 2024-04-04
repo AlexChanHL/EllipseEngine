@@ -18,6 +18,7 @@ function(set_project_warnings project_name)
     set(CLANG_WARNINGS ${CLANG_WARNINGS}
       -Wno-error=unused
       -Wno-error=unused-parameter
+      -Wno-unused-command-line-argument
       )
 
  if(WARNING_AS_ERRORS)
