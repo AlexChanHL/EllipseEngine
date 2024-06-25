@@ -1,5 +1,10 @@
 #pragma once
 
+#include "Window.hpp"
+#include "Event/Event.hpp"
+#include "Event/WindowEvent.hpp"
+#include "Layer.hpp"
+#include "Base.hpp"
 #include "EllipsePCH.hpp"
 
 namespace Ellipse
@@ -22,25 +27,72 @@ class ApplicationCMDLineArgs
 
 class ApplicationSpecifications
 {
-  public:
-    std::string m_workingDir;
-    std::string m_name;
-    ApplicationCMDLineArgs m_cmdArgs;
+   public:
+    using userFn = std::function<Layer*()>;
+   
+    ApplicationSpecifications()
+    {
+      setDefaultWindowValues();
+    }
 
-  private:
+    void setValues() { }
+
+    void setWindowValues(int width,
+                         int height,
+                         std::string title)
+    {
+      m_windowSettings.m_width = width;
+      m_windowSettings.m_height = height;
+      m_windowSettings.m_title = title;
+    }
+
+    void setDefaultValues()
+    {
+
+    }
+    void setDefaultWindowValues() 
+    {
+         setWindowValues(1280, 640, "Title");
+    }
+
+
+    ~ApplicationSpecifications()
+    {
+
+    }
+     
+   public:
+      WindowSettings m_windowSettings;
+      userFn m_userFunc;
+
+   private:
 };
+
+ApplicationSpecifications createAppSpecs();
 
 class Application
 {
-    public:
-     Application(const ApplicationSpecifications& specs);
-    ~Application();
+   public:
+   Application();
+  ~Application();
 
-     void run();
+   void init(const ApplicationSpecifications& specs);
+    
+   void onEvent(Event& e);
 
-    private:
-      ApplicationSpecifications m_appSpecs;
+   void run();
+
+   void pushLayer(Layer* layer);
+
+   void onWindowClose(WindowUserQuitEvent& windowQuit);
+
+   private:
+  bool m_running{true};
+
+  Window* m_window;
+  Layer* m_layer;
+  // Engine* m_engine;
 };
 
-  Application* createApplication(ApplicationCMDLineArgs args);
+std::function<void()> setUserFunc();
 }    //Ellipse namespace

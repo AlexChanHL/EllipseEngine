@@ -24,46 +24,46 @@ class Log
 
  #if DEBUG
 
-#define APP_LOG_TRACE(...)  Log::clientLogger()->trace(__VA_ARGS__)
-#define ENGINE_LOG_TRACE(...)  Log::engineLogger()->trace(__VA_ARGS__)
+#define ELLIPSE_APP_LOG_TRACE(...)  Ellipse::Log::clientLogger()->trace(__VA_ARGS__)
+#define ELLIPSE_ENGINE_LOG_TRACE(...)  Ellipse::Log::engineLogger()->trace(__VA_ARGS__)
 
-#define APP_LOG_DEBUG(...) Log::clientLogger()->debug(__VA_ARGS__)
-#define ENGINE_LOG_DEBUG(...) Log::engineLogger()->debug(__VA_ARGS__)
+#define ELLIPSE_APP_LOG_DEBUG(...) Ellipse::Log::clientLogger()->debug(__VA_ARGS__)
+#define ELLIPSE_ENGINE_LOG_DEBUG(...) Ellipse::Log::engineLogger()->debug(__VA_ARGS__)
 
 #else
 
-#define APP_LOG_TRACE(...)
-#define ENGINE_LOG_TRACE(...)
+#define ELLIPSE_APP_LOG_TRACE(...)
+#define ELLIPSE_ENGINE_LOG_TRACE(...)
 
-#define APP_LOG_DEBUG(...)
-#define ENGINE_LOG_DEBUG(...)
+#define ELLIPSE_APP_LOG_DEBUG(...)
+#define ELLIPSE_ENGINE_LOG_DEBUG(...)
 
  #endif // DEBUG
 
-  #define APP_LOG_INFO(...) Log::clientLogger()->info(__VA_ARGS__)
-  #define ENGINE_LOG_INFO(...) Log::engineLogger()->info(__VA_ARGS__)
+  #define ELLIPSE_APP_LOG_INFO(...) Ellipse::Log::clientLogger()->info(__VA_ARGS__)
+  #define ELLIPSE_ENGINE_LOG_INFO(...) Ellipse::Log::engineLogger()->info(__VA_ARGS__)
 
-  #define APP_LOG_WARN(...) Log::clientLogger()->warn(__VA_ARGS__)
-  #define ENGINE_LOG_WARN(...) Log::engineLogger()->warn(__VA_ARGS__)
+  #define ELLIPSE_APP_LOG_WARN(...) Ellipse::Log::clientLogger()->warn(__VA_ARGS__)
+  #define ELLIPSE_ENGINE_LOG_WARN(...) Ellipse::Log::engineLogger()->warn(__VA_ARGS__)
 
-  #define APP_LOG_ERROR(...) Log::clientLogger()->error(__VA_ARGS__)
-  #define ENGINE_LOG_ERROR(...) Log::engineLogger()->error(__VA_ARGS__)
+  #define ELLIPSE_APP_LOG_ERROR(...) Ellipse::Log::clientLogger()->error(__VA_ARGS__)
+  #define ELLIPSE_ENGINE_LOG_ERROR(...) Ellipse::Log::engineLogger()->error(__VA_ARGS__)
 
-  #define APP_LOG_FATAL(...) Log::clientLogger()->fatal(__VA_ARGS__)
-  #define ENGINE_LOG_FATAL(...) Log::engineLogger()->fatal(__VA_ARGS__)
+  #define ELLIPSE_APP_LOG_FATAL(...) Ellipse::Log::clientLogger()->fatal(__VA_ARGS__)
+  #define ELLIPSE_ENGINE_LOG_FATAL(...) Ellipse::Log::engineLogger()->fatal(__VA_ARGS__)
 
  #else
 
-  #define APP_LOG_INFO(...)
-  #define ENGINE_LOG_INFO(...)
+  #define ELLIPSE_APP_LOG_INFO(...)
+  #define ELLIPSE_ENGINE_LOG_INFO(...)
 
-  #define APP_LOG_WARN(...)
-  #define ENGINE_LOG_WARN(...)
+  #define ELLIPSE_APP_LOG_WARN(...)
+  #define ELLIPSE_ENGINE_LOG_WARN(...)
 
-  #define APP_LOG_ERROR(...)
-  #define ENGINE_LOG_ERROR(...)
+  #define ELLIPSE_APP_LOG_ERROR(...)
+  #define ELLIPSE_ENGINE_LOG_ERROR(...)
 
-  #define APP_LOG_FATAL(...)
-  #define ENGINE_LOG_FATAL(...)
+  #define ELLIPSE_APP_LOG_FATAL(...)
+  #define ELLIPSE_ENGINE_LOG_FATAL(...)
 
      #endif // DEACTIVE_LOGGING

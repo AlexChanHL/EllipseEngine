@@ -10,13 +10,25 @@ file(GLOB_RECURSE CORE
     Core/*.hpp
       )
 
+file(GLOB_RECURSE EVENTS
+    Event/*.cpp
+    Event/*.hpp
+      )
+
+file(GLOB_RECURSE PLATFORM_WINDOW
+    Platform/Window/SDLWindow/*.cpp
+    Platform/Window/SDLWindow/*.hpp
+    Platform/Window/GLFWWindow/*.cpp
+    Platform/Window/GLFWWindow/*.hpp
+      )
+
 file(GLOB_RECURSE LOG
     Debug/Log/Log.cpp
     Debug/Log/Log.hpp
       )
 
 add_library(${NAME} STATIC
-           ${CURRENT_DIR} ${CORE} ${LOG}
+           ${CURRENT_DIR} ${CORE} ${LOG} ${EVENTS} ${PLATFORM_WINDOW}
              )
 
 target_link_libraries(${NAME} PUBLIC EngineVendor ProjectWarnings)

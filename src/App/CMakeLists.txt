@@ -3,6 +3,8 @@ add_executable(${PROJECT_NAME})
     set(SOURCES
        Core/main.cpp
        Core/DemoApp.cpp
+       Core/DemoLayer.cpp
+       Core/DemoLayer.hpp
          )
 
     set(HEADERS

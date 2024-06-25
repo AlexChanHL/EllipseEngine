@@ -1,25 +1,20 @@
 
+#include "DemoLayer.hpp"
+
 #include "Ellipse.hpp"
 
-class DemoApp : public Ellipse::Application
+Layer* pushUserLayers()
 {
-   public:
-    DemoApp(const Ellipse::ApplicationSpecifications& specs)
-     : Ellipse::Application{specs}
-     {
+    Layer* demoLayer = new DemoLayer;
+   return demoLayer;
+}
 
-     }
-
-  private:
-};
-
-Ellipse::Application* Ellipse::createApplication(Ellipse::ApplicationCMDLineArgs args)
+Ellipse::ApplicationSpecifications Ellipse::createAppSpecs()
 {
-  Ellipse::ApplicationSpecifications spec;
+  Ellipse::ApplicationSpecifications specs;
 
-   spec.m_name = "Demo App";
-   spec.m_workingDir = "$(Dir)";
-   spec.m_cmdArgs = args;
+   specs.m_windowSettings.m_lib = WindowLibrary::SDLWindow;
+   specs.m_userFunc = pushUserLayers;
 
-  return new DemoApp(spec);
+   return specs;
 }

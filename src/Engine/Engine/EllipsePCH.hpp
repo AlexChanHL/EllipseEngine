@@ -8,3 +8,7 @@
 #include <array>
 #include <list>
 #include <memory>
+#include <functional>
+#include <utility>
+#include <cstdint>
+#include <sstream>

@@ -1,12 +1,16 @@
 #include "Ellipse.hpp"
 
-int main(int argc, char** argv)
+int main()
 {
-   Ellipse::Log::init();
+  auto specs = Ellipse::createAppSpecs();
+  
+  Ellipse::Application* app = new Ellipse::Application;
 
-  Ellipse::Application* app = Ellipse::createApplication( {argc, argv} );
+    app->init(specs);
 
-  app->run();
+    app->run();
+  
+    // app->shutDown();
 
-  delete app;
+    delete app;
 }
