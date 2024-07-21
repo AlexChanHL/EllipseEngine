@@ -69,7 +69,7 @@ void dispatchEvent(EventType type,
 {
    if(m_event.getEventType() == type)
      {
-    func(static_cast<T&>(m_event));
+  m_event.m_handled = func(static_cast<T&>(m_event));
      }
 
       return;

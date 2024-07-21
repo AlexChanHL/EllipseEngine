@@ -15,7 +15,8 @@ Window* Window::createWindow(const WindowSettings& specs)
          }
     case WindowLibrary::GLFWWindow:
          {
-            return nullptr;
+        std::cout << "No GLFW class\n";
+        return nullptr;
          }
        default:
      // LOG_MESSAGE("Failed to create window");

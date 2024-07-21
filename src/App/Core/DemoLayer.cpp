@@ -3,6 +3,36 @@
 
 #include "DemoLayer.hpp"
 
+DemoLayer::DemoLayer()
+: m_renderer{Ellipse::Application::get().getRenderer()},
+  m_name{"Placeholder"},
+  m_throughLayer{false}
+{
+
+}
+
+void DemoLayer::init()
+{
+   m_renderer.setClearColor(glm::vec4{1.0f, 1.0f, 0.0f, 1.0f});
+
+   m_renderObj = m_renderer.createRenderObj();
+   m_shaderObj = m_renderer.createShaderObj();
+
+   m_shaderObj->addShader("Assets/Shader/Triangle.vert.glsl");
+   m_shaderObj->addShader("Assets/Shader/Triangle.frag.glsl");
+   m_shaderObj->linkShaders();
+  
+     std::vector<float> verticies = 
+     {
+        0.0f,  0.5f,  0.0f,
+        0.5f, -0.5f,  0.0f,
+       -0.5f, -0.5f,  0.0f,
+     };
+  
+   m_renderObj = m_renderer.createRenderObj();
+   m_renderObj->initRenderObj(verticies);
+}
+
 void DemoLayer::onEvent(Event& e)
 {
 
@@ -21,7 +51,18 @@ void DemoLayer::onEvent(Event& e)
       );
 }
 
-void DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
+void DemoLayer::onUpdate()
+{
+    // std::cout << "Updated: " << m_name << "\n";
+  
+    // m_shaderObj.setUniform();
+  
+    m_renderer.render(*m_renderObj, *m_shaderObj);
+  
+    // RenderData data = m_renderer.getRenderData();
+}
+
+bool DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
 {
      bool aPressed = Input::isKeyPressed(ELLIPSE_KEY_a);
       if(aPressed)
@@ -38,14 +79,21 @@ void DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
        default:
         break;
      }
+
+   return m_throughLayer ? false : true;
 }
 
-void DemoLayer::onMousePressed(MousePressedEvent& e)
+bool DemoLayer::onMousePressed(MousePressedEvent& e)
 {
-  std::cout << e.logMousePosition() << "\n";
+  // std::cout << e.logMousePosition() << "\n";
+    std::cout << m_name << " detected mouse press!\n";
+
+   return m_throughLayer ? false : true;
 }
 
-void DemoLayer::onMouseWheel(MouseWheelEvent& e)
+bool DemoLayer::onMouseWheel(MouseWheelEvent& e)
 {
   std::cout << e.logMouseOffset() << "\n";
+
+   return m_throughLayer ? false : true;
 }

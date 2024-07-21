@@ -15,6 +15,11 @@ file(GLOB_RECURSE EVENTS
     Event/*.hpp
       )
 
+file(GLOB_RECURSE RENDER
+    Renderer/*.cpp
+    Renderer/*.hpp
+      )
+
 file(GLOB_RECURSE PLATFORM_WINDOW
     Platform/Window/SDLWindow/*.cpp
     Platform/Window/SDLWindow/*.hpp
@@ -22,14 +27,28 @@ file(GLOB_RECURSE PLATFORM_WINDOW
     Platform/Window/GLFWWindow/*.hpp
       )
 
+file(GLOB_RECURSE PLATFORM_RENDER
+    Platform/RenderPlugin/OpenGL/*.cpp
+    Platform/RenderPlugin/OpenGL/*.hpp
+      )
+ 
 file(GLOB_RECURSE LOG
     Debug/Log/Log.cpp
     Debug/Log/Log.hpp
       )
 
 add_library(${NAME} STATIC
-           ${CURRENT_DIR} ${CORE} ${LOG} ${EVENTS} ${PLATFORM_WINDOW}
+           ${CURRENT_DIR} ${CORE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_WINDOW} ${PLATFORM_RENDER}
              )
+
+add_custom_target(CopyAssets ALL
+           COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different 
+           ${CMAKE_CURRENT_SOURCE_DIR}/Assets
+           ${PROJECT_BINARY_DIR}/$<CONFIG>/bin/Assets
+           COMMENT "Copying assets to binary dir"
+                 )
+
+add_dependencies(${NAME} CopyAssets)
 
 target_link_libraries(${NAME} PUBLIC EngineVendor ProjectWarnings)
 

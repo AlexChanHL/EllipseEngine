@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Window.hpp"
+#include "Renderer/Renderer.hpp"
 #include "Event/Event.hpp"
 #include "Event/WindowEvent.hpp"
 #include "Layer.hpp"
+#include "LayerStack.hpp"
 #include "Base.hpp"
 #include "EllipsePCH.hpp"
 
@@ -28,7 +30,8 @@ class ApplicationCMDLineArgs
 class ApplicationSpecifications
 {
    public:
-    using userFn = std::function<Layer*()>;
+    // using userFn = std::function<std::vector<std::shared_ptr<Layer>()>>;
+    using userFn = std::function<std::vector<std::shared_ptr<Layer>>()>;
    
     ApplicationSpecifications()
     {
@@ -56,13 +59,13 @@ class ApplicationSpecifications
     }
 
 
-    ~ApplicationSpecifications()
-    {
+    ~ApplicationSpecifications() {
 
     }
      
    public:
       WindowSettings m_windowSettings;
+      GraphicsSpec m_graphicSpec;
       userFn m_userFunc;
 
    private:
@@ -82,16 +85,24 @@ class Application
 
    void run();
 
-   void pushLayer(Layer* layer);
+   void pushLayer(std::shared_ptr<Layer> layer);
 
-   void onWindowClose(WindowUserQuitEvent& windowQuit);
+   bool onWindowClose(WindowUserQuitEvent& windowQuit);
+   bool onWindowResize(WindowResizeEvent& resizeEvent);
+
+   static Application& get() { return *sInStance; }
+
+   Renderer& getRenderer() const { return *m_renderer; }
 
    private:
   bool m_running{true};
 
   Window* m_window;
-  Layer* m_layer;
+  std::unique_ptr<Renderer> m_renderer = nullptr;
+  LayerStack m_layerStack;
   // Engine* m_engine;
+    
+  static Application* sInStance;
 };
 
 std::function<void()> setUserFunc();

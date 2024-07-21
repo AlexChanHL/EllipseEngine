@@ -9,6 +9,10 @@
 #include "Core/Utils.hpp"
 #include "Core/Window.hpp"
 
+#include "Renderer/Renderer.hpp"
+
+#include "Platform/RenderPlugin/OpenGL/GLRenderPlugin.hpp"
+
 #include "Debug/Log/Log.hpp"
 
 #include "Input/Input.hpp"

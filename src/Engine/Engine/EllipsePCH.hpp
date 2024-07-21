@@ -12,3 +12,4 @@
 #include <utility>
 #include <cstdint>
 #include <sstream>
+#include <forward_list>

@@ -7,6 +7,8 @@
 
 #include <SDL3/SDL.h>
 
+#include <glad/glad.h>
+
 class SDLWindow : public Window
 {
   public:
@@ -33,6 +35,8 @@ class SDLWindow : public Window
     SDL_Window* m_window;
     WindowData m_windowData;
 
+    SDL_GLContext m_glContext = nullptr;
+
   private:
    static int eventCallBackFn(void* userData, SDL_Event* e)
  {
@@ -48,12 +52,14 @@ class SDLWindow : public Window
       }
     case SDL_EVENT_WINDOW_RESIZED:
       {
-    SDL_Window* window = SDL_GetWindowFromID(e->window.windowID);
+      SDL_Window* window = SDL_GetWindowFromID(e->window.windowID);
 
       int width, height;
       SDL_GetWindowSizeInPixels(window,
                                 &width,
                                 &height);
+      data->m_width = width;
+      data->m_height = height;
       WindowResizeEvent event(width, height);
       data->m_eventCallBackFn(event);
       return 0;
