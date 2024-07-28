@@ -3,21 +3,24 @@
 
 #include "Ellipse.hpp"
 
-std::vector<std::shared_ptr<Ellipse::Layer>> pushUserLayers()
+ForwardList<SharedPtr<Ellipse::Layer>> pushUserLayers()
 {
-   // use shared pointer
-    // Layer* demoLayer = new DemoLayer;
+   ForwardList<SharedPtr<Ellipse::Layer>> layers;
 
-  std::vector<std::shared_ptr<Ellipse::Layer>> layers;
+   SharedPtr<DemoLayer> demoLayer = createShared<DemoLayer>();
+   SharedPtr<DemoLayer> UILayer = createShared<DemoLayer>();
+   SharedPtr<DemoLayer> DebugLayer = createShared<DemoLayer>();
 
-  std::shared_ptr<Ellipse::Layer> demoLayer = std::make_shared<DemoLayer>();
-  std::shared_ptr<Ellipse::Layer> UILayer = std::make_shared<DemoLayer>();
-  std::shared_ptr<Ellipse::Layer> Debuglayer = std::make_shared<DemoLayer>();
+   demoLayer->setName("demoLayer");
+   UILayer->setName("UILayer");
+   DebugLayer->setName("DebugLayer");
 
+   layers.push_front(std::move(demoLayer));
+   layers.push_front(std::move(UILayer));
+   layers.push_front(std::move(DebugLayer));
 
-   layers.push_back(std::move(demoLayer));
-   layers.push_back(std::move(UILayer));
-   layers.push_back(std::move(Debuglayer));
+   // [ Use own layer list type ]
+   layers.reverse();
 
   return layers;
 }

@@ -1,23 +1,22 @@
 #pragma once
 
+#include "Core/Base.hpp"
 #include "RenderPlugin.hpp"
-
-// Use own math library instead
-#include <glm/glm.hpp>
 
 class Renderer
 {
    public:
-    Renderer(std::unique_ptr<RenderPlugin> plugin);
-    ~Renderer();
+    Renderer() = default;
+    virtual ~Renderer() = default;
 
-    void render(RenderObj& rObj, RenderShaderObj& sObj);
-    void setClearColor(const glm::vec4& col);
-    void setViewport(int32_t width, int32_t height);
-    std::unique_ptr<RenderObj> createRenderObj();
-    std::unique_ptr<RenderShaderObj> createShaderObj();
-    static std::unique_ptr<Renderer> createRenderer(std::unique_ptr<RenderPlugin> plugin);
+    virtual void render(RenderObj& rObj, RenderShaderObj& sObj) = 0;
+    virtual void setClearColor(const Vec4& col) = 0;
+    virtual void setViewport(int32_t width, int32_t height) = 0;
+    virtual UniquePtr<RenderObj> createRenderObj() = 0;
+    virtual UniquePtr<RenderShaderObj> createShaderObj() = 0;
+
+    // [ Maybe use template ]
+    static UniquePtr<Renderer> createRenderer(UniquePtr<RenderPlugin> plugin);
 
    private:
-    std::unique_ptr<RenderPlugin> m_plugin = nullptr;
 };

@@ -27,8 +27,8 @@ class Window
     static Window* createWindow(const WindowSettings& specs);
      
     virtual void updateWindow() = 0;
- virtual void setEventCallBack(const eventCallBackfn& event) = 0;
- virtual void* getWindow() = 0;
+    virtual void setEventCallBack(const eventCallBackfn& event) = 0;
+    virtual void* getWindow() = 0;
 
   virtual ~Window() = default;
 

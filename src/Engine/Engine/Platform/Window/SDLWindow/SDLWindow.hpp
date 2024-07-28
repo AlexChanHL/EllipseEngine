@@ -73,7 +73,7 @@ class SDLWindow : public Window
     case SDL_EVENT_MOUSE_MOTION:
       {
       float mousePosX, mousePosY;
-     SDL_GetMouseState(&mousePosX, &mousePosY);
+      SDL_GetMouseState(&mousePosX, &mousePosY);
       MouseMotionEvent event;
       event.setMousePosX(mousePosX);
       event.setMousePosY(mousePosY);

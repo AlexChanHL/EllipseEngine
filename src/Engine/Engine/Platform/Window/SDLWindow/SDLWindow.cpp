@@ -10,9 +10,9 @@ SDLWindow::SDLWindow(const WindowSettings& settings)
 {
   const unsigned int initFlags{SDL_INIT_EVENTS | SDL_INIT_VIDEO};
   if(SDL_Init(initFlags) != 0)
-    {
-    ELLIPSE_ENGINE_LOG_ERROR("Failed to init sdl!");
-    }
+   {
+  ELPSE_ENGINE_LOG_ERROR("Failed to init sdl!");
+   }
 
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);

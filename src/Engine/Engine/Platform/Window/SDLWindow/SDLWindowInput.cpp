@@ -5,6 +5,6 @@
 bool Input::isKeyPressed(const KeyCode& key)
 {
    auto state = SDL_GetKeyboardState(NULL);
-     ScanCode scanCode = keyCodeToScanCode(key);
-    return state[scanCode];
+   ScanCode scanCode = keyCodeToScanCode(key);
+   return state[scanCode];
 }

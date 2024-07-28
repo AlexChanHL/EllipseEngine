@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Base.hpp"
 #include "Renderer/RenderObj.hpp"
 
 #include <glad/glad.h>
@@ -10,8 +11,8 @@
 struct OpenGLRenderObj : public RenderObj
 {
    public:
-    void initRenderObj(std::vector<float> verts) override;
-    void initBuffers(std::vector<float> verts);
+    void initRenderObj(Vector<float> verts) override;
+    void initBuffers(Vector<float> verts);
 
    public:
     uint32_t m_nVerts;
@@ -43,23 +44,23 @@ class OpenGLShaderObj : public RenderShaderObj
 
     void addUniform(const char* name);
 
-    void setUniform(const char* name, float x);
-    void setUniform(const char* name, float x, float y);
-    void setUniform(const char* name, float x, float y, float z);
-    void setUniform(const char* name, float x, float y, float z, float w);
+    virtual void setUniform(const char* name, float x) override;
+    virtual void setUniform(const char* name, float x, float y) override;
+    virtual void setUniform(const char* name, float x, float y, float z) override;
+    virtual void setUniform(const char* name, float x, float y, float z, float w) override;
 
-    void setUniform(const char* name, int x);
-    void setUniform(const char* name, int x, int y);
-    void setUniform(const char* name, int x, int y, int z);
-    void setUniform(const char* name, int x, int y, int z, int w);
+    virtual void setUniform(const char* name, int x) override;
+    virtual void setUniform(const char* name, int x, int y) override;
+    virtual void setUniform(const char* name, int x, int y, int z) override;
+    virtual void setUniform(const char* name, int x, int y, int z, int w) override;
 
-    void setUniform(const char* name, unsigned int x);
-    void setUniform(const char* name, unsigned int x, unsigned int y);
-    void setUniform(const char* name, unsigned int x, unsigned int y, unsigned int z);
-    void setUniform(const char* name, unsigned int x, unsigned int y, unsigned int z, unsigned int w);
+    virtual void setUniform(const char* name, unsigned int x) override;
+    virtual void setUniform(const char* name, unsigned int x, unsigned int y) override;
+    virtual void setUniform(const char* name, unsigned int x, unsigned int y, unsigned int z) override;
+    virtual void setUniform(const char* name, unsigned int x, unsigned int y, unsigned int z, unsigned int w) override;
 
-    void setUniform(const char* name, glm::mat4& mat);
-    void setUniform(const char* name, glm::vec3& vec);
+    virtual void setUniform(const char* name, glm::mat4& mat) override;
+    virtual void setUniform(const char* name, glm::vec3& vec) override;
    
     void printUniformLocations();
 
@@ -80,6 +81,6 @@ class OpenGLShaderObj : public RenderShaderObj
     const char* typeToCString(GLenum type);
 
    private:
-    std::map<const char*, GLenum> m_typeMap;
-    std::forward_list<UniformLoc> m_uniformLoc;
+    Map<const char*, GLenum> m_typeMap;
+    ForwardList<UniformLoc> m_uniformLoc;
 };

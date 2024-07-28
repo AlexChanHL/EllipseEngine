@@ -2,9 +2,11 @@
 
 int main()
 {
-  auto specs = Ellipse::createAppSpecs();
+    Ellipse::Log::init();
+
+    auto specs = Ellipse::createAppSpecs();
   
-  Ellipse::Application* app = new Ellipse::Application;
+    Ellipse::Application* app = new Ellipse::Application;
 
     app->init(specs);
 

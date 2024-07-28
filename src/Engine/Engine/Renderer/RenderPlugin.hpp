@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Base.hpp"
 #include "RenderObj.hpp"
 
 // Use own math library instead
@@ -17,10 +18,10 @@ class RenderPlugin
     virtual void render(RenderObj& rObj, RenderShaderObj& sObj) = 0;
     virtual void setClearColor(const glm::vec4& col) = 0;
     virtual void setViewport(int width, int height) = 0;
-    virtual std::unique_ptr<RenderObj> createRenderObj() = 0;
-    virtual std::unique_ptr<RenderShaderObj> createShaderObj() = 0;
+    virtual UniquePtr<RenderObj> createRenderObj() = 0;
+    virtual UniquePtr<RenderShaderObj> createShaderObj() = 0;
 
-    static std::unique_ptr<RenderPlugin> createRenderPlugin(GraphicsSpec spec);
+    static UniquePtr<RenderPlugin> createRenderPlugin(GraphicsSpec spec);
 
    private:
 

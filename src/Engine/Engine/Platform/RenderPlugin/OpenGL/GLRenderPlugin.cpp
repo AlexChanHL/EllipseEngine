@@ -20,14 +20,14 @@ void OpenGLRenderPlugin::setViewport(int width, int height)
      glViewport(0, 0, width, height);
 }
 
-std::unique_ptr<RenderObj> OpenGLRenderPlugin::createRenderObj()
+UniquePtr<RenderObj> OpenGLRenderPlugin::createRenderObj()
 {
-    return std::make_unique<OpenGLRenderObj>();
+    return createUnique<OpenGLRenderObj>();
 }
 
-std::unique_ptr<RenderShaderObj> OpenGLRenderPlugin::createShaderObj()
+UniquePtr<RenderShaderObj> OpenGLRenderPlugin::createShaderObj()
 {
-    return std::make_unique<OpenGLShaderObj>();
+    return createUnique<OpenGLShaderObj>();
 }
 
 void OpenGLRenderPlugin::renderGL(OpenGLRenderObj& rObj, OpenGLShaderObj& sObj)

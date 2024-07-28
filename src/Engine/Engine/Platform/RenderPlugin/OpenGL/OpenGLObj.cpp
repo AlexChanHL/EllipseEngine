@@ -1,17 +1,14 @@
 
 #include "OpenGLObj.hpp"
+#include "Debug/Log/Log.hpp"
 
-#include <fstream>
-#include <iostream>
-#include <sstream>
-
-void OpenGLRenderObj::initRenderObj(std::vector<float> verts)
+void OpenGLRenderObj::initRenderObj(Vector<float> verts)
 {
        m_nVerts = static_cast<uint32_t>(verts.size()) / 3;
        initBuffers(verts);
 }
 
-void OpenGLRenderObj::initBuffers(std::vector<float> verts)
+void OpenGLRenderObj::initBuffers(Vector<float> verts)
 {
        uint32_t vbo;
 
@@ -72,10 +69,10 @@ void OpenGLShaderObj::compileShader(const char* fname)
      m_prog = glCreateProgram();
        }
 
-     std::ifstream ifs{fname};
+     FStreamIn ifs{fname};
       if(!ifs)
        {
-     std::cout << "Could open file!" << "\n";
+     ELPSE_ENGINE_LOG_WARN("Could open file!" );
        }
 
      GLenum type = queryType(fname);
@@ -83,10 +80,10 @@ void OpenGLShaderObj::compileShader(const char* fname)
       unsigned int shader;
       shader = glCreateShader(type);
       
-      std::stringstream streamShader;
+      SStream streamShader;
       streamShader << ifs.rdbuf();
 
-      std::string strShader{streamShader.str()};
+      String strShader{streamShader.str()};
       const char* shaderSrc{strShader.c_str()};
 
       glShaderSource(shader, 1, &shaderSrc, NULL);
@@ -101,7 +98,7 @@ void OpenGLShaderObj::linkGLShaders()
 {
      if(m_prog == 0)
       {
-   std::cout << "No program handle!\n";
+     ELPSE_ENGINE_LOG_WARN("No program handle!\n");
       }
 
       glLinkProgram(m_prog);
@@ -115,9 +112,9 @@ void OpenGLShaderObj::use() const
 {
     if(m_prog == 0)
       {
-     std::cout << "Invalid shader program handle\n"; 
+    ELPSE_ENGINE_LOG_WARN("Invalid shader program handle\n");
       }
-     glUseProgram(m_prog);
+    glUseProgram(m_prog);
 }
 
 void OpenGLShaderObj::checkCompileStatus(GLuint shader)
@@ -132,28 +129,28 @@ void OpenGLShaderObj::checkCompileStatus(GLuint shader)
      glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
       if(!status)
        {
-      glGetShaderInfoLog(shader, 500, NULL, logLoad);
-       std::cout << typeStr << " error: " << logLoad << "\n";
+     glGetShaderInfoLog(shader, 500, NULL, logLoad);
+     ELPSE_ENGINE_LOG_WARN("{} error {}", typeStr, logLoad);
        }
 }
 
 void OpenGLShaderObj::checkLinkStatus()
 {
       if(m_prog == 0)
-      {
-   std::cout << "No program handle!\n";
-      }
+       {
+      ELPSE_ENGINE_LOG_WARN("No program handle!\n");
+       }
 
      int status;
      char logLoad[500];
    
      glGetProgramiv(m_prog, GL_LINK_STATUS, &status);
 
-      if(!status)
-       {
-       glGetProgramInfoLog(m_prog, 500, NULL, logLoad);
-        std::cout << "Linking error: " << logLoad << "\n";
-       }
+     if(!status)
+      {
+     glGetProgramInfoLog(m_prog, 500, NULL, logLoad);
+     ELPSE_ENGINE_LOG_WARN("Linking error: {}", logLoad);
+      }
 }
 
 void OpenGLShaderObj::addUniform(const char* name)
@@ -256,7 +253,7 @@ void OpenGLShaderObj::printUniformLocations()
 {
     for(auto& a : m_uniformLoc)
      {
-     std::cout << a.m_name << '\n';
+    ELPSE_ENGINE_LOG_INFO("{}", a.m_name);
      } 
 }
 
@@ -264,7 +261,7 @@ int OpenGLShaderObj::findUniformLocation(const char* name)
 {
     for(auto& a : m_uniformLoc)
      {
-     if(std::strcmp(name, a.m_name) == 0)
+    if(strcmp(name, a.m_name) == 0)
       {
     return a.m_loc;
       }
@@ -278,11 +275,11 @@ int OpenGLShaderObj::findUniformLocation(const char* name)
 
 GLenum OpenGLShaderObj::queryType(const char* fname)
 {
-   auto newStr = std::make_unique<char[]>(std::strlen(fname) + 1);
-   std::strcpy(newStr.get(), fname);
+   auto newStr = createUnique<char[]>(strlen(fname) + 1);
+   strcpy(newStr.get(), fname);
 
-    unsigned long extSize = 0;
-    unsigned long numExtentions = 0;
+   unsigned long extSize = 0;
+   unsigned long numExtentions = 0;
 
    for(auto i = newStr.get(); *i != '\0'; i++)
     {
@@ -292,8 +289,8 @@ GLenum OpenGLShaderObj::queryType(const char* fname)
          }
     }
 
-    auto extensionAmount = std::make_unique<unsigned long[]>(numExtentions);
-    auto extensionLoc = std::make_unique<unsigned long[]>(numExtentions);
+    auto extensionAmount = createUnique<unsigned long[]>(numExtentions);
+    auto extensionLoc = createUnique<unsigned long[]>(numExtentions);
 
     unsigned long extAmountIdx = 0;
     const char* ext = newStr.get();
@@ -326,8 +323,8 @@ GLenum OpenGLShaderObj::queryType(const char* fname)
        idx++;
     }
 
-    auto extension = std::make_unique<char[]>(extensionAmount[0]);
-    auto glsl = std::make_unique<char[]>(extensionAmount[1]);
+    auto extension = createUnique<char[]>(extensionAmount[0]);
+    auto glsl = createUnique<char[]>(extensionAmount[1]);
 
     for(unsigned long i = 0; i < extensionAmount[0]; i++)
      {
@@ -341,7 +338,7 @@ GLenum OpenGLShaderObj::queryType(const char* fname)
 
     for(const auto& [key, val] : m_typeMap)
       {
-        if(std::strcmp(extension.get(), key) == 0)
+        if(strcmp(extension.get(), key) == 0)
        {
         return val;
         // return convertGLType()
@@ -369,7 +366,7 @@ void OpenGLShaderObj::deleteAttachedShaders()
 {
       GLint count;
       glGetProgramiv(m_prog, GL_ATTACHED_SHADERS, &count);
-      auto shaders = std::make_unique<GLuint[]>(GLuint(count));
+      auto shaders = createUnique<GLuint[]>(GLuint(count));
 
       glGetAttachedShaders(m_prog,
                            sizeof(shaders.get()),

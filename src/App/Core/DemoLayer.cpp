@@ -37,17 +37,17 @@ void DemoLayer::onEvent(Event& e)
 {
 
        EventDispatcher dispatcher(e);
-      dispatcher.dispatchEvent<KeyboardPressedEvent>(
-        EventType::KeyboardPressedEvent,
-        BIND_EVENT_FN(onKeyPressed)
+       dispatcher.dispatchEvent<KeyboardPressedEvent>(
+       KEYBOARD_PRESSED_EVENT,  
+       BIND_EVENT_FN(onKeyPressed)
       );
-      dispatcher.dispatchEvent<MousePressedEvent>(
-        EventType::MousePressedEvent,
-        BIND_EVENT_FN(onMousePressed)
+       dispatcher.dispatchEvent<MousePressedEvent>(
+       MOUSE_PRESSED_EVENT,
+       BIND_EVENT_FN(onMousePressed)
       );
       dispatcher.dispatchEvent<MouseWheelEvent>(
-        EventType::MouseWheelEvent,
-        BIND_EVENT_FN(onMouseWheel)
+       MOUSE_WHEEL_EVENT,
+       BIND_EVENT_FN(onMouseWheel)
       );
 }
 
@@ -55,8 +55,9 @@ void DemoLayer::onUpdate()
 {
     // std::cout << "Updated: " << m_name << "\n";
   
-    // m_shaderObj.setUniform();
-  
+    m_shaderObj->use();
+    m_shaderObj->setUniform("offset", m_offset);
+
     m_renderer.render(*m_renderObj, *m_shaderObj);
   
     // RenderData data = m_renderer.getRenderData();
@@ -73,8 +74,10 @@ bool DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
     switch(e.keyCode())
      {
         case ELLIPSE_KEY_a:
+        m_offset -= 0.05f;
          break;
-        case ELLIPSE_KEY_b:
+        case ELLIPSE_KEY_d:
+        m_offset += 0.05f;
          break;
        default:
         break;

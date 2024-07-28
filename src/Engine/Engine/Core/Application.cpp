@@ -19,22 +19,22 @@ void Application::init(const ApplicationSpecifications& specs)
 
    // Change the name of this
    // Use forward-list
-   // std::shared_ptr<Layer> layer = specs.m_userFunc();
+   // SharedPtr<Layer> layer = specs.m_userFunc();
   
    auto renderPlugin = RenderPlugin::createRenderPlugin(specs.m_graphicSpec);
   
   m_renderer = Renderer::createRenderer(std::move(renderPlugin));
 
-  std::vector<std::shared_ptr<Layer>> layers = specs.m_userFunc();
+  ForwardList<SharedPtr<Layer>> layers = specs.m_userFunc();
 
-   for(uint i=0;i<layers.size();i++)
+   for(auto i = layers.begin(); i != layers.end(); i++)
      {
-    pushLayer(layers[i]);
+    pushLayer(*i);
      }
 
-   for(uint i=0;i<layers.size();i++)
+   for(auto i = layers.begin(); i != layers.end(); i++)
      {
-    layers[i]->init();
+    (*i)->init();
      }
 }
 
@@ -42,7 +42,7 @@ Application::~Application()
 {
 
 }
-void Application::pushLayer(std::shared_ptr<Layer> layer)
+void Application::pushLayer(SharedPtr<Layer> layer)
 {
      pushLayerToStack(m_layerStack, layer);
 }
@@ -50,14 +50,16 @@ void Application::pushLayer(std::shared_ptr<Layer> layer)
 void Application::onEvent(Event& e)
 {
    EventDispatcher dispatcher(e);
-    dispatcher.dispatchEvent<WindowUserQuitEvent>(EventType::WindowUserQuitEvent,
-                                  BIND_EVENT_FN(onWindowClose)
-                                     );
-    dispatcher.dispatchEvent<WindowResizeEvent>(EventType::WindowResizeEvent,
-                                  BIND_EVENT_FN(onWindowResize)
-                                     );
+    dispatcher.dispatchEvent<WindowUserQuitEvent>(
+    WINDOW_USER_QUIT_EVENT,
+    BIND_EVENT_FN(onWindowClose)
+                                                 );
+    dispatcher.dispatchEvent<WindowResizeEvent>(
+    WINDOW_RESIZED_EVENT,
+    BIND_EVENT_FN(onWindowResize)
+                                                 );
   
-     updateLayerEvents(m_layerStack, e);
+    updateLayerEvents(m_layerStack, e);
 }
 
 void Application::run()

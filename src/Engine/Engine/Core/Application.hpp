@@ -30,8 +30,7 @@ class ApplicationCMDLineArgs
 class ApplicationSpecifications
 {
    public:
-    // using userFn = std::function<std::vector<std::shared_ptr<Layer>()>>;
-    using userFn = std::function<std::vector<std::shared_ptr<Layer>>()>;
+    using userFn = std::function<ForwardList<SharedPtr<Layer>>()>;
    
     ApplicationSpecifications()
     {
@@ -98,7 +97,7 @@ class Application
   bool m_running{true};
 
   Window* m_window;
-  std::unique_ptr<Renderer> m_renderer = nullptr;
+  UniquePtr<Renderer> m_renderer = nullptr;
   LayerStack m_layerStack;
   // Engine* m_engine;
     
