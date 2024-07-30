@@ -14,6 +14,8 @@ Application::Application()
 
 void Application::init(const ApplicationSpecifications& specs)
 {
+  m_engine = Engine::createEngine();
+
   m_window = Window::createWindow(specs.m_windowSettings);
   m_window->setEventCallBack(BIND_EVENT_FN(Application::onEvent));
 
@@ -21,9 +23,14 @@ void Application::init(const ApplicationSpecifications& specs)
    // Use forward-list
    // SharedPtr<Layer> layer = specs.m_userFunc();
   
-   auto renderPlugin = RenderPlugin::createRenderPlugin(specs.m_graphicSpec);
-  
+  // [ Create a render plugin with init data in the renderer hpp file ]
+  auto renderPlugin = RenderPlugin::createRenderPlugin(specs.m_graphicSpec);
+   
   m_renderer = Renderer::createRenderer(std::move(renderPlugin));
+
+  m_engine->addSystem(m_renderer);
+
+  // m_engine->addModule();
 
   ForwardList<SharedPtr<Layer>> layers = specs.m_userFunc();
 

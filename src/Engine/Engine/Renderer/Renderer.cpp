@@ -12,6 +12,10 @@ class RendererImpl final : public Renderer
     void setViewport(int32_t width, int32_t height) override;
     UniquePtr<RenderObj> createRenderObj() override;
     UniquePtr<RenderShaderObj> createShaderObj() override;
+
+    virtual String name() override;
+    virtual void setName(const char* name) override;
+
    private:
     UniquePtr<RenderPlugin> m_plugin = nullptr;
 };
@@ -19,7 +23,16 @@ class RendererImpl final : public Renderer
 RendererImpl::RendererImpl(UniquePtr<RenderPlugin> plugin)
  : m_plugin{std::move(plugin)}
 {
+    setName("Renderer");
+}
 
+String RendererImpl::name() 
+{
+    return m_name;
+}
+void RendererImpl::setName(const char* name)
+{
+    m_name = name;
 }
 
 void RendererImpl::render(RenderObj& rObj, RenderShaderObj& sObj)
@@ -47,8 +60,8 @@ UniquePtr<RenderShaderObj> RendererImpl::createShaderObj()
     return m_plugin->createShaderObj();
 }
 
-UniquePtr<Renderer> Renderer::createRenderer(UniquePtr<RenderPlugin> plugin)
+SharedPtr<Renderer> Renderer::createRenderer(UniquePtr<RenderPlugin> plugin)
 {
-    return std::make_unique<RendererImpl>(std::move(plugin));  
+    return createShared<RendererImpl>(std::move(plugin));  
 }
 

@@ -2,48 +2,57 @@
 
 #include "Event/Event.hpp"
 #include "Renderer/Renderer.hpp"
+#include "Engine/Engine.hpp"
 
 namespace Ellipse
 {
 
-class Layer
+class ILayer
 {
   public:
-    Layer() = default;
-    virtual ~Layer() = default;
+    ILayer() = default;
+    virtual ~ILayer() = default;
 
     virtual void init() = 0;
     virtual void onEvent(Event& event) = 0;
     virtual void onUpdate() = 0;
 
-    bool isHidden() { return m_hidden; }
-
-    void hideLayer() { m_hidden = true; }
-    void showLayer() { m_hidden = false; }
-
-  protected:
-    bool m_hidden = false;
+    virtual bool isHidden() = 0;
+    virtual void hideLayer() = 0;
+    virtual void showLayer() = 0;
 
   private:
+
 };
 
-class PlaceHolderLayer : public Layer
+class Layer : public ILayer
 {
   public:
-    PlaceHolderLayer() = default;
-    virtual ~PlaceHolderLayer() = default;
-    virtual void init() override
-     {
-     
-     }
-    virtual void onEvent(Event& event) override
-     {
+    Layer(Engine& engine)
+    : m_renderer{static_cast<Renderer&>(engine.getSystem("Renderer"))}
+    //  : m_renderModule{engine.getModule("Renderer")}
+    {
 
-     }
-    virtual void onUpdate() override
-     {
+    }
 
-     }
+    virtual ~Layer() = default;
+
+    virtual void init() override {}
+    virtual void onEvent(Event& event) override {}
+    virtual void onUpdate() override {}
+
+    virtual bool isHidden() override { return m_hidden; }
+
+    virtual void hideLayer() override { m_hidden = true; }
+    virtual void showLayer() override { m_hidden = false; }
+
+    static SharedPtr<ILayer> createDefaultLayer();
+
+  protected:
+    Renderer& m_renderer;
+    // RenderModule& m_renderModule;
+    bool m_hidden = false;
+
   private:
 };
 

@@ -5,7 +5,7 @@
 class DemoLayer : public Ellipse::Layer
 {
    public:
-     DemoLayer();
+     DemoLayer(Engine& engine);
      virtual ~DemoLayer() = default;
 
      void init() override;
@@ -19,10 +19,9 @@ class DemoLayer : public Ellipse::Layer
      bool onMouseWheel(MouseWheelEvent& e);
 
    private:
-     Renderer& m_renderer;
-     std::unique_ptr<RenderShaderObj> m_shaderObj = nullptr;
-     std::unique_ptr<RenderObj> m_renderObj = nullptr;
-     std::string m_name;
+     UniquePtr<RenderShaderObj> m_shaderObj = nullptr;
+     UniquePtr<RenderObj> m_renderObj = nullptr;
+     String m_name;
 
      float m_offset;
 

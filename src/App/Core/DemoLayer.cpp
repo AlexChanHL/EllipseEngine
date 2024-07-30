@@ -3,8 +3,10 @@
 
 #include "DemoLayer.hpp"
 
-DemoLayer::DemoLayer()
-: m_renderer{Ellipse::Application::get().getRenderer()},
+// DemoLayer::DemoLayer(Renderer& renderer)
+DemoLayer::DemoLayer(Engine& engine)
+// : Layer{renderer},
+: Layer{engine},
   m_name{"Placeholder"},
   m_throughLayer{false}
 {
@@ -13,7 +15,7 @@ DemoLayer::DemoLayer()
 
 void DemoLayer::init()
 {
-   m_renderer.setClearColor(glm::vec4{1.0f, 1.0f, 0.0f, 1.0f});
+   m_renderer.setClearColor(Vec4{1.0f, 1.0f, 0.0f, 1.0f});
 
    m_renderObj = m_renderer.createRenderObj();
    m_shaderObj = m_renderer.createShaderObj();
@@ -31,6 +33,18 @@ void DemoLayer::init()
   
    m_renderObj = m_renderer.createRenderObj();
    m_renderObj->initRenderObj(verticies);
+
+   // m_obj = m_renderModule.createModel("TriangleModel");
+  
+   // addModel("Model",
+   //          "basic.vert.glsl",
+   //          "basic.frag.glsl",
+   //          std::pair<const char*, float("offset", m_offset),
+   //          verticies);
+   // 
+   // addModel("DetailedModel");
+   //
+   // getModel("Model", 0);
 }
 
 void DemoLayer::onEvent(Event& e)
@@ -58,7 +72,11 @@ void DemoLayer::onUpdate()
     m_shaderObj->use();
     m_shaderObj->setUniform("offset", m_offset);
 
+    // m_obj->render();
+
     m_renderer.render(*m_renderObj, *m_shaderObj);
+
+    // setModelUniform(m_obj, "offset", m_offset);
   
     // RenderData data = m_renderer.getRenderData();
 }

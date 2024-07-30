@@ -2,9 +2,10 @@
 
 #include "Window.hpp"
 #include "Renderer/Renderer.hpp"
+#include "Engine/Engine.hpp"
 #include "Event/Event.hpp"
 #include "Event/WindowEvent.hpp"
-#include "Layer.hpp"
+// #include "Layer.hpp"
 #include "LayerStack.hpp"
 #include "Base.hpp"
 #include "EllipsePCH.hpp"
@@ -75,33 +76,34 @@ ApplicationSpecifications createAppSpecs();
 class Application
 {
    public:
-   Application();
-  ~Application();
+    Application();
+   ~Application();
 
-   void init(const ApplicationSpecifications& specs);
-    
-   void onEvent(Event& e);
+    void init(const ApplicationSpecifications& specs);
+     
+    void onEvent(Event& e);
 
-   void run();
+    void run();
 
-   void pushLayer(std::shared_ptr<Layer> layer);
+    void pushLayer(std::shared_ptr<Layer> layer);
 
-   bool onWindowClose(WindowUserQuitEvent& windowQuit);
-   bool onWindowResize(WindowResizeEvent& resizeEvent);
+    bool onWindowClose(WindowUserQuitEvent& windowQuit);
+    bool onWindowResize(WindowResizeEvent& resizeEvent);
 
-   static Application& get() { return *sInStance; }
+    static Application& get() { return *sInStance; }
 
-   Renderer& getRenderer() const { return *m_renderer; }
+    Engine& getEngine() const { return *m_engine; }
+    Renderer& getRenderer() const { return *m_renderer; }
 
    private:
-  bool m_running{true};
+    bool m_running{true};
 
-  Window* m_window;
-  UniquePtr<Renderer> m_renderer = nullptr;
-  LayerStack m_layerStack;
-  // Engine* m_engine;
-    
-  static Application* sInStance;
+    UniquePtr<Window> m_window = nullptr;
+    SharedPtr<Renderer> m_renderer = nullptr;
+    LayerStack m_layerStack;
+    UniquePtr<Engine> m_engine = nullptr;
+      
+    static Application* sInStance;
 };
 
 std::function<void()> setUserFunc();

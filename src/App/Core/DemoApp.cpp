@@ -7,9 +7,13 @@ ForwardList<SharedPtr<Ellipse::Layer>> pushUserLayers()
 {
    ForwardList<SharedPtr<Ellipse::Layer>> layers;
 
-   SharedPtr<DemoLayer> demoLayer = createShared<DemoLayer>();
-   SharedPtr<DemoLayer> UILayer = createShared<DemoLayer>();
-   SharedPtr<DemoLayer> DebugLayer = createShared<DemoLayer>();
+   // SharedPtr<DemoLayer> demoLayer = createShared<DemoLayer>(renderer);
+   // SharedPtr<DemoLayer> UILayer = createShared<DemoLayer>(renderer);
+   // SharedPtr<DemoLayer> DebugLayer = createShared<DemoLayer>(renderer);
+
+   SharedPtr<DemoLayer> demoLayer = createShared<DemoLayer>(Ellipse::Application::get().getEngine());
+   SharedPtr<DemoLayer> UILayer = createShared<DemoLayer>(Ellipse::Application::get().getEngine());
+   SharedPtr<DemoLayer> DebugLayer = createShared<DemoLayer>(Ellipse::Application::get().getEngine());
 
    demoLayer->setName("demoLayer");
    UILayer->setName("UILayer");

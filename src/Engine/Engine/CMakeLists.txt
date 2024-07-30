@@ -10,6 +10,11 @@ file(GLOB_RECURSE CORE
     Core/*.hpp
       )
 
+file(GLOB_RECURSE ENGINE
+    Engine/*.cpp
+    Engine/*.hpp
+      )
+
 file(GLOB_RECURSE EVENTS
     Event/*.cpp
     Event/*.hpp
@@ -38,7 +43,7 @@ file(GLOB_RECURSE LOG
       )
 
 add_library(${NAME} STATIC
-           ${CURRENT_DIR} ${CORE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_WINDOW} ${PLATFORM_RENDER}
+           ${CURRENT_DIR} ${CORE} ${ENGINE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_WINDOW} ${PLATFORM_RENDER}
              )
 
 add_custom_target(CopyAssets ALL

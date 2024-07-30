@@ -2,11 +2,13 @@
 
 #include "Core/Base.hpp"
 #include "RenderPlugin.hpp"
+#include "Engine/System.hpp"
 
-class Renderer
+class Renderer : public ISystem
 {
    public:
     Renderer() = default;
+    explicit Renderer(ISystem& system);
     virtual ~Renderer() = default;
 
     virtual void render(RenderObj& rObj, RenderShaderObj& sObj) = 0;
@@ -16,7 +18,7 @@ class Renderer
     virtual UniquePtr<RenderShaderObj> createShaderObj() = 0;
 
     // [ Maybe use template ]
-    static UniquePtr<Renderer> createRenderer(UniquePtr<RenderPlugin> plugin);
+    static SharedPtr<Renderer> createRenderer(UniquePtr<RenderPlugin> plugin);
 
    private:
 };

@@ -24,7 +24,7 @@ class Window
     using eventCallBackfn = std::function<void(Event&)>;
 
     Window() = default;
-    static Window* createWindow(const WindowSettings& specs);
+    static UniquePtr<Window> createWindow(const WindowSettings& specs);
      
     virtual void updateWindow() = 0;
     virtual void setEventCallBack(const eventCallBackfn& event) = 0;

@@ -20,13 +20,13 @@ struct LayerStack
       };
         public:
          Header m_header;
-         SharedPtr<Layer> m_layer = nullptr;
+         SharedPtr<ILayer> m_layer = nullptr;
       };
 
     public:
      LayerStack()
       {
-     first = new Page(Page::Header{nullptr, nullptr}, createShared<PlaceHolderLayer>());
+     first = new Page(Page::Header{nullptr, nullptr}, Layer::createDefaultLayer());
      current = first;
       }
      ~LayerStack()
@@ -53,7 +53,7 @@ struct LayerStack
 
    void debug(LayerStack::Page* ptr);
 
-void pushLayerToStack(LayerStack& stack, SharedPtr<Layer> layer);
+void pushLayerToStack(LayerStack& stack, SharedPtr<ILayer> layer);
 
 void updateLayerStack(LayerStack& stack);
 

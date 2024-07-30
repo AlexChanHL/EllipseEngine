@@ -19,7 +19,7 @@
 namespace Ellipse
 {
 
-void pushLayerToStack(LayerStack& stack, std::shared_ptr<Layer> layer)
+void pushLayerToStack(LayerStack& stack, std::shared_ptr<ILayer> layer)
 {
     LayerStack::Page* nextPage = new LayerStack::Page();
 

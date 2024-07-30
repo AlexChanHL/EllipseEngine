@@ -11,7 +11,7 @@
 
 #include "Renderer/Renderer.hpp"
 
-#include "Platform/RenderPlugin/OpenGL/GLRenderPlugin.hpp"
+#include "Engine/Engine.hpp"
 
 #include "Debug/Log/Log.hpp"
 
