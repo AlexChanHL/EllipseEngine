@@ -1,17 +1,23 @@
 
 #include "Renderer.hpp"
 
+namespace Ellipse
+{
+
 class RendererImpl final : public Renderer
 {
    public:
     explicit RendererImpl(UniquePtr<RenderPlugin> plugin);
     ~RendererImpl() = default;
 
-    void render(RenderObj& rObj, RenderShaderObj& sObj) override;
+    void render(const RenderObj& rObj, const RenderShaderObj& sObj) override;
+    virtual void clearColorBuffer() override;
     void setClearColor(const Vec4& col) override;
     void setViewport(int32_t width, int32_t height) override;
-    UniquePtr<RenderObj> createRenderObj() override;
-    UniquePtr<RenderShaderObj> createShaderObj() override;
+    virtual SharedPtr<RenderObj> createRenderObj(Vector<float> verts) override;
+    virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader,
+                                                 String fShader,
+                                                 UniformList uniforms) override;
 
     virtual String name() override;
     virtual void setName(const char* name) override;
@@ -35,11 +41,21 @@ void RendererImpl::setName(const char* name)
     m_name = name;
 }
 
-void RendererImpl::render(RenderObj& rObj, RenderShaderObj& sObj)
+void RendererImpl::render(const RenderObj& rObj, const RenderShaderObj& sObj)
 {
-    m_plugin->render(rObj, sObj);
+    sObj.use();
+
+    m_plugin->setUniforms(sObj.getUniforms(),
+                          sObj.getUniformLocs());
+
+
+    m_plugin->render(rObj);
 }
 
+void RendererImpl::clearColorBuffer()
+{
+    m_plugin->clearColorBuffer();
+}
 void RendererImpl::setClearColor(const Vec4& col)
 {
     m_plugin->setClearColor(col);
@@ -50,14 +66,16 @@ void RendererImpl::setViewport(int32_t width, int32_t height)
     m_plugin->setViewport(width, height);
 }
 
-UniquePtr<RenderObj> RendererImpl::createRenderObj()
+SharedPtr<RenderObj> RendererImpl::createRenderObj(Vector<float> verts)
 {
-    return m_plugin->createRenderObj();
+    return m_plugin->createRenderObj(verts);
 }
 
-UniquePtr<RenderShaderObj> RendererImpl::createShaderObj()
+SharedPtr<RenderShaderObj> RendererImpl::createShaderObj(String vShader,
+                                    String fShader,
+                                    UniformList uniforms)
 {
-    return m_plugin->createShaderObj();
+    return m_plugin->createShaderObj(vShader, fShader, uniforms);
 }
 
 SharedPtr<Renderer> Renderer::createRenderer(UniquePtr<RenderPlugin> plugin)
@@ -65,3 +83,4 @@ SharedPtr<Renderer> Renderer::createRenderer(UniquePtr<RenderPlugin> plugin)
     return createShared<RendererImpl>(std::move(plugin));  
 }
 
+}    //namespace Ellipse

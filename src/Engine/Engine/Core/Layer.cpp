@@ -14,7 +14,7 @@ class LayerPlaceHolder : public ILayer
 
      virtual void init() override;
      virtual void onEvent(Event& event) override;
-     virtual void onUpdate() override;
+     virtual void onUpdate(float dt) override;
 
      virtual bool isHidden() override { return true; }
 
@@ -22,7 +22,6 @@ class LayerPlaceHolder : public ILayer
      virtual void showLayer() override {}
 
     protected:
-     // virtual void addM
     
     protected: 
 
@@ -42,9 +41,9 @@ void LayerPlaceHolder::init()
 
 void LayerPlaceHolder::onEvent(Event& event)
 {
-
+  
 }
-void LayerPlaceHolder::onUpdate()
+void LayerPlaceHolder::onUpdate(float dt)
 {
 
 }

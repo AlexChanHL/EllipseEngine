@@ -30,14 +30,15 @@ void Application::init(const ApplicationSpecifications& specs)
 
   m_engine->addSystem(m_renderer);
 
-  // m_engine->addModule();
+
+  m_engine->addModule(RenderModule::createRenderModule(*m_engine));
 
   ForwardList<SharedPtr<Layer>> layers = specs.m_userFunc();
 
    for(auto i = layers.begin(); i != layers.end(); i++)
-     {
-    pushLayer(*i);
-     }
+    {
+   pushLayer(*i);
+    }
 
    for(auto i = layers.begin(); i != layers.end(); i++)
      {
@@ -72,11 +73,14 @@ void Application::onEvent(Event& e)
 void Application::run()
 {
     while(m_running)
-       {
-     updateLayerStack(m_layerStack);
+    {
+    m_renderer->clearColorBuffer();
 
-     m_window->updateWindow();
-       }
+    float dt = 0.0f;
+    updateLayerStack(m_layerStack, dt);
+
+    m_window->updateWindow();
+    }
 }
 
 bool Application::onWindowClose(WindowUserQuitEvent& windowQuit)

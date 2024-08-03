@@ -11,6 +11,8 @@
 
 #include "Renderer/Renderer.hpp"
 
+#include "Math/Matrix.hpp"
+
 #include "Engine/Engine.hpp"
 
 #include "Debug/Log/Log.hpp"

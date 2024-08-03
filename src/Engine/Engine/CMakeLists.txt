@@ -15,15 +15,21 @@ file(GLOB_RECURSE ENGINE
     Engine/*.hpp
       )
 
+file(GLOB_RECURSE RENDER
+    Renderer/*.cpp
+    Renderer/*.hpp
+      )
+
+file(GLOB_RECURSE MATH
+    Math/*.cpp
+    Math/*.hpp
+    )
+
 file(GLOB_RECURSE EVENTS
     Event/*.cpp
     Event/*.hpp
       )
 
-file(GLOB_RECURSE RENDER
-    Renderer/*.cpp
-    Renderer/*.hpp
-      )
 
 file(GLOB_RECURSE PLATFORM_WINDOW
     Platform/Window/SDLWindow/*.cpp
@@ -43,7 +49,7 @@ file(GLOB_RECURSE LOG
       )
 
 add_library(${NAME} STATIC
-           ${CURRENT_DIR} ${CORE} ${ENGINE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_WINDOW} ${PLATFORM_RENDER}
+           ${CURRENT_DIR} ${CORE} ${ENGINE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_WINDOW} ${PLATFORM_RENDER} ${MATH}
              )
 
 add_custom_target(CopyAssets ALL

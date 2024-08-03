@@ -3,44 +3,95 @@
 
 #include "DemoLayer.hpp"
 
-// DemoLayer::DemoLayer(Renderer& renderer)
 DemoLayer::DemoLayer(Engine& engine)
-// : Layer{renderer},
-: Layer{engine},
-  m_name{"Placeholder"},
-  m_throughLayer{false}
+: Layer{engine}
 {
-
+   m_name = "Placeholder";
+   m_throughLayer = false;
 }
 
 void DemoLayer::init()
 {
-   m_renderer.setClearColor(Vec4{1.0f, 1.0f, 0.0f, 1.0f});
+   
+   setClearColor(Vec4{1.0f, 1.0f, 0.0f, 1.0f});
 
-   m_renderObj = m_renderer.createRenderObj();
-   m_shaderObj = m_renderer.createShaderObj();
+   std::vector<float> verticies = 
+   {
+    0.0f,  0.5f,  0.0f,
+    0.5f, -0.5f,  0.0f,
+   -0.5f, -0.5f,  0.0f,
+   };
 
-   m_shaderObj->addShader("Assets/Shader/Triangle.vert.glsl");
-   m_shaderObj->addShader("Assets/Shader/Triangle.frag.glsl");
-   m_shaderObj->linkShaders();
-  
-     std::vector<float> verticies = 
-     {
-        0.0f,  0.5f,  0.0f,
-        0.5f, -0.5f,  0.0f,
-       -0.5f, -0.5f,  0.0f,
-     };
-  
-   m_renderObj = m_renderer.createRenderObj();
-   m_renderObj->initRenderObj(verticies);
 
-   // m_obj = m_renderModule.createModel("TriangleModel");
+   m_offset = 0.0f;
   
-   // addModel("Model",
-   //          "basic.vert.glsl",
-   //          "basic.frag.glsl",
-   //          std::pair<const char*, float("offset", m_offset),
-   //          verticies);
+   Ellipse::UniformList uniformList;
+   uniformList.addUniform(Ellipse::UniformVarible<float>{"offset", &m_offset});
+   
+   EntityRef entityRef = addModel("Model",
+                              "Assets/Shader/Triangle.vert.glsl",
+                              "Assets/Shader/Triangle.frag.glsl",
+                               verticies,
+                               uniformList
+                             );
+   
+   rotateModel(entityRef, Radians{45.0f}, Vec3{0.0f, 0.0f, 1.0f});
+   positionModel(entityRef, Vec3{1.0f, 0.25f, 0.0f});
+   scaleModel(entityRef, Vec3{0.5f, 0.5f, 0.5f});
+
+
+   EntityRef entity1 = addModel("Model2",
+                              "Assets/Shader/Triangle.vert.glsl",
+                              "Assets/Shader/Triangle.frag.glsl",
+                               verticies,
+                               uniformList
+                             );
+  
+   positionModel(entity1, Vec3{0.5f, 0.5f, 0.0f});
+   scaleModel(entity1, Vec3{0.5f, 0.5f, 0.5f});
+
+   EntityRef entity2 = addModel("Model",
+                              "Assets/Shader/Triangle.vert.glsl",
+                              "Assets/Shader/Triangle.frag.glsl",
+                               verticies,
+                               uniformList
+                             );
+
+   positionModel(entity2, Vec3{-0.2f, 0.45f, 0.0f});
+   scaleModel(entity2, Vec3{0.5f, 0.5f, 0.5f});
+
+   // EntityRef entity3 = addModel("Model",
+   //                            "Assets/Shader/Triangle.vert.glsl",
+   //                            "Assets/Shader/Triangle.frag.glsl",
+   //                             verticies,
+   //                             uniformList
+   //                           );
+   //
+   // positionModel(entity3, Vec3{0.1f, 0.35f, 0.0f});
+   // scaleModel(entity3, Vec3{0.5f, 0.5f, 0.5f});
+
+   m_entity3 = addModel("Model",
+                              "Assets/Shader/Triangle.vert.glsl",
+                              "Assets/Shader/Triangle.frag.glsl",
+                               verticies,
+                               uniformList
+                             );
+
+   positionModel(m_entity3, Vec3{0.1f, 0.5f, 0.0f});
+   scaleModel(m_entity3, Vec3{0.5f, 0.5f, 0.5f});
+
+   m_entity4 = addModel("Model",
+                              "Assets/Shader/Triangle.vert.glsl",
+                              "Assets/Shader/Triangle.frag.glsl",
+                               verticies,
+                               uniformList
+                             );
+
+   positionModel(m_entity4, Vec3{-0.2f, -0.35f, 0.0f});
+   scaleModel(m_entity4, Vec3{0.5f, 0.5f, 0.5f});
+
+   // removeModel(Model);
+   // removeModel("Model", 0);
    // 
    // addModel("DetailedModel");
    //
@@ -50,35 +101,28 @@ void DemoLayer::init()
 void DemoLayer::onEvent(Event& e)
 {
 
-       EventDispatcher dispatcher(e);
-       dispatcher.dispatchEvent<KeyboardPressedEvent>(
-       KEYBOARD_PRESSED_EVENT,  
-       BIND_EVENT_FN(onKeyPressed)
-      );
-       dispatcher.dispatchEvent<MousePressedEvent>(
-       MOUSE_PRESSED_EVENT,
-       BIND_EVENT_FN(onMousePressed)
-      );
-      dispatcher.dispatchEvent<MouseWheelEvent>(
-       MOUSE_WHEEL_EVENT,
-       BIND_EVENT_FN(onMouseWheel)
-      );
+    EventDispatcher dispatcher(e);
+    dispatcher.dispatchEvent<KeyboardPressedEvent>(
+    KEYBOARD_PRESSED_EVENT,  
+    BIND_EVENT_FN(onKeyPressed)
+    );
+    dispatcher.dispatchEvent<MousePressedEvent>(
+    MOUSE_PRESSED_EVENT,
+    BIND_EVENT_FN(onMousePressed)
+    );
+    dispatcher.dispatchEvent<MouseWheelEvent>(
+    MOUSE_WHEEL_EVENT,
+    BIND_EVENT_FN(onMouseWheel)
+    );
 }
 
-void DemoLayer::onUpdate()
+void DemoLayer::onUpdateUserLayer(float dt)
 {
     // std::cout << "Updated: " << m_name << "\n";
   
-    m_shaderObj->use();
-    m_shaderObj->setUniform("offset", m_offset);
+    // m_player->onUpdate(dt);
 
-    // m_obj->render();
-
-    m_renderer.render(*m_renderObj, *m_shaderObj);
-
-    // setModelUniform(m_obj, "offset", m_offset);
-  
-    // RenderData data = m_renderer.getRenderData();
+    // RenderData data = m_renderModule.getRenderData();
 }
 
 bool DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
@@ -97,8 +141,8 @@ bool DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
         case ELLIPSE_KEY_d:
         m_offset += 0.05f;
          break;
-       default:
-        break;
+        default:
+         break;
      }
 
    return m_throughLayer ? false : true;
@@ -107,7 +151,8 @@ bool DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
 bool DemoLayer::onMousePressed(MousePressedEvent& e)
 {
   // std::cout << e.logMousePosition() << "\n";
-    std::cout << m_name << " detected mouse press!\n";
+    std::cout << m_name <<  " detected mouse press!\n";
+    std::cout << m_name <<  " Pos: : " << e.mousePosY() << "\n";
 
    return m_throughLayer ? false : true;
 }

@@ -15,6 +15,9 @@ using ForwardList = std::forward_list<T>;
 template<typename T, typename D>
 using Map = std::map<T, D>;
 
+template<typename T, typename D>
+using Pair = std::pair<T, D>;
+
 using SStream = std::stringstream;
 using String = std::string;
 
@@ -25,8 +28,13 @@ using FStreanOut = std::ofstream;
 template<typename T>
 using UniquePtr = std::unique_ptr<T>;
 
+// [ Temporarily use this ]
+using EntityRef = uLong_t;
+
 // #if USE_GLM
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 //
 using Vec2 = glm::vec2;
 using Vec3 = glm::vec3;
@@ -35,6 +43,8 @@ using Vec4 = glm::vec4;
 using Mat2 = glm::mat2;
 using Mat3 = glm::mat3;
 using Mat4 = glm::mat4;
+
+using Radians = float;
 //
 // #endif
 

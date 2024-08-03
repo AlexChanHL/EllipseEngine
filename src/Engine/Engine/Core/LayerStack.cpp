@@ -23,31 +23,32 @@ void pushLayerToStack(LayerStack& stack, std::shared_ptr<ILayer> layer)
 {
     LayerStack::Page* nextPage = new LayerStack::Page();
 
-       stack.current->m_header.next = nextPage;
+    stack.current->m_header.next = nextPage;
 
-       stack.current->m_header.next->m_header.prev = stack.current;
+    stack.current->m_header.next->m_header.prev = stack.current;
 
-       stack.current = stack.current->m_header.next;
-       stack.current->m_layer= std::move(layer);
+    stack.current = stack.current->m_header.next;
+    stack.current->m_layer = std::move(layer);
 }
 
-void updateLayerStack(LayerStack& stack)
-  {
-     LayerStack::Page* ptr = stack.first;
-      while(ptr)
-       {
-      // #if DEBUG
-          // debug(ptr);
-      // #endif
-    
-        if(!ptr->m_layer->isHidden())
-         {
-       ptr->m_layer->onUpdate();
-         }
+void updateLayerStack(LayerStack& stack, float dt)
+{
+   LayerStack::Page* ptr = stack.first;
+ 
+   while(ptr)
+    {
+    // #if DEBUG
+        // debug(ptr);
+    // #endif
 
-          ptr = ptr->m_header.next;
-       }
-  }
+   if(!ptr->m_layer->isHidden())
+    {
+   ptr->m_layer->onUpdate(dt);
+    }
+
+   ptr = ptr->m_header.next;
+     }
+}
 
 void updateLayerEvents(LayerStack& stack, Event& event)
   {
@@ -84,8 +85,8 @@ LayerStack::Page* end(LayerStack& stack)
   }
 
 
-void debug(LayerStack::Page* ptr)
-   {
+// void debug(LayerStack::Page* ptr)
+//    {
     // std::cout << "Ptr value: " << ptr->val << "\n";
 
     //  if(ptr->m_header.next)
@@ -96,6 +97,6 @@ void debug(LayerStack::Page* ptr)
     //  {
     // std::cout << "Ptr previous value: " << ptr->m_header.prev->val << "\n";
      // }
-   }
+   // }
 
 }

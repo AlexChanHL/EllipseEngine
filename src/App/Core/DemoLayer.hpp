@@ -10,7 +10,8 @@ class DemoLayer : public Ellipse::Layer
 
      void init() override;
      virtual void onEvent(Event& e) override;
-     virtual void onUpdate() override;
+
+     void onUpdateUserLayer(float dt) override;
 
      void setName(String name) { m_name = name; }
 
@@ -19,11 +20,7 @@ class DemoLayer : public Ellipse::Layer
      bool onMouseWheel(MouseWheelEvent& e);
 
    private:
-     UniquePtr<RenderShaderObj> m_shaderObj = nullptr;
-     UniquePtr<RenderObj> m_renderObj = nullptr;
-     String m_name;
-
      float m_offset;
-
-     bool m_throughLayer;
+     EntityRef m_entity3;
+     EntityRef m_entity4;
 };

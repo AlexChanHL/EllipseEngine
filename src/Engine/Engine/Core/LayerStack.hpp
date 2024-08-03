@@ -51,11 +51,11 @@ struct LayerStack
    LayerStack::Page* begin(LayerStack& stack);
    LayerStack::Page* end(LayerStack& stack);
 
-   void debug(LayerStack::Page* ptr);
+   // void debug(LayerStack::Page* ptr);
 
 void pushLayerToStack(LayerStack& stack, SharedPtr<ILayer> layer);
 
-void updateLayerStack(LayerStack& stack);
+void updateLayerStack(LayerStack& stack, float dt);
 
 void updateLayerEvents(LayerStack& stack, Event& event);
 

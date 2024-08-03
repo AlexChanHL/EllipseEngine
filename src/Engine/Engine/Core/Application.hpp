@@ -2,6 +2,7 @@
 
 #include "Window.hpp"
 #include "Renderer/Renderer.hpp"
+#include "Renderer/RenderModule.hpp"
 #include "Engine/Engine.hpp"
 #include "Event/Event.hpp"
 #include "Event/WindowEvent.hpp"
@@ -22,6 +23,15 @@ class ApplicationCMDLineArgs
     {
 
     }
+    
+   int argv()
+   {
+   return m_argv;
+   }
+   char** argc()
+   {
+   return m_argc;
+   }
 
   private:
     int m_argv;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Base.hpp"
+#include "Module.hpp"
 
 class ISystem
 {
@@ -11,8 +12,8 @@ class ISystem
    virtual String name() = 0;
    virtual void setName(const char* name) = 0;
 
-   protected:
-    String m_name;
+  protected:
+   String m_name;
 
    private:
 };

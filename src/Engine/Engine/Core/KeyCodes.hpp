@@ -251,7 +251,7 @@ typedef uint32_t KeyCode;
 #define ELLIPSE_KEY_CALL   ELLIPSE_SCANCODE_TO_KEYCODE(ELLIPSE_SCANCODE_CALL)
 #define ELLIPSE_KEY_ENDCALL    ELLIPSE_SCANCODE_TO_KEYCODE(ELLIPSE_SCANCODE_ENDCALL)
 
-static ScanCode keyCodeToScanCode(const KeyCode& k)
+inline ScanCode keyCodeToScanCode(const KeyCode& k)
 {
     switch(k)
      {

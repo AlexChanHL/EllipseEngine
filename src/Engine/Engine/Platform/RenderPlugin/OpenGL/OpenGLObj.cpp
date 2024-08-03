@@ -2,11 +2,8 @@
 #include "OpenGLObj.hpp"
 #include "Debug/Log/Log.hpp"
 
-void OpenGLRenderObj::initRenderObj(Vector<float> verts)
+namespace Ellipse
 {
-       m_nVerts = static_cast<uint32_t>(verts.size()) / 3;
-       initBuffers(verts);
-}
 
 void OpenGLRenderObj::initBuffers(Vector<float> verts)
 {
@@ -40,7 +37,7 @@ void OpenGLShaderObj::addShader(const char* name)
 
 void OpenGLShaderObj::linkShaders()
 {
-    linkGLShaders();
+     linkGLShaders();
 }
 
 OpenGLShaderObj::OpenGLShaderObj()
@@ -62,12 +59,80 @@ OpenGLShaderObj::~OpenGLShaderObj()
      deleteAttachedShaders();
 }
 
+void OpenGLShaderObj::addUniform(UniformVarible<i32_t> uniform)
+{
+     m_uniforms.addUniform(uniform);
+     addUniformToList(uniform.name());
+}
+void OpenGLShaderObj::addUniform(UniformVarible<float> uniform)
+{
+     m_uniforms.addUniform(uniform);
+     addUniformToList(uniform.name());
+}
+void OpenGLShaderObj::addUniform(UniformVarible<u32_t> uniform)
+{
+     m_uniforms.addUniform(uniform);
+     addUniformToList(uniform.name());
+}
+void OpenGLShaderObj::addUniform(UniformVarible<Vec2> uniform)
+{
+     m_uniforms.addUniform(uniform);
+     addUniformToList(uniform.name());
+}
+void OpenGLShaderObj::addUniform(UniformVarible<Vec3> uniform)
+{
+     m_uniforms.addUniform(uniform);
+     addUniformToList(uniform.name());
+}
+void OpenGLShaderObj::addUniform(UniformVarible<Vec4> uniform)
+{
+     m_uniforms.addUniform(uniform);
+     addUniformToList(uniform.name());
+}
+void OpenGLShaderObj::addUniform(UniformVarible<Mat2> uniform)
+{
+     m_uniforms.addUniform(uniform);
+     addUniformToList(uniform.name());
+}
+void OpenGLShaderObj::addUniform(UniformVarible<Mat3> uniform)
+{
+     m_uniforms.addUniform(uniform);
+     addUniformToList(uniform.name());
+}
+void OpenGLShaderObj::addUniform(UniformVarible<Mat4> uniform)
+{
+     m_uniforms.addUniform(uniform);
+     addUniformToList(uniform.name());
+}
+
+void OpenGLShaderObj::setUniformList(UniformList& uniforms)
+{
+     m_uniforms = uniforms;
+}
+
+void OpenGLShaderObj::setUniformPtr(const UniformVarible<i32_t>& uniform) 
+{
+     m_uniforms.setUniform(uniform);
+}
+void OpenGLShaderObj::setUniformPtr(const UniformVarible<float>& uniform)
+{
+     m_uniforms.setUniform(uniform);
+}
+void OpenGLShaderObj::setUniformPtr(const UniformVarible<u32_t>& uniform)
+{
+     m_uniforms.setUniform(uniform);
+}
+void OpenGLShaderObj::setUniformPtr(const UniformVarible<Mat4>& uniform)
+{
+     m_uniforms.setUniform(uniform);
+}
+
 void OpenGLShaderObj::compileShader(const char* fname)
 {
-      if(m_prog == 0)
-       {
+     if(m_prog == 0)
+      {
      m_prog = glCreateProgram();
-       }
+      }
 
      FStreamIn ifs{fname};
       if(!ifs)
@@ -117,6 +182,52 @@ void OpenGLShaderObj::use() const
     glUseProgram(m_prog);
 }
 
+void OpenGLShaderObj::addUniformsToLocList(UniformList uniforms)
+{
+    for(UniformVarible<i32_t>& uniform : uniforms.getIntUniforms())
+     {
+    addUniformToList(uniform.name());
+     }
+    for(UniformVarible<float>& uniform : uniforms.getFloatUniforms())
+     {
+    addUniformToList(uniform.name());
+     }
+    for(UniformVarible<u32_t>& uniform : uniforms.getUnsignedIntUniforms())
+     {
+    addUniformToList(uniform.name());
+     }
+    for(UniformVarible<Vec2>& uniform : uniforms.getVec2Uniforms())
+     {
+    addUniformToList(uniform.name());
+     }
+    for(UniformVarible<Vec3>& uniform : uniforms.getVec3Uniforms())
+     {
+    addUniformToList(uniform.name());
+     }
+    for(UniformVarible<Vec4>& uniform : uniforms.getVec4Uniforms())
+     {
+    addUniformToList(uniform.name());
+     }
+    for(UniformVarible<Mat2>& uniform : uniforms.getMat2Uniforms())
+     {
+    addUniformToList(uniform.name());
+     }
+    for(UniformVarible<Mat3>& uniform : uniforms.getMat3Uniforms())
+     {
+    addUniformToList(uniform.name());
+     }
+    for(UniformVarible<Mat4>& uniform : uniforms.getMat4Uniforms())
+     {
+    addUniformToList(uniform.name());
+     }
+}
+
+void OpenGLShaderObj::addUniformToList(const char* name)
+{
+    int loc =  glGetUniformLocation(m_prog, name);
+    m_uniformLoc.push_front(UniformLoc{name, loc});
+}
+
 void OpenGLShaderObj::checkCompileStatus(GLuint shader)
 {
      int status;
@@ -126,20 +237,21 @@ void OpenGLShaderObj::checkCompileStatus(GLuint shader)
      glGetShaderiv(shader, GL_SHADER_TYPE, &type);
      const char* typeStr = typeToCString(GLenum(type));
    
+     // [ Better logging output, currently logs entire array ]
      glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-      if(!status)
-       {
+     if(!status)
+      {
      glGetShaderInfoLog(shader, 500, NULL, logLoad);
      ELPSE_ENGINE_LOG_WARN("{} error {}", typeStr, logLoad);
-       }
+      }
 }
 
 void OpenGLShaderObj::checkLinkStatus()
 {
-      if(m_prog == 0)
-       {
-      ELPSE_ENGINE_LOG_WARN("No program handle!\n");
-       }
+     if(m_prog == 0)
+      {
+     ELPSE_ENGINE_LOG_WARN("No program handle!\n");
+      }
 
      int status;
      char logLoad[500];
@@ -153,124 +265,13 @@ void OpenGLShaderObj::checkLinkStatus()
       }
 }
 
-void OpenGLShaderObj::addUniform(const char* name)
-{
-    GLint loc =  glGetUniformLocation(m_prog, name);
-    m_uniformLoc.push_front(UniformLoc{name, loc});
-}
-
-void OpenGLShaderObj::addUniform(const char* name, int& loc)
-{
-    loc =  glGetUniformLocation(m_prog, name);
-    m_uniformLoc.push_front(UniformLoc{name, loc});
-}
-
-void OpenGLShaderObj::setUniform(const char* name, float x)
-{
-    int loc = findUniformLocation(name);
-     glUniform1f(loc, x);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, float x, float y)
-{
-    int loc = findUniformLocation(name);
-     glUniform2f(loc, x, y);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, float x, float y, float z)
-{
-    int loc = findUniformLocation(name);
-     glUniform3f(loc, x, y, z);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, float x, float y, float z, float w)
-{
-    int loc = findUniformLocation(name);
-     glUniform4f(loc, x, y, z, w);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, int x)
-{
-    int loc = findUniformLocation(name);
-     glUniform1i(loc, x);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, int x, int y)
-{
-    int loc = findUniformLocation(name);
-     glUniform2i(loc, x, y);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, int x, int y, int z)
-{
-    int loc = findUniformLocation(name);
-     glUniform3i(loc, x, y, z);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, int x, int y, int z, int w)
-{
-    int loc = findUniformLocation(name);
-     glUniform4i(loc, x, y, z, w);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, unsigned int x)
-{
-    int loc = findUniformLocation(name);
-     glUniform1ui(loc, x);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, unsigned int x, unsigned int y)
-{
-    int loc = findUniformLocation(name);
-     glUniform2ui(loc, x, y);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, unsigned int x, unsigned int y, unsigned int z)
-{
-    int loc = findUniformLocation(name);
-     glUniform3ui(loc, x, y, z);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, unsigned int x, unsigned int y, unsigned int z, unsigned int w)
-{
-    int loc = findUniformLocation(name);
-     glUniform4ui(loc, x, y, z, w);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, glm::mat4& mat)
-{
-    int loc = findUniformLocation(name);
-     glUniformMatrix4fv(loc, 1, GL_FALSE, &mat[0][0]);
-}
-
-void OpenGLShaderObj::setUniform(const char* name, glm::vec3& vec)
-{
-    int loc = findUniformLocation(name);
-     glUniform3f(loc, vec.x, vec.y, vec.z);
-}
-
+// [ Not a good name, prints uniform names ]
 void OpenGLShaderObj::printUniformLocations()
 {
     for(auto& a : m_uniformLoc)
      {
     ELPSE_ENGINE_LOG_INFO("{}", a.m_name);
      } 
-}
-
-int OpenGLShaderObj::findUniformLocation(const char* name)
-{
-    for(auto& a : m_uniformLoc)
-     {
-    if(strcmp(name, a.m_name) == 0)
-      {
-    return a.m_loc;
-      }
-     } 
-
-    int loc;
-    addUniform(name, loc);
-
-    return loc;
 }
 
 GLenum OpenGLShaderObj::queryType(const char* fname)
@@ -282,27 +283,27 @@ GLenum OpenGLShaderObj::queryType(const char* fname)
    unsigned long numExtentions = 0;
 
    for(auto i = newStr.get(); *i != '\0'; i++)
-    {
-        if(*i == '.')
-         {
-        numExtentions++;
-         }
-    }
+   {
+   if(*i == '.')
+   {
+   numExtentions++;
+   }
+   }
 
-    auto extensionAmount = createUnique<unsigned long[]>(numExtentions);
-    auto extensionLoc = createUnique<unsigned long[]>(numExtentions);
+   auto extensionAmount = createUnique<unsigned long[]>(numExtentions);
+   auto extensionLoc = createUnique<unsigned long[]>(numExtentions);
 
-    unsigned long extAmountIdx = 0;
-    const char* ext = newStr.get();
+   unsigned long extAmountIdx = 0;
+   const char* ext = newStr.get();
 
-    unsigned long idx = 0; 
+   unsigned long idx = 0; 
 
    for(auto i = newStr.get(); *i != '\0'; i++)
-    {
-        if(*i == '.')
-         {
-          ext += idx + 1;
-         for(; *ext != '.'; ext++)
+   {
+   if(*i == '.')
+   {
+   ext += idx + 1;
+   for(; *ext != '.'; ext++)
             {
           if(*ext == '\0')
              {
@@ -332,20 +333,20 @@ GLenum OpenGLShaderObj::queryType(const char* fname)
      }
 
     for(unsigned long i = 0; i < extensionAmount[1]; i++)
-     {
-        glsl[i] = newStr[i + extensionLoc[1] + 1];
-     }
+    {
+    glsl[i] = newStr[i + extensionLoc[1] + 1];
+    }
 
     for(const auto& [key, val] : m_typeMap)
-      {
+     {
         if(strcmp(extension.get(), key) == 0)
        {
         return val;
         // return convertGLType()
        }
-      }
+    }
 
-     return m_typeMap["none"];
+    return m_typeMap["none"];
 }
 
 const char* OpenGLShaderObj::typeToCString(GLenum type)
@@ -359,7 +360,7 @@ const char* OpenGLShaderObj::typeToCString(GLenum type)
       default:
        return "Not a valid type";
        }
-    return "Not a valid type";
+      return "Not a valid type";
 }
 
 void OpenGLShaderObj::deleteAttachedShaders()
@@ -379,3 +380,5 @@ void OpenGLShaderObj::deleteAttachedShaders()
       glDeleteShader(shaders[i]);
      }
 }
+
+}    // namespace Ellipse

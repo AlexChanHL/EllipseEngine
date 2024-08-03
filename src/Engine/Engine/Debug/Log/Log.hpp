@@ -19,6 +19,8 @@ class Log
     static SharedPtr<uLog::Logger> m_engineLogger;
 };
 
+std::ostream& operator<<(std::ostream& os, glm::mat<4, 4, float>& mat4);
+
 }    //Ellipse
 
   #ifndef DEACTIVE_LOGGING

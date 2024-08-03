@@ -1,13 +1,16 @@
 #pragma once
 
+#include "UniformVarible.hpp"
 #include "Core/Base.hpp"
+
+namespace Ellipse
+{
 
 struct RenderObj
 {
    public:
     RenderObj() = default;
     virtual ~RenderObj() = default;
-    virtual void initRenderObj(std::vector<float> verts) = 0;
 
    public:
 
@@ -22,24 +25,30 @@ class RenderShaderObj
      virtual void addShader(const char* fname) = 0;
      virtual void linkShaders() = 0;
      virtual void use() const = 0;
+     virtual void printUniformLocations() = 0;
 
-     virtual void setUniform(const char* name, float x) = 0;
-     virtual void setUniform(const char* name, float x, float y) = 0;
-     virtual void setUniform(const char* name, float x, float y, float z) = 0;
-     virtual void setUniform(const char* name, float x, float y, float z, float w) = 0;
+     virtual void addUniform(UniformVarible<i32_t> uniform) = 0;
+     virtual void addUniform(UniformVarible<float> uniform) = 0;
+     virtual void addUniform(UniformVarible<u32_t> uniform) = 0;
+     virtual void addUniform(UniformVarible<Vec2> uniform) = 0;
+     virtual void addUniform(UniformVarible<Vec3> uniform) = 0;
+     virtual void addUniform(UniformVarible<Vec4> uniform) = 0;
+     virtual void addUniform(UniformVarible<Mat2> uniform) = 0;
+     virtual void addUniform(UniformVarible<Mat3> uniform) = 0;
+     virtual void addUniform(UniformVarible<Mat4> uniform) = 0;
 
-     virtual void setUniform(const char* name, int x) = 0;
-     virtual void setUniform(const char* name, int x, int y) = 0;
-     virtual void setUniform(const char* name, int x, int y, int z) = 0;
-     virtual void setUniform(const char* name, int x, int y, int z, int w) = 0;
 
-     virtual void setUniform(const char* name, unsigned int x) = 0;
-     virtual void setUniform(const char* name, unsigned int x, unsigned int y) = 0;
-     virtual void setUniform(const char* name, unsigned int x, unsigned int y, unsigned int z) = 0;
-     virtual void setUniform(const char* name, unsigned int x, unsigned int y, unsigned int z, unsigned int w) = 0;
+     virtual void addUniformsToLocList(UniformList uniforms) = 0;
 
-     virtual void setUniform(const char* name, Mat4& mat) = 0;
-     virtual void setUniform(const char* name, Vec3& vec) = 0;
-     
+     virtual void setUniformPtr(const UniformVarible<i32_t>& uniform) = 0;
+     virtual void setUniformPtr(const UniformVarible<float>& uniform) = 0;
+     virtual void setUniformPtr(const UniformVarible<u32_t>& uniform) = 0;
+     virtual void setUniformPtr(const UniformVarible<Mat4>& uniform) = 0;
+
+     virtual UniformList getUniforms() const = 0;
+     virtual ForwardList<UniformLoc> getUniformLocs() const = 0;
+
     private:
 };
+
+}    // namespace Ellipse

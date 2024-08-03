@@ -13,8 +13,8 @@ class Engine
     virtual void addSystem(SharedPtr<ISystem> system) = 0;
     virtual ISystem& getSystem(const char* name) = 0;
 
-    virtual void addModule(IModule& module) = 0;
-    virtual void getModule(const char* name) = 0;
+    virtual void addModule(SharedPtr<IModule> module) = 0;
+    virtual IModule& getModule(const char* name) = 0;
 
     static UniquePtr<Engine> createEngine();
 

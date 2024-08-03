@@ -11,6 +11,7 @@
 #include <list>
 #include <memory>
 #include <functional>
+#include <algorithm>
 #include <utility>
 #include <cstdint>
 #include <sstream>

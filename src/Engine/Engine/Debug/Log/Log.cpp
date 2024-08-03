@@ -23,5 +23,20 @@ namespace Ellipse
 
    m_engineLogger->setLevel(uLog::Level::Trace);
  }
+
+std::ostream& operator<<(std::ostream& os, glm::mat<4, 4, float>& mat4)
+{
+    for(int i=0;i<4;i++)
+    {
+    os << "Row: ";
+    for(int j=0;j<4;j++)
+    {
+    os << mat4[j][i] << " , ";
+    }
+    os << "\n";
+    }
+
+  return os;
+}
   
 } // namespace Ellipse

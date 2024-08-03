@@ -64,7 +64,7 @@ class MouseWheelEvent : public MouseEvent
                     )
       : m_mouseOffset_X{offsetX},
         m_mouseOffset_Y{offsetY},
-        m_mousePos{posY, posY}
+        m_mousePos{posX, posY}
       {
 
       }
@@ -117,21 +117,27 @@ class MousePressedEvent : public MouseEvent
          return "MousePressedEvent";
       }
 
-    std::string logMousePosition()
+     std::string logMousePosition()
       {
-   return Utils::toString(m_mousePos.x) + " , " + Utils::toString(m_mousePos.y);
+     return Utils::toString(m_mousePos.x) + " , " + Utils::toString(m_mousePos.y);
       }
 
+     MouseIndex mouseIndex() const
+     {
+     return m_mouseIndex;
+     }
+
   std::pair<float, float> mousePos()
-    {
+     {
       return std::make_pair<float, float>(mousePosX(), mousePosY());
-    }
+     }
 
      float mousePosX() const { return m_mousePos.x; };
      float mousePosY() const { return m_mousePos.y; };
+
    private:
      MouseIndex m_mouseIndex;
-      MousePos m_mousePos;
+     MousePos m_mousePos;
 };
 
 class MouseReleasedEvent : public MouseEvent
