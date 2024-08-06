@@ -95,10 +95,8 @@ class UniformVarible
 class UniformList
 {
    public:
-    UniformList()
-    {
-
-    }
+    UniformList() = default;
+    ~UniformList() = default;
 
     void addUniform(const UniformVarible<i32_t>& uniform)
     {
@@ -205,11 +203,6 @@ class UniformList
     }
     }
     
-    ~UniformList()
-    {
-
-    }
-
     Vector<UniformVarible<i32_t>> getIntUniforms()
     {
     return m_intUniforms;

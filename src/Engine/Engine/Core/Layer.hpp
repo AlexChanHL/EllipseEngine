@@ -59,12 +59,12 @@ class Layer : public ILayer
     EntityRef addModel(const char* name,
                   const char* vShader,
                   const char* fShader,
-                  Vector<float> verticies,
+                  VerticiesData verts,
                   UniformList uniforms
                   )
     {
     uLong_t size = m_modelsToBeRendered.size();
-    Model model = m_renderModule.createModel(name, vShader, fShader, verticies, uniforms, size);
+    Model model = m_renderModule.createModel(name, vShader, fShader, verts, uniforms, size);
     m_modelsToBeRendered.push_back(model);
 
     // Redirect pointer to the value in vector
@@ -77,6 +77,23 @@ class Layer : public ILayer
     Mat4* modelMat = &m_modelsToBeRendered[i].modelMat();
     m_modelsToBeRendered[i].shaderObj().setUniformPtr(UniformVarible<Mat4>{"model", modelMat});
     }
+
+    return size;
+    }
+
+    EntityRef addQuad(Vec3 pos)
+    {
+    uLong_t size = m_modelsToBeRendered.size();
+    Model model = m_renderModule.create2DShape("Quad", size);
+    m_modelsToBeRendered.push_back(model);
+       
+    for(uLong_t i = 0; i < m_modelsToBeRendered.size(); i++)
+    {
+    Mat4* modelMat = &m_modelsToBeRendered[i].modelMat();
+    m_modelsToBeRendered[i].shaderObj().setUniformPtr(UniformVarible<Mat4>{"model", modelMat});
+    }
+
+    positionModel(size, pos);
 
     return size;
     }
@@ -112,6 +129,8 @@ class Layer : public ILayer
     return &(*model);
     }
 
+    // [ Use a entity manager for model creation ]
+
     void onUpdateModelMatricies()
     {
     for(Model& model : m_modelsToBeRendered)
@@ -119,11 +138,21 @@ class Layer : public ILayer
     model.resetModelMat();
 
     // std::cout << model.name() << '\n';
-    ::Ellipse::scaleModel(model);
-    ::Ellipse::rotateModel(model);
     ::Ellipse::translateModel(model);
+    ::Ellipse::rotateModel(model);
+    ::Ellipse::scaleModel(model);
     }
 
+    }
+
+    void positionCameraLeft(float amount)
+    {
+    m_renderModule.setCameraLeft(amount);
+    }
+
+    void positionCameraRight(float amount)
+    {
+    m_renderModule.setCameraRight(amount);
     }
 
     // [ Maybe the engine should render module wating for render ]
@@ -135,6 +164,11 @@ class Layer : public ILayer
     // a.shaderObj().getUniforms().printUniformList();
     m_renderModule.renderModel(a);
     }
+
+    // [ Hackish solution, make a better way of updating the projection
+    //  matrix to a new screen size ]
+    // Updating Camera
+    m_renderModule.updateCamera();
 
     }
 

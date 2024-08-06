@@ -18,8 +18,14 @@ class SDLWindow : public Window
 
     void pollEvents();
     virtual void setEventCallBack(const eventCallBackfn& event) override
-     { m_windowData.m_eventCallBackFn = event; }
+    {
+    m_windowData.m_eventCallBackFn = event;
+    }
 
+    virtual Pair<int, int> getWindowSize() override
+    {
+    return Pair<int, int>{m_windowData.m_width, m_windowData.m_height};
+    }
     virtual void* getWindow() override { return m_window; }
 
     virtual ~SDLWindow() override;

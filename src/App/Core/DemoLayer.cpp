@@ -12,15 +12,17 @@ DemoLayer::DemoLayer(Engine& engine)
 
 void DemoLayer::init()
 {
-   
+   // Layer should not set the clear color manually
    setClearColor(Vec4{1.0f, 1.0f, 0.0f, 1.0f});
 
-   std::vector<float> verticies = 
+   Vector<float> verticies = 
    {
     0.0f,  0.5f,  0.0f,
     0.5f, -0.5f,  0.0f,
    -0.5f, -0.5f,  0.0f,
    };
+
+   Ellipse::VerticiesData verticiesData{3, verticies.size(), verticies};
 
 
    m_offset = 0.0f;
@@ -29,66 +31,71 @@ void DemoLayer::init()
    uniformList.addUniform(Ellipse::UniformVarible<float>{"offset", &m_offset});
    
    EntityRef entityRef = addModel("Model",
-                              "Assets/Shader/Triangle.vert.glsl",
-                              "Assets/Shader/Triangle.frag.glsl",
-                               verticies,
-                               uniformList
-                             );
+                                 "Assets/Shader/Triangle.vert.glsl",
+                                 "Assets/Shader/Triangle.frag.glsl",
+                                 verticiesData,
+                                 uniformList
+                                 );
    
    rotateModel(entityRef, Radians{45.0f}, Vec3{0.0f, 0.0f, 1.0f});
    positionModel(entityRef, Vec3{1.0f, 0.25f, 0.0f});
    scaleModel(entityRef, Vec3{0.5f, 0.5f, 0.5f});
 
+   // [ Have a model manager do all this work ]
 
-   EntityRef entity1 = addModel("Model2",
-                              "Assets/Shader/Triangle.vert.glsl",
-                              "Assets/Shader/Triangle.frag.glsl",
-                               verticies,
-                               uniformList
-                             );
-  
-   positionModel(entity1, Vec3{0.5f, 0.5f, 0.0f});
-   scaleModel(entity1, Vec3{0.5f, 0.5f, 0.5f});
+   addQuad(Vec3{-0.25f, 0.4f, 0.0f});
 
-   EntityRef entity2 = addModel("Model",
-                              "Assets/Shader/Triangle.vert.glsl",
-                              "Assets/Shader/Triangle.frag.glsl",
-                               verticies,
-                               uniformList
-                             );
+   // positionCamera(Vec3{0.0f, 0.0f, 3.0f});
 
-   positionModel(entity2, Vec3{-0.2f, 0.45f, 0.0f});
-   scaleModel(entity2, Vec3{0.5f, 0.5f, 0.5f});
+   // EntityRef entity1 = addModel("Model2",
+   //                            "Assets/Shader/Triangle.vert.glsl",
+   //                            "Assets/Shader/Triangle.frag.glsl",
+   //                             verticiesData,
+   //                             uniformList
+   //                           );
+   //
+   // positionModel(entity1, Vec3{0.5f, 0.5f, 0.0f});
+   // scaleModel(entity1, Vec3{0.5f, 0.5f, 0.5f});
 
-   // EntityRef entity3 = addModel("Model",
+   // EntityRef entity2 = addModel("Model",
    //                            "Assets/Shader/Triangle.vert.glsl",
    //                            "Assets/Shader/Triangle.frag.glsl",
    //                             verticies,
    //                             uniformList
    //                           );
    //
-   // positionModel(entity3, Vec3{0.1f, 0.35f, 0.0f});
-   // scaleModel(entity3, Vec3{0.5f, 0.5f, 0.5f});
-
-   m_entity3 = addModel("Model",
-                              "Assets/Shader/Triangle.vert.glsl",
-                              "Assets/Shader/Triangle.frag.glsl",
-                               verticies,
-                               uniformList
-                             );
-
-   positionModel(m_entity3, Vec3{0.1f, 0.5f, 0.0f});
-   scaleModel(m_entity3, Vec3{0.5f, 0.5f, 0.5f});
-
-   m_entity4 = addModel("Model",
-                              "Assets/Shader/Triangle.vert.glsl",
-                              "Assets/Shader/Triangle.frag.glsl",
-                               verticies,
-                               uniformList
-                             );
-
-   positionModel(m_entity4, Vec3{-0.2f, -0.35f, 0.0f});
-   scaleModel(m_entity4, Vec3{0.5f, 0.5f, 0.5f});
+   // positionModel(entity2, Vec3{-0.2f, 0.45f, 0.0f});
+   // scaleModel(entity2, Vec3{0.5f, 0.5f, 0.5f});
+   //
+   // // EntityRef entity3 = addModel("Model",
+   // //                            "Assets/Shader/Triangle.vert.glsl",
+   // //                            "Assets/Shader/Triangle.frag.glsl",
+   // //                             verticies,
+   // //                             uniformList
+   // //                           );
+   // //
+   // // positionModel(entity3, Vec3{0.1f, 0.35f, 0.0f});
+   // // scaleModel(entity3, Vec3{0.5f, 0.5f, 0.5f});
+   //
+   // m_entity3 = addModel("Model",
+   //                            "Assets/Shader/Triangle.vert.glsl",
+   //                            "Assets/Shader/Triangle.frag.glsl",
+   //                             verticies,
+   //                             uniformList
+   //                           );
+   //
+   // positionModel(m_entity3, Vec3{0.1f, 0.5f, 0.0f});
+   // scaleModel(m_entity3, Vec3{0.5f, 0.5f, 0.5f});
+   //
+   // m_entity4 = addModel("Model",
+   //                            "Assets/Shader/Triangle.vert.glsl",
+   //                            "Assets/Shader/Triangle.frag.glsl",
+   //                             verticies,
+   //                             uniformList
+   //                           );
+   //
+   // positionModel(m_entity4, Vec3{-0.2f, -0.35f, 0.0f});
+   // scaleModel(m_entity4, Vec3{0.5f, 0.5f, 0.5f});
 
    // removeModel(Model);
    // removeModel("Model", 0);
@@ -136,9 +143,11 @@ bool DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
     switch(e.keyCode())
      {
         case ELLIPSE_KEY_a:
+        positionCameraLeft(0.5f);
         m_offset -= 0.05f;
          break;
         case ELLIPSE_KEY_d:
+        positionCameraRight(0.5f);
         m_offset += 0.05f;
          break;
         default:
@@ -150,9 +159,9 @@ bool DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
 
 bool DemoLayer::onMousePressed(MousePressedEvent& e)
 {
-  // std::cout << e.logMousePosition() << "\n";
-    std::cout << m_name <<  " detected mouse press!\n";
-    std::cout << m_name <<  " Pos: : " << e.mousePosY() << "\n";
+   // std::cout << e.logMousePosition() << "\n";
+   std::cout << m_name <<  " detected mouse press!\n";
+   std::cout << m_name <<  " Pos: : " << e.mousePosY() << "\n";
 
    return m_throughLayer ? false : true;
 }

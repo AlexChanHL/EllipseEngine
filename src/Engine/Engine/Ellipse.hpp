@@ -10,6 +10,7 @@
 #include "Core/Window.hpp"
 
 #include "Renderer/Renderer.hpp"
+#include "Renderer/VerticiesData.hpp"
 
 #include "Math/Matrix.hpp"
 

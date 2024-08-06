@@ -27,9 +27,10 @@ void Application::init(const ApplicationSpecifications& specs)
   auto renderPlugin = RenderPlugin::createRenderPlugin(specs.m_graphicSpec);
    
   m_renderer = Renderer::createRenderer(std::move(renderPlugin));
+  Pair<int, int> winSize = m_window->getWindowSize();
+  m_renderer->setWindowFrameSize(winSize);
 
   m_engine->addSystem(m_renderer);
-
 
   m_engine->addModule(RenderModule::createRenderModule(*m_engine));
 
@@ -93,6 +94,7 @@ bool Application::onWindowClose(WindowUserQuitEvent& windowQuit)
 bool Application::onWindowResize(WindowResizeEvent& resizeEvent)
 {
     m_renderer->setViewport(resizeEvent.width(), resizeEvent.height());
+    m_renderer->setWindowFrameSize(Pair<i32_t, i32_t>{resizeEvent.width(), resizeEvent.height()});
 
     return true;
 }

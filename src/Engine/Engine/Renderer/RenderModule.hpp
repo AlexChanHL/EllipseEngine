@@ -151,6 +151,22 @@ void scaleModel(Model& model);
 void rotateModel(Model& model);
 void translateModel(Model& model);
 
+class Camera
+{
+   public:
+     Camera()
+     {
+     m_camPos = Vec3{0.0f, 0.0f, 3.0f};
+     m_camFront = Vec3{0.0f, 0.0f, -3.0f};
+     m_camUp = Vec3{0.0f, 1.0f, 0.0f};
+     }
+
+   public:
+     Vec3 m_camPos;
+     Vec3 m_camFront;
+     Vec3 m_camUp;
+};
+
 class RenderModule : public IModule
 {
    public:
@@ -160,11 +176,16 @@ class RenderModule : public IModule
     virtual Model createModel(const char* modelName,
                               String vShader,
                               String fShader,
-                              Vector<float> verts,
+                              VerticiesData verts,
                               UniformList uniforms,
                               uLong_t size
-                                            ) = 0;
+                             ) = 0;
+
+    virtual Model create2DShape(const char* name, uLong_t size) = 0;
     virtual void renderModel(const Model& model) = 0;
+    virtual void setCameraRight(float amount) = 0;
+    virtual void setCameraLeft(float amount) = 0;
+    virtual void updateCamera() = 0;
     virtual void translateModel(Model& model, Vec3 pos) = 0;
 
     virtual void setClearColor(Vec4 col) = 0;

@@ -15,9 +15,9 @@ struct OpenGLRenderObj : public RenderObj
 {
    public:
     void initBuffers(Vector<float> verts);
-    void setVerts(u32_t verts)
+    void setVerts(u32_t vertsData)
     {
-    m_nVerts = verts;
+    m_nVerts = vertsData;
     }
 
    public:

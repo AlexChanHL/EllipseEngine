@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Event/Event.hpp"
 
+#include "Core/Base.hpp"
 #include "EllipsePCH.hpp"
+#include "Event/Event.hpp"
 
 enum class WindowLibrary
 {
@@ -28,9 +29,10 @@ class Window
      
     virtual void updateWindow() = 0;
     virtual void setEventCallBack(const eventCallBackfn& event) = 0;
+    virtual Pair<int, int> getWindowSize() = 0;
     virtual void* getWindow() = 0;
 
-  virtual ~Window() = default;
+    virtual ~Window() = default;
 
    private:
 };

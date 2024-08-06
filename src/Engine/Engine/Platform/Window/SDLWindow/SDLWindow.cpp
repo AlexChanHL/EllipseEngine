@@ -34,6 +34,9 @@ SDLWindow::SDLWindow(const WindowSettings& settings)
                                     |   SDL_WINDOW_OPENGL 
                                         );
 
+   m_windowData.m_width = settings.m_width;
+   m_windowData.m_height = settings.m_height;
+
   // SDL_PropertiesID properties = SDL_GetWindowProperties(m_window);
   // SDL_SetProperty(properties, SDL_PROP_WINDOW_CREATE_COCOA_WINDOW_POINTER, &m_windowData);
 

@@ -34,11 +34,11 @@ void OpenGLRenderPlugin::setViewport(int width, int height)
      glViewport(0, 0, width, height);
 }
 
-SharedPtr<RenderObj> OpenGLRenderPlugin::createRenderObj(Vector<float> verts)
+SharedPtr<RenderObj> OpenGLRenderPlugin::createRenderObj(VerticiesData verts)
 {
     auto rObj = createUnique<OpenGLRenderObj>();
-    rObj->setVerts(static_cast<uint32_t>(verts.size()) / 3);
-    rObj->initBuffers(verts);
+    rObj->setVerts(verts.numVerts());
+    rObj->initBuffers(verts.verticies());
     return rObj;
 }
 
