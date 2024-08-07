@@ -19,10 +19,7 @@ void Application::init(const ApplicationSpecifications& specs)
   m_window = Window::createWindow(specs.m_windowSettings);
   m_window->setEventCallBack(BIND_EVENT_FN(Application::onEvent));
 
-   // Change the name of this
-   // Use forward-list
-   // SharedPtr<Layer> layer = specs.m_userFunc();
-  
+
   // [ Create a render plugin with init data in the renderer hpp file ]
   auto renderPlugin = RenderPlugin::createRenderPlugin(specs.m_graphicSpec);
    

@@ -40,6 +40,55 @@ struct Model
      m_sObj->addUniform(UniformVarible<Mat4>{"model", &m_model});
      }
 
+     Model(const char* name,
+           Mat4 model,
+           Vec3 scalarAmount,
+           RotationAmount rotationAmount,
+           Vec3 translationAmount,
+           SharedPtr<RenderObj> rObj,
+           SharedPtr<RenderShaderObj> sObj,
+           EntityRef entityRef,
+           bool hidden,
+           bool toBeRemoved)
+     : m_name{name},
+       m_model{model},
+       m_scalarAmount{scalarAmount},
+       m_rotationAmount{rotationAmount},
+       m_translationAmount{translationAmount},
+       m_rObj{std::move(rObj)},
+       m_sObj{std::move(sObj)},
+       m_entityRef{entityRef},
+       m_isHidden{hidden},
+       m_toBeRemoved{toBeRemoved}
+     {
+
+     }
+
+     Model(const Model& rhs)
+     : m_name{rhs.name()},
+       m_scalarAmount{rhs.scalarAmount()},
+       m_rotationAmount{rhs.rotationAmount()},
+       m_translationAmount{rhs.translationAmount()},
+       m_rObj{rhs.renderObjSharedPtr()},
+       m_sObj{rhs.shaderObjSharedPtr()},
+       m_entityRef{rhs.entityRef()},
+       m_isHidden{rhs.isHidden()},
+       m_toBeRemoved{rhs.isTobeRemoved()}
+     // [ Uniform varible class shouldn't allow creation of uniforms
+     //   with same name ]
+     {
+     std::cout << "Copy\n";
+     m_model = rhs.modelMat();
+     m_sObj->setUniformPtr(UniformVarible<Mat4>{"model", &m_model});
+     }
+
+     Model operator=(const Model& rhs)
+     {
+     m_model = rhs.modelMat();
+     m_sObj->setUniformPtr(UniformVarible<Mat4>{"model", &m_model});
+     return *this;
+     }
+
      const char* name() const
      {
      return m_name.c_str();
@@ -59,21 +108,22 @@ struct Model
      m_translationAmount = translationAmount;
      }
 
-     Vec3 scalarAmount()
+     Vec3 scalarAmount() const
      {
      return m_scalarAmount;
      }
-     RotationAmount rotationAmount()
+     RotationAmount rotationAmount() const
      {
      return m_rotationAmount;
      }
-     Vec3 translationAmount()
+     Vec3 translationAmount() const
      {
      return m_translationAmount;
      }
 
      Mat4* getPtrUniformPtr(const char* name)
      {
+     // m_sObj->getUniforms().printUniformList();
      return m_sObj->getUniforms().getMat4UniformFromListByName(name).uniformPtr(0);
      }
 
@@ -90,7 +140,6 @@ struct Model
      // to redirect the pointer of the uniform varible
      // to the new stack memory of the vector
 
-     //
      Mat4* matPtr()
      {
      return &m_model;
@@ -110,17 +159,32 @@ struct Model
      return *m_sObj;
      }
 
+     SharedPtr<RenderObj> renderObjSharedPtr() const
+     {
+     return m_rObj;
+     }
+
+     SharedPtr<RenderShaderObj> shaderObjSharedPtr() const
+     {
+     return m_sObj;
+     }
+
      void resetModelMat()
      {
      m_model = Mat4{1.0f};
      }
 
-     bool isTobeRemoved()
+     EntityRef entityRef()
+     {
+     return m_entityRef;
+     }
+
+     bool isTobeRemoved() const
      {
      return m_toBeRemoved;
      }
 
-     bool isHidden()
+     bool isHidden() const
      {
      return m_isHidden;
      }

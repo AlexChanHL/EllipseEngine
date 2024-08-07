@@ -50,9 +50,9 @@ SDLWindow::SDLWindow(const WindowSettings& settings)
   SDL_GL_SetSwapInterval(1);
 
   if(!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
-     {
-        std::cout << "Could not load function pointers!\n";
-     }
+   {
+  ELPSE_ENGINE_LOG_ERROR("Could not load function pointers!");
+   }
 }
 
 void SDLWindow::updateWindow()
@@ -73,5 +73,5 @@ void SDLWindow::pollEvents()
 SDLWindow::~SDLWindow()
 {
    SDL_Quit();
-   // Delete the GL context
+   // [ Delete the GL context ]
 }

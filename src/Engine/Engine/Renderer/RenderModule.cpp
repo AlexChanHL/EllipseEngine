@@ -32,10 +32,10 @@ void translateModel(Model& model)
 
    Mat4* modelPtr =  model.getPtrUniformPtr("model");
    *modelPtr = modelTranslated;
-
-   // Math::printMat(model.modelMat());
-   // exit(1);
+   // Math::printMat(*modelPtr);
 }
+
+// [ Projection matrix is creating strange shapes ]
 
 class RenderModuleImpl final : public RenderModule
 {
@@ -76,11 +76,6 @@ RenderModuleImpl::RenderModuleImpl(Engine& engine)
    setName("RenderModule");
 
    m_view = Mat4(1.0f);
-
-   // m_view = EllipseMath::lookAt(Vec3{0.0f, 0.0f, 3.0f},
-   //                              Vec3{0.0f, 0.0f, 0.0f},
-   //                              Vec3{0.0f, 1.0f, 0.0f}
-   //                              );
 
    m_view = EllipseMath::lookAt(m_camera.m_camPos,
                                 m_camera.m_camPos + m_camera.m_camFront,
@@ -154,11 +149,11 @@ void RenderModuleImpl::renderModel(const Model& model)
 
 void RenderModuleImpl::setCameraRight(float amount)
 {
-   m_camera.m_camPos += EllipseMath::normalize(EllipseMath::cross(m_camera.m_camUp, m_camera.m_camFront)) * amount;
+   m_camera.m_camPos -= EllipseMath::normalize(EllipseMath::cross(m_camera.m_camUp, m_camera.m_camFront)) * amount;
 }
 void RenderModuleImpl::setCameraLeft(float amount)
 {
-   m_camera.m_camPos -= EllipseMath::normalize(EllipseMath::cross(m_camera.m_camUp, m_camera.m_camFront)) * amount;
+   m_camera.m_camPos += EllipseMath::normalize(EllipseMath::cross(m_camera.m_camUp, m_camera.m_camFront)) * amount;
 }
 
 void RenderModuleImpl::updateCamera()
@@ -202,6 +197,10 @@ void RenderModuleImpl::setClearColor(Vec4 col)
 
 SharedPtr<IModule> RenderModule::createRenderModule(Engine& engine)
 {
+   // if(engine.initData == 2DModule)
+   //  {
+   // return createShared<RenderMdodule2D>(engine);
+   //  }
    return createShared<RenderModuleImpl>(engine); 
 }
 

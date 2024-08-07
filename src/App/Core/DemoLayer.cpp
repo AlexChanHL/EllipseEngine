@@ -39,8 +39,9 @@ void DemoLayer::init()
    
    rotateModel(entityRef, Radians{45.0f}, Vec3{0.0f, 0.0f, 1.0f});
    positionModel(entityRef, Vec3{1.0f, 0.25f, 0.0f});
+   positionModel(entityRef, Vec3{3.0f, 0.25f, 0.0f});
    scaleModel(entityRef, Vec3{0.5f, 0.5f, 0.5f});
-
+   
    // [ Have a model manager do all this work ]
 
    addQuad(Vec3{-0.25f, 0.4f, 0.0f});

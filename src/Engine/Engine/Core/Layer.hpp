@@ -18,7 +18,6 @@ class ILayer
     virtual void init() = 0;
     virtual void onEvent(Event& event) = 0;
     virtual void onUpdate(float dt) = 0;
-    // virtual void onUpdate(float dt) = 0;
 
     virtual bool isHidden() = 0;
     virtual void hideLayer() = 0;
@@ -42,6 +41,7 @@ class Layer : public ILayer
     virtual void init() override {}
     // virtual void init() override 
     // {
+    //   // [ RenderModule should do this ]
     //   setClearColor(m_engine.getDefaultValue("clear color"));
     //   initUserLayer();
     // }
@@ -68,16 +68,16 @@ class Layer : public ILayer
     m_modelsToBeRendered.push_back(model);
 
     // Redirect pointer to the value in vector
-    // Mat4* modelMat = &m_modelsToBeRendered[size].modelMat();
-    // std::cout << "Create " << model.name() << '\n';
-    // m_modelsToBeRendered[size].shaderObj().setUniformPtr(UniformVarible<Mat4>{"model", modelMat});
 
-    for(uLong_t i = 0; i < m_modelsToBeRendered.size(); i++)
-    {
-    Mat4* modelMat = &m_modelsToBeRendered[i].modelMat();
-    m_modelsToBeRendered[i].shaderObj().setUniformPtr(UniformVarible<Mat4>{"model", modelMat});
-    }
+    // m_modelsToBeRendered[size].shaderObj().getUniforms().printUniformList();
+      
+    // for(uLong_t i = 0; i < m_modelsToBeRendered.size(); i++)
+    // {
+    // Mat4* modelMat = &m_modelsToBeRendered[i].modelMat();
+    // m_modelsToBeRendered[i].shaderObj().setUniformPtr(UniformVarible<Mat4>{"model", modelMat});
+    // }
 
+      
     return size;
     }
 
@@ -87,12 +87,6 @@ class Layer : public ILayer
     Model model = m_renderModule.create2DShape("Quad", size);
     m_modelsToBeRendered.push_back(model);
        
-    for(uLong_t i = 0; i < m_modelsToBeRendered.size(); i++)
-    {
-    Mat4* modelMat = &m_modelsToBeRendered[i].modelMat();
-    m_modelsToBeRendered[i].shaderObj().setUniformPtr(UniformVarible<Mat4>{"model", modelMat});
-    }
-
     positionModel(size, pos);
 
     return size;
@@ -116,17 +110,28 @@ class Layer : public ILayer
 
     Model* findModelFromEntity(EntityRef entity)
     {
-    auto model = std::find_if(m_modelsToBeRendered.begin(),
-                              m_modelsToBeRendered.end(),
-     [&](Model model){ return model.entityRef() == entity; }
-                             );
+    // auto model = std::find_if(m_modelsToBeRendered.begin(),
+    //                           m_modelsToBeRendered.end(),
+    //  [&](Model model){ return model.entityRef() == entity; }
+    //                          );
 
-    if(model == m_modelsToBeRendered.end())
+    auto itVal = m_modelsToBeRendered.begin(); 
+    for(auto it = m_modelsToBeRendered.begin(); it != m_modelsToBeRendered.end(); it++)
+    {
+    if(it->entityRef() == entity)
+    {
+    itVal = it;
+    }
+    }
+
+    if(itVal == m_modelsToBeRendered.end())
     {
     ELPSE_ENGINE_LOG_WARN("Couldn't find model");
     }
 
-    return &(*model);
+    // model->shaderObj().getUniforms().printUniformList();
+
+    return &(*itVal);
     }
 
     // [ Use a entity manager for model creation ]
@@ -142,6 +147,8 @@ class Layer : public ILayer
     ::Ellipse::rotateModel(model);
     ::Ellipse::scaleModel(model);
     }
+
+    // exit(1);
 
     }
 
