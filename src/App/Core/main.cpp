@@ -2,7 +2,8 @@
 
 int main()
 {
-    Ellipse::Log::init();
+    // [ Maybe a better way of initalizing values ]
+    Ellipse::ApplicationStackValue::createStackValues();
 
     auto specs = Ellipse::createAppSpecs();
   

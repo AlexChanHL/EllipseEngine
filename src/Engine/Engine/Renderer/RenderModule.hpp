@@ -77,7 +77,7 @@ struct Model
      // [ Uniform varible class shouldn't allow creation of uniforms
      //   with same name ]
      {
-     std::cout << "Copy\n";
+     // std::cout << "Copy\n";
      m_model = rhs.modelMat();
      m_sObj->setUniformPtr(UniformVarible<Mat4>{"model", &m_model});
      }

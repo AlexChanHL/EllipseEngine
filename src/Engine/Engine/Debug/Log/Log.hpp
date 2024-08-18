@@ -23,6 +23,8 @@ std::ostream& operator<<(std::ostream& os, glm::mat<4, 4, float>& mat4);
 
 }    //Ellipse
 
+// [ Change the name to ELLIPSE_ENGINE_LOG_ERROR ]
+
   #ifndef DEACTIVE_LOGGING
 
  #if DEBUG

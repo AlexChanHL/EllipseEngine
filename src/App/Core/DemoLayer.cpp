@@ -30,33 +30,68 @@ void DemoLayer::init()
    Ellipse::UniformList uniformList;
    uniformList.addUniform(Ellipse::UniformVarible<float>{"offset", &m_offset});
    
-   EntityRef entityRef = addModel("Model",
+   // EntityRef entityRef = addModel("Model",
+   //                               "Assets/Shader/Triangle.vert.glsl",
+   //                               "Assets/Shader/Triangle.frag.glsl",
+   //                               verticiesData,
+   //                               uniformList
+   //                               );
+   // 
+   // rotateModel(entityRef, Radians{45.0f}, Vec3{0.0f, 0.0f, 1.0f});
+   // positionModel(entityRef, Vec3{1.0f, 0.25f, 0.0f});
+   // scaleModel(entityRef, Vec3{0.5f, 0.5f, 0.5f});
+   
+   // [ Have a model manager do all this work ]
+
+   for(u32_t i = 0; i < 10; i++)
+   {
+   m_entities.push_back(addQuad(Vec3{-0.25f, 0.4f, 0.0f}));
+   }
+
+   positionModel(m_entities[0], Vec3{-1.0f, 0.5f, 0.0f});
+   positionModel(m_entities[1], Vec3{-0.75f, -0.75f, 0.0f});
+   positionModel(m_entities[2], Vec3{-0.5f, 0.5f, 0.0f});
+   positionModel(m_entities[3], Vec3{-0.25f, -0.75f, 0.0f});
+   positionModel(m_entities[4], Vec3{0.0f, -0.4f, 0.0f});
+   positionModel(m_entities[5], Vec3{0.25f, -0.4f, 0.0f});
+   positionModel(m_entities[6], Vec3{0.5f, -0.4f, 0.0f});
+   positionModel(m_entities[7], Vec3{0.75f, -0.4f, 0.0f});
+   positionModel(m_entities[8], Vec3{1.0f, -0.4f, 0.0f});
+   positionModel(m_entities[9], Vec3{0.9f, -0.4f, 0.0f});
+
+   m_entities.push_back(addModel("Model",
                                  "Assets/Shader/Triangle.vert.glsl",
                                  "Assets/Shader/Triangle.frag.glsl",
                                  verticiesData,
                                  uniformList
-                                 );
-   
-   rotateModel(entityRef, Radians{45.0f}, Vec3{0.0f, 0.0f, 1.0f});
-   positionModel(entityRef, Vec3{1.0f, 0.25f, 0.0f});
-   positionModel(entityRef, Vec3{3.0f, 0.25f, 0.0f});
-   scaleModel(entityRef, Vec3{0.5f, 0.5f, 0.5f});
-   
-   // [ Have a model manager do all this work ]
+                                 ));
 
-   addQuad(Vec3{-0.25f, 0.4f, 0.0f});
+   for(auto entity : m_entities)
+   {
+   scaleModel(entity, Vec3{0.5f, 0.5f, 0.5f});
+   }
+
+   std::cout << m_entities.size() << '\n';
+
+   // float pos = 0;
+   // for(float i=0; i<10;i++)
+   // {
+   // EntityRef ref = addQuad(Vec3{pos, 0.0f, 0.0f});
+   // rotateModel(ref, Radians{45.0f}, Vec3{0.0f, 0.0f, 1.0f});
+   // pos += 0.1f;
+   // }
 
    // positionCamera(Vec3{0.0f, 0.0f, 3.0f});
 
-   // EntityRef entity1 = addModel("Model2",
+   // m_entity3 = addModel("Model2",
    //                            "Assets/Shader/Triangle.vert.glsl",
    //                            "Assets/Shader/Triangle.frag.glsl",
    //                             verticiesData,
    //                             uniformList
    //                           );
-   //
-   // positionModel(entity1, Vec3{0.5f, 0.5f, 0.0f});
-   // scaleModel(entity1, Vec3{0.5f, 0.5f, 0.5f});
+
+   // positionModel(m_entity3, Vec3{0.5f, -0.5f, 0.0f});
+   // scaleModel(m_entity3, Vec3{0.5f, 0.5f, 0.5f});
 
    // EntityRef entity2 = addModel("Model",
    //                            "Assets/Shader/Triangle.vert.glsl",
@@ -126,7 +161,20 @@ void DemoLayer::onEvent(Event& e)
 
 void DemoLayer::onUpdateUserLayer(float dt)
 {
-    // std::cout << "Updated: " << m_name << "\n";
+    // [ Have an specific engine timer so that we can account
+    //   for moments when pausing ]
+    if(m_timeModule.setTimer(m_timer1, 1))
+    {
+    // Logger cannot use info
+    ELPSE_APP_LOG_WARN("One second has passed");
+    }
+    for(auto entity : m_entities)
+    {
+    rotateModel(entity, float(m_timeModule.secAndNSec()), Vec3{0.0f, 0.0f, 1.0f});
+    }
+
+
+    // std::cout << "Updated: " << m_name << '\n';
   
     // m_player->onUpdate(dt);
 
@@ -144,12 +192,16 @@ bool DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
     switch(e.keyCode())
      {
         case ELLIPSE_KEY_a:
-        positionCameraLeft(0.5f);
-        m_offset -= 0.05f;
+        positionCameraLeft(0.25f);
          break;
         case ELLIPSE_KEY_d:
-        positionCameraRight(0.5f);
-        m_offset += 0.05f;
+        positionCameraRight(0.25f);
+         break;
+        case ELLIPSE_KEY_p:
+        m_timeModule.pause();
+         break;
+        case ELLIPSE_KEY_o:
+        m_timeModule.unPause();
          break;
         default:
          break;

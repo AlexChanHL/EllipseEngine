@@ -1,5 +1,8 @@
 #pragma once
 
+
+typedef int64_t i64_t;
+typedef uint64_t u64_t;
 typedef int32_t i32_t;
 typedef uint32_t u32_t;
 typedef int16_t i16_t;

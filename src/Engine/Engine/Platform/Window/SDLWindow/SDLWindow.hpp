@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Window.hpp"
+#include "Core/GraphicsContext.hpp"
 #include "Event/WindowEvent.hpp"
 #include "Event/KeyboardEvent.hpp"
 #include "Event/MouseEvent.hpp"
@@ -41,7 +42,7 @@ class SDLWindow : public Window
     SDL_Window* m_window;
     WindowData m_windowData;
 
-    SDL_GLContext m_glContext = nullptr;
+    UniquePtr<GraphicsContext> m_graphicsContext = nullptr;
 
   private:
    static int eventCallBackFn(void* userData, SDL_Event* e)

@@ -2,21 +2,26 @@
 
 
 #include "Core/Base.hpp"
+#include "Core/GraphicsContext.hpp"
 #include "EllipsePCH.hpp"
 #include "Event/Event.hpp"
 
 enum class WindowLibrary
 {
-    None, SDLWindow, GLFWWindow
+    None,
+    SDLWindow,
+    GLFWWindow
 };
 
 struct WindowSettings
 {
-   int m_width;
-   int m_height;
+  public:
+   i32_t m_width;
+   i32_t m_height;
    std::string m_title;
 
    WindowLibrary m_lib;
+   GraphicsLib m_gLib;
 };
 
 class Window

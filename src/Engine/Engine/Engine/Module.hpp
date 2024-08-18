@@ -9,8 +9,14 @@ class IModule
     virtual ~IModule() = default;
 
     // [ Set name: use a name that engine can identify ]
-    virtual String name() = 0;
-    virtual void setName(const char* name) = 0;
+    virtual String name() 
+    {
+    return m_name;
+    }
+    virtual void setName(const char* name)
+    {
+    m_name = name;
+    }
 
    protected:
     String m_name;

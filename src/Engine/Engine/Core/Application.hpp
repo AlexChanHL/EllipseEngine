@@ -1,18 +1,29 @@
 #pragma once
 
 #include "Window.hpp"
+#include "OSTime.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Renderer/RenderModule.hpp"
 #include "Engine/Engine.hpp"
 #include "Event/Event.hpp"
 #include "Event/WindowEvent.hpp"
-// #include "Layer.hpp"
 #include "LayerStack.hpp"
 #include "Base.hpp"
 #include "EllipsePCH.hpp"
 
 namespace Ellipse
 {
+
+class ApplicationStackValue
+{
+  public:
+   static void createStackValues()
+   {
+   Ellipse::Log::init();
+   Ellipse::OSTime::init();
+   }
+  private:
+};
 
 class ApplicationCMDLineArgs
 {

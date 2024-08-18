@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TimeModule.hpp"
 #include "Event/Event.hpp"
 #include "Renderer/RenderModule.hpp"
 #include "Math/Matrix.hpp"
@@ -31,7 +32,8 @@ class Layer : public ILayer
 {
   public:
     Layer(Engine& engine)
-    : m_renderModule{static_cast<RenderModule&>(engine.getModule("RenderModule"))}
+    : m_timeModule{static_cast<TimeModule&>(engine.getModule("TimeModule"))},
+      m_renderModule{static_cast<RenderModule&>(engine.getModule("RenderModule"))}
     {
 
     }
@@ -196,6 +198,7 @@ class Layer : public ILayer
     Vector<Model> m_modelsToBeRendered;
     // [ Don't have Rendermodule in layer so user can use layers in 
     //   seperate scenerios ]
+    TimeModule& m_timeModule;
     RenderModule& m_renderModule;
 
     bool m_hidden = false;

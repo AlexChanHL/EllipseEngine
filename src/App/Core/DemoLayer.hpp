@@ -21,6 +21,6 @@ class DemoLayer : public Ellipse::Layer
 
    private:
      float m_offset;
-     EntityRef m_entity3;
-     EntityRef m_entity4;
+     Ellipse::Timer m_timer1;
+     Vector<EntityRef> m_entities;
 };

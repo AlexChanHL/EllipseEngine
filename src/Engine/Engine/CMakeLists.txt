@@ -30,6 +30,10 @@ file(GLOB_RECURSE EVENTS
     Event/*.hpp
       )
 
+file(GLOB_RECURSE PLATFORM_GRAPHICS_CONTEXT
+    Platform/GraphicsContext/*.cpp
+    Platform/GraphicsContext/*.hpp
+    )
 
 file(GLOB_RECURSE PLATFORM_WINDOW
     Platform/Window/SDLWindow/*.cpp
@@ -49,7 +53,7 @@ file(GLOB_RECURSE LOG
       )
 
 add_library(${NAME} STATIC
-           ${CURRENT_DIR} ${CORE} ${ENGINE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_WINDOW} ${PLATFORM_RENDER} ${MATH}
+           ${CURRENT_DIR} ${CORE} ${ENGINE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_GRAPHICS_CONTEXT} ${PLATFORM_WINDOW} ${PLATFORM_RENDER} ${MATH}
              )
 
 add_custom_target(CopyAssets ALL

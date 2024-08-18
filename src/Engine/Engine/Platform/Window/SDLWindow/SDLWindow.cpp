@@ -1,6 +1,7 @@
 
 #include "SDLWindow.hpp"
 #include "Core/Base.hpp"
+#include "Platform/GraphicsContext/SDLGraphicsContext.hpp"
 #include "Debug/Log/Log.hpp"
 
 // [ Add graphics context abstraction ]
@@ -44,15 +45,12 @@ SDLWindow::SDLWindow(const WindowSettings& settings)
 
   // [ Add graphics context abstraction ]
 
-  m_glContext = SDL_GL_CreateContext(m_window);
+  m_graphicsContext = createSDLGraphicsContext(m_window, settings.m_gLib);
+  
 
-  SDL_GL_MakeCurrent(m_window, m_glContext);
-  SDL_GL_SetSwapInterval(1);
+  makeSDLCurrentContext(m_window, m_graphicsContext.get());
+  setSDLSwapInterval(m_graphicsContext.get(), 1);
 
-  if(!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
-   {
-  ELPSE_ENGINE_LOG_ERROR("Could not load function pointers!");
-   }
 }
 
 void SDLWindow::updateWindow()

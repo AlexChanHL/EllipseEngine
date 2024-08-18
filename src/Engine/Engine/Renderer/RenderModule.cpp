@@ -35,8 +35,6 @@ void translateModel(Model& model)
    // Math::printMat(*modelPtr);
 }
 
-// [ Projection matrix is creating strange shapes ]
-
 class RenderModuleImpl final : public RenderModule
 {
     public:
@@ -70,6 +68,8 @@ class RenderModuleImpl final : public RenderModule
      Mat4 m_proj;
 };
 
+// [ Resizing window makes smaller shapes ]
+
 RenderModuleImpl::RenderModuleImpl(Engine& engine)
 : m_renderer{static_cast<Renderer&>(engine.getSystem("Renderer"))}
 {
@@ -91,8 +91,11 @@ RenderModuleImpl::RenderModuleImpl(Engine& engine)
    float aspectRatio = float(winWidth) / float(winHeight);
 
 
-   m_proj = EllipseMath::ortho(-aspectRatio,
-                                aspectRatio,
+   // m_proj = EllipseMath::ortho(-aspectRatio,
+   //                              aspectRatio,
+   // [ Maybe should set to aspect ratio ]
+   m_proj = EllipseMath::ortho(-1.0f,
+                                1.0f,
                                -1.0f,
                                 1.0f,
                                 0.1f,
@@ -159,7 +162,7 @@ void RenderModuleImpl::setCameraLeft(float amount)
 void RenderModuleImpl::updateCamera()
 {
    m_view = EllipseMath::lookAt(m_camera.m_camPos,
-                                m_camera.m_camFront,
+                                m_camera.m_camPos + m_camera.m_camFront,
                                 m_camera.m_camUp
                                 );
 
@@ -168,8 +171,8 @@ void RenderModuleImpl::updateCamera()
 
    float aspectRatio = float(winWidth) / float(winHeight);
 
-   m_proj = EllipseMath::ortho(-aspectRatio,
-                                aspectRatio,
+   m_proj = EllipseMath::ortho(-1.0f,
+                                1.0f,
                                -1.0f,
                                 1.0f,
                                 0.1f,

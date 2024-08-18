@@ -30,6 +30,8 @@ Ellipse::ApplicationSpecifications Ellipse::createAppSpecs()
   Ellipse::ApplicationSpecifications specs;
 
    specs.m_windowSettings.m_lib = WindowLibrary::SDLWindow;
+   // [ Specifying opengl twice ]
+   specs.m_windowSettings.m_gLib = GraphicsLib::OpenGL;
    specs.m_graphicSpec = GraphicsSpec::OpenGL;
    specs.m_userFunc = pushUserLayers;
 

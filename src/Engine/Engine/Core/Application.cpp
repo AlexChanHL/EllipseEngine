@@ -1,5 +1,6 @@
 
 #include "Application.hpp"
+#include "TimeModule.hpp"
 #include "Debug/Log/Log.hpp"
 
 namespace Ellipse
@@ -9,7 +10,7 @@ Application* Application::sInStance = nullptr;
 
 Application::Application()
 {
-    sInStance = this;
+  sInStance = this;
 }
 
 void Application::init(const ApplicationSpecifications& specs)
@@ -29,19 +30,23 @@ void Application::init(const ApplicationSpecifications& specs)
 
   m_engine->addSystem(m_renderer);
 
+  // [ Maybe shouldn't make it a time module ]
+  // [ User might not need some modules, add 
+  //   configurbility ]
+  m_engine->addModule(TimeModule::createTimeModule());
   m_engine->addModule(RenderModule::createRenderModule(*m_engine));
 
   ForwardList<SharedPtr<Layer>> layers = specs.m_userFunc();
 
-   for(auto i = layers.begin(); i != layers.end(); i++)
-    {
-   pushLayer(*i);
-    }
+  for(auto i = layers.begin(); i != layers.end(); i++)
+  {
+  pushLayer(*i);
+  }
 
-   for(auto i = layers.begin(); i != layers.end(); i++)
-     {
-    (*i)->init();
-     }
+  for(auto i = layers.begin(); i != layers.end(); i++)
+  {
+  (*i)->init();
+  }
 }
 
 Application::~Application()
@@ -50,12 +55,12 @@ Application::~Application()
 }
 void Application::pushLayer(SharedPtr<Layer> layer)
 {
-     pushLayerToStack(m_layerStack, layer);
+    pushLayerToStack(m_layerStack, layer);
 }
 
 void Application::onEvent(Event& e)
 {
-   EventDispatcher dispatcher(e);
+    EventDispatcher dispatcher(e);
     dispatcher.dispatchEvent<WindowUserQuitEvent>(
     WINDOW_USER_QUIT_EVENT,
     BIND_EVENT_FN(onWindowClose)

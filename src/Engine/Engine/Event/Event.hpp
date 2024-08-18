@@ -2,6 +2,8 @@
 
 #include "Core/Base.hpp"
 
+
+// [ This is wrong, using hexadecimal digits ]
 enum class EventType : u8_t
 {
    None                           = 0x0000u,
