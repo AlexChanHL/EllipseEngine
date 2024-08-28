@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EllipsePCH.hpp"
+#include "Core/Base.hpp"
 
 namespace Ellipse
 {
@@ -66,12 +66,14 @@ class OSTime
       return ts.tv_nsec;
       }
 
+      // [ Time may be returning a wrong time due to time taken until app time ]
       static double secAndNSec()
       {
-      // std::timespec ts;
-      // std::timespec_get(&ts, TIME_UTC);
+      std::timespec ts;
+      std::timespec_get(&ts, TIME_UTC);
+      i64_t sec = ts.tv_sec - m_startTime;
       
-      return double(sec()) + (double(nsec()) / pow(10, 9));
+      return double(sec) + (double(ts.tv_nsec) / pow(10, 9));
       }
 
     public:

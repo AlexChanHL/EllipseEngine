@@ -63,6 +63,7 @@ class RenderModuleImpl final : public RenderModule
     
      // Vector<ViewSpace> m_viewSpaces;
     
+     // Vector<Camera> m_cameras;
      Camera m_camera;
      Mat4 m_view;
      Mat4 m_proj;
@@ -166,18 +167,19 @@ void RenderModuleImpl::updateCamera()
                                 m_camera.m_camUp
                                 );
 
-   i32_t winWidth = m_renderer.getWindowFrameSize().first;
-   i32_t winHeight = m_renderer.getWindowFrameSize().second;
-
-   float aspectRatio = float(winWidth) / float(winHeight);
-
-   m_proj = EllipseMath::ortho(-1.0f,
-                                1.0f,
-                               -1.0f,
-                                1.0f,
-                                0.1f,
-                                100.0f
-                              );
+   // [ Remove this, not using window size now ]
+   // i32_t winWidth = m_renderer.getWindowFrameSize().first;
+   // i32_t winHeight = m_renderer.getWindowFrameSize().second;
+   //
+   // float aspectRatio = float(winWidth) / float(winHeight);
+   //
+   // m_proj = EllipseMath::ortho(-1.0f,
+   //                              1.0f,
+   //                             -1.0f,
+   //                              1.0f,
+   //                              0.1f,
+   //                              100.0f
+   //                            );
 }
 
 void RenderModuleImpl::translateModel(Model& model, Vec3 pos)

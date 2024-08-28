@@ -218,6 +218,7 @@ void translateModel(Model& model);
 class Camera
 {
    public:
+     // [ Shouldn't automatically set camera positions ]
      Camera()
      {
      m_camPos = Vec3{0.0f, 0.0f, 3.0f};

@@ -153,6 +153,16 @@ class Layer : public ILayer
     // exit(1);
 
     }
+    void positionCameraUp(float amount)
+    {
+    // m_renderModule.setCameraLeft(amount);
+    }
+
+    void positionCameraDown(float amount)
+    {
+    // m_renderModule.setCameraLeft(amount);
+    }
+
 
     void positionCameraLeft(float amount)
     {

@@ -16,30 +16,30 @@ enum class EventType : u8_t
    WindowMouseEnterEvent          = 0x0007u,
    WindowMouseLeaveEvent          = 0x0008u,
    WindowFocusGainedEvent         = 0x0009u,
-   WindowFocusLostEvent           = 0x0010u,
-   WindowFullscreenEvent          = 0x0011u,
-   WindowLeaveFullscreenEvent     = 0x0012u,
-   WindowUserQuitEvent            = 0x0013u,
-   WindowDestroyedEvent           = 0x0014u,
-   KeyboardPressedEvent           = 0x0015u,
-   KeyboardReleasedEvent          = 0x0016u,
-   TextEditingEvent               = 0x0017u,
-   TextInputEvent                 = 0x0018u,
-   MouseMotionEvent               = 0x0019u,
-   MousePressedEvent              = 0x0020u,
-   MouseReleasedEvent             = 0x0021u,
-   MouseWheelEvent                = 0x0022u,
-   JoyStickAxisMotionEvent        = 0x0023u,
-   JoyStickBallMotionEvent        = 0x0024u,
-   JoyStickHatMotionEvent         = 0x0025u,
-   JoyStickButtonPressedEvent     = 0x0026u,
-   JoyStickButtonReleasedEvent    = 0x0027u,
-   GamepadAxisMotionEvent         = 0x0028u,
-   GamepadButtonPressedEvent      = 0x0029u,
-   GamepadButtonReleasedEvent     = 0x0030u,
-   GamepadTouchPadPressedEvent    = 0x0031u,
-   GamepadTouchPadReleaseedEvent  = 0x0032u,
-   GamepadTouchPadMotionEvent     = 0x0033u
+   WindowFocusLostEvent           = 0x000au,
+   WindowFullscreenEvent          = 0x000bu,
+   WindowLeaveFullscreenEvent     = 0x000cu,
+   WindowUserQuitEvent            = 0x000du,
+   WindowDestroyedEvent           = 0x000eu,
+   KeyboardPressedEvent           = 0x000fu,
+   KeyboardReleasedEvent          = 0x0010u,
+   TextEditingEvent               = 0x0011u,
+   TextInputEvent                 = 0x0012u,
+   MouseMotionEvent               = 0x0013u,
+   MousePressedEvent              = 0x0014u,
+   MouseReleasedEvent             = 0x0015u,
+   MouseWheelEvent                = 0x0016u,
+   JoyStickAxisMotionEvent        = 0x0017u,
+   JoyStickBallMotionEvent        = 0x0018u,
+   JoyStickHatMotionEvent         = 0x0019u,
+   JoyStickButtonPressedEvent     = 0x001au,
+   JoyStickButtonReleasedEvent    = 0x001bu,
+   GamepadAxisMotionEvent         = 0x001cu,
+   GamepadButtonPressedEvent      = 0x001du,
+   GamepadButtonReleasedEvent     = 0x001eu,
+   GamepadTouchPadPressedEvent    = 0x001fu,
+   GamepadTouchPadReleaseedEvent  = 0x0020u,
+   GamepadTouchPadMotionEvent     = 0x0021u
 };
 
 class Event
@@ -92,27 +92,27 @@ void dispatchEvent(EventType type,
 #define WINDOW_MOUSE_ENTER_EVENT         EventType(0x0007u)
 #define WINDOW_MOSUE_LEAVE_EVENT         EventType(0x0008u)
 #define WINDOW_FOCUS_GAINED_EVENT        EventType(0x0009u)
-#define WINDOW_FOCUS_LOST_EVENT          EventType(0x0010u)
-#define WINDOW_FULLSCREEN_EVENT          EventType(0x0011u)
-#define WINDOW_LEAVE_FULLSCREEN_EVENT    EventType(0x0012u)
-#define WINDOW_USER_QUIT_EVENT           EventType(0x0013u)
-#define WINDOW_DESTROYED_EVENT           EventType(0x0014u)
-#define KEYBOARD_PRESSED_EVENT           EventType(0x0015u)
-#define KEYBOARD_RELEASED_EVENT          EventType(0x0016u)
-#define TEXT_EDITING_EVENT               EventType(0x0017u)
-#define TEXT_INPUT_EVENT                 EventType(0x0018u)
-#define MOUSE_MOTION_EVENT               EventType(0x0019u)
-#define MOUSE_PRESSED_EVENT              EventType(0x0020u)
-#define MOUSE_RELEASED_EVENT             EventType(0x0021u)
-#define MOUSE_WHEEL_EVENT                EventType(0x0022u)
-#define JOYSTICK_AXIS_MOTION_EVENT       EventType(0x0023u)
-#define JOYSTICK_BALL_MOTION_EVENT       EventType(0x0024u)
-#define JOYSTICK_HAT_MOTION_EVENT        EventType(0x0025u)
-#define JOYSTICK_BUTTON_PRESSED_EVENT    EventType(0x0026u)
-#define JOYSTICK_BUTTON_RELEASED_EVENT   EventType(0x0027u)
-#define GAMEPAD_AXIS_MOTION_EVENT        EventType(0x0028u)
-#define GAMEPAD_BUTTON_PRESSED_EVENT     EventType(0x0029u)
-#define GAMEPAD_BUTTON_RELEASED_EVENT    EventType(0x0030u)
-#define GAMEPAD_TOCUHPAD_PRESSED_EVENT   EventType(0x0031u)
-#define GAMEPAD_TOUCHPAD_RELEASED_EVENT  EventType(0x0032u)
-#define GAMEPAD_TOUCHPAD_MOTION_EVENT    EventType(0x0033u)
+#define WINDOW_FOCUS_LOST_EVENT          EventType(0x000au)
+#define WINDOW_FULLSCREEN_EVENT          EventType(0x000bu)
+#define WINDOW_LEAVE_FULLSCREEN_EVENT    EventType(0x000cu)
+#define WINDOW_USER_QUIT_EVENT           EventType(0x000du)
+#define WINDOW_DESTROYED_EVENT           EventType(0x000eu)
+#define KEYBOARD_PRESSED_EVENT           EventType(0x000fu)
+#define KEYBOARD_RELEASED_EVENT          EventType(0x0010u)
+#define TEXT_EDITING_EVENT               EventType(0x0011u)
+#define TEXT_INPUT_EVENT                 EventType(0x0012u)
+#define MOUSE_MOTION_EVENT               EventType(0x0013u)
+#define MOUSE_PRESSED_EVENT              EventType(0x0014u)
+#define MOUSE_RELEASED_EVENT             EventType(0x0015u)
+#define MOUSE_WHEEL_EVENT                EventType(0x0016u)
+#define JOYSTICK_AXIS_MOTION_EVENT       EventType(0x0017u)
+#define JOYSTICK_BALL_MOTION_EVENT       EventType(0x0018u)
+#define JOYSTICK_HAT_MOTION_EVENT        EventType(0x0019u)
+#define JOYSTICK_BUTTON_PRESSED_EVENT    EventType(0x001au)
+#define JOYSTICK_BUTTON_RELEASED_EVENT   EventType(0x001bu)
+#define GAMEPAD_AXIS_MOTION_EVENT        EventType(0x001cu)
+#define GAMEPAD_BUTTON_PRESSED_EVENT     EventType(0x001du)
+#define GAMEPAD_BUTTON_RELEASED_EVENT    EventType(0x001eu)
+#define GAMEPAD_TOCUHPAD_PRESSED_EVENT   EventType(0x001fu)
+#define GAMEPAD_TOUCHPAD_RELEASED_EVENT  EventType(0x0020u)
+#define GAMEPAD_TOUCHPAD_MOTION_EVENT    EventType(0x0021u)

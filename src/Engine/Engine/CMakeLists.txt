@@ -23,6 +23,8 @@ file(GLOB_RECURSE RENDER
 file(GLOB_RECURSE MATH
     Math/*.cpp
     Math/*.hpp
+    Math/Random/*.cpp
+    Math/Random/*.hpp
     )
 
 file(GLOB_RECURSE EVENTS

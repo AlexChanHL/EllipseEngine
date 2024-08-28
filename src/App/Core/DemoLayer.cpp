@@ -47,17 +47,10 @@ void DemoLayer::init()
    {
    m_entities.push_back(addQuad(Vec3{-0.25f, 0.4f, 0.0f}));
    }
-
-   positionModel(m_entities[0], Vec3{-1.0f, 0.5f, 0.0f});
-   positionModel(m_entities[1], Vec3{-0.75f, -0.75f, 0.0f});
-   positionModel(m_entities[2], Vec3{-0.5f, 0.5f, 0.0f});
-   positionModel(m_entities[3], Vec3{-0.25f, -0.75f, 0.0f});
-   positionModel(m_entities[4], Vec3{0.0f, -0.4f, 0.0f});
-   positionModel(m_entities[5], Vec3{0.25f, -0.4f, 0.0f});
-   positionModel(m_entities[6], Vec3{0.5f, -0.4f, 0.0f});
-   positionModel(m_entities[7], Vec3{0.75f, -0.4f, 0.0f});
-   positionModel(m_entities[8], Vec3{1.0f, -0.4f, 0.0f});
-   positionModel(m_entities[9], Vec3{0.9f, -0.4f, 0.0f});
+   for(u32_t i = 0; i < 10; i++)
+   {
+   positionModel(m_entities[i], Vec3{EllipseMath::randRealDist(-1.0, 1.0), EllipseMath::randRealDist(-1.0, 1.0), 0.0f});
+   }
 
    m_entities.push_back(addModel("Model",
                                  "Assets/Shader/Triangle.vert.glsl",
@@ -70,8 +63,6 @@ void DemoLayer::init()
    {
    scaleModel(entity, Vec3{0.5f, 0.5f, 0.5f});
    }
-
-   std::cout << m_entities.size() << '\n';
 
    // float pos = 0;
    // for(float i=0; i<10;i++)
@@ -167,12 +158,15 @@ void DemoLayer::onUpdateUserLayer(float dt)
     {
     // Logger cannot use info
     ELPSE_APP_LOG_WARN("One second has passed");
+    for(u32_t i = 0; i < m_entities.size(); i++)
+    {
+    positionModel(m_entities[i], Vec3{EllipseMath::randRealDist(-1.0, 1.0), EllipseMath::randRealDist(-1.0, 1.0), 0.0f});
+    }
     }
     for(auto entity : m_entities)
     {
     rotateModel(entity, float(m_timeModule.secAndNSec()), Vec3{0.0f, 0.0f, 1.0f});
     }
-
 
     // std::cout << "Updated: " << m_name << '\n';
   
@@ -184,27 +178,27 @@ void DemoLayer::onUpdateUserLayer(float dt)
 bool DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
 {
      bool aPressed = Input::isKeyPressed(ELLIPSE_KEY_a);
-      if(aPressed)
-       {
-   std::cout << "'a' key is pressed" << "\n";
-       }
-
-    switch(e.keyCode())
+     if(aPressed)
      {
-        case ELLIPSE_KEY_a:
-        positionCameraLeft(0.25f);
-         break;
-        case ELLIPSE_KEY_d:
-        positionCameraRight(0.25f);
-         break;
-        case ELLIPSE_KEY_p:
-        m_timeModule.pause();
-         break;
-        case ELLIPSE_KEY_o:
-        m_timeModule.unPause();
-         break;
-        default:
-         break;
+     std::cout << "'a' key is pressed" << "\n";
+     }
+
+     switch(e.keyCode())
+     {
+     case ELLIPSE_KEY_a:
+     positionCameraLeft(0.025f);
+      break;
+     case ELLIPSE_KEY_d:
+     positionCameraRight(0.025f);
+      break;
+     case ELLIPSE_KEY_p:
+     m_timeModule.pause();
+      break;
+     case ELLIPSE_KEY_o:
+     m_timeModule.unPause();
+      break;
+     default:
+      break;
      }
 
    return m_throughLayer ? false : true;
