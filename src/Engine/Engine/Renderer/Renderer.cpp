@@ -14,7 +14,7 @@ class RendererImpl final : public Renderer
     virtual void clearColorBuffer() override;
     void setClearColor(const Vec4& col) override;
     virtual void setWindowFrameSize(Pair<int, int> winSize) override;
-    void setViewport(int32_t width, int32_t height) override;
+    void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
 
     virtual Pair<int, int> getWindowFrameSize() override
     {
@@ -76,9 +76,9 @@ void RendererImpl::setWindowFrameSize(Pair<int, int> winSize)
     m_currentHeight = winSize.second;
 }
 
-void RendererImpl::setViewport(int32_t width, int32_t height)
+void RendererImpl::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height)
 {
-    m_plugin->setViewport(width, height);
+    m_plugin->setViewport(posX, posY, width, height);
 }
 
 SharedPtr<RenderObj> RendererImpl::createRenderObj(VerticiesData verts)

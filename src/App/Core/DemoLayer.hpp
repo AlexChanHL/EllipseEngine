@@ -5,10 +5,10 @@
 class DemoLayer : public Ellipse::Layer
 {
    public:
-     DemoLayer(Engine& engine);
+     DemoLayer(Ellipse::Engine& engine);
      virtual ~DemoLayer() = default;
 
-     void init() override;
+     void initUserLayer() override;
      virtual void onEvent(Event& e) override;
 
      void onUpdateUserLayer(float dt) override;
@@ -20,7 +20,10 @@ class DemoLayer : public Ellipse::Layer
      bool onMouseWheel(MouseWheelEvent& e);
 
    private:
+     Ellipse::Engine&  m_engine;
+     Ellipse::TimeModule& m_timeModule;
+     Ellipse::ModelManagerModule& m_modelManagerLayerModule;
      float m_offset;
      Ellipse::Timer m_timer1;
-     Vector<EntityRef> m_entities;
+     Vector<Ellipse::ModelID> m_entities;
 };

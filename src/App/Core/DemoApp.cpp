@@ -27,12 +27,15 @@ ForwardList<SharedPtr<Ellipse::Layer>> pushUserLayers()
 
 Ellipse::ApplicationSpecifications Ellipse::createAppSpecs()
 {
-  Ellipse::ApplicationSpecifications specs;
+   Ellipse::ApplicationSpecifications specs;
 
    specs.m_windowSettings.m_lib = WindowLibrary::SDLWindow;
    // [ Specifying opengl twice ]
    specs.m_windowSettings.m_gLib = GraphicsLib::OpenGL;
    specs.m_graphicSpec = GraphicsSpec::OpenGL;
+
+   // specs.m_defaultClearColor = Vec4{1.0f, 1.0f, 0.0f, 1.0f};
+
    specs.m_userFunc = pushUserLayers;
 
    return specs;

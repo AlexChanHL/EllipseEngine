@@ -49,6 +49,21 @@ using Radians = float;
 namespace EllipseMath
 {
 
+inline Mat4 scale(Mat4 model, Vec3 scalerAmount)
+{
+   return glm::scale(model, scalerAmount);
+}
+
+inline Mat4 rotate(Mat4 model, float radians, Vec3 rotationAxis)
+{
+   return glm::rotate(model, radians, rotationAxis);
+}
+
+inline Mat4 translate(Mat4 model, Vec3 translateAmount)
+{
+   return glm::translate(model, translateAmount);
+}
+
 inline Mat4 lookAt(Vec3 camPos, Vec3 camDir, Vec3 camUp)
 {
    return glm::lookAt(camPos, camDir, camUp);

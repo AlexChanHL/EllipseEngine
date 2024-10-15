@@ -113,8 +113,18 @@ class Application
 
     static Application& get() { return *sInStance; }
 
-    Engine& getEngine() const { return *m_engine; }
-    Renderer& getRenderer() const { return *m_renderer; }
+    Engine& getEngine() const
+    {
+    return *m_engine;
+    }
+    Window& getWindow() const 
+    {
+    return *m_window;
+    }
+    Renderer& getRenderer() const 
+    {
+    return *m_renderer;
+    }
 
    private:
     bool m_running{true};

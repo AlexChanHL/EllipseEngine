@@ -29,9 +29,9 @@ void OpenGLRenderPlugin::setClearColor(const glm::vec4& col)
      glClearColor(col.x, col.y, col.z, col.w);
 }
 
-void OpenGLRenderPlugin::setViewport(int width, int height)
+void OpenGLRenderPlugin::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height)
 {
-     glViewport(0, 0, width, height);
+     glViewport(posX, posY, width, height);
 }
 
 SharedPtr<RenderObj> OpenGLRenderPlugin::createRenderObj(VerticiesData verts)

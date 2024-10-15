@@ -6,7 +6,6 @@
 
 
 // [ Maybe should have seperate random library ]
-
 namespace EllipseMath
 {
 
@@ -42,4 +41,60 @@ T randRealDist(std::uniform_real_distribution<T>& dist)
     return dist(Random::randomEngine());
 }
 
-}    // namespace EllipseMath
+class RandomRemoveLast
+{
+   public:
+    RandomRemoveLast(int32_t stepIteration)
+    : m_lastVal{0},
+      m_maxiumRandomVal{0},
+      m_stepIteration{stepIteration},
+      m_iterationAmount{0}
+    {
+    addNums();
+    }
+
+    ~RandomRemoveLast()
+    {
+
+    }
+
+    void addNums()
+    {
+    m_iterationAmount += m_stepIteration;
+    for(int32_t i=m_lastVal;i<m_iterationAmount;i++)
+    {
+    m_randomUniqueNums.push_back(i);
+    }
+
+    m_lastVal = m_iterationAmount;
+    m_maxiumRandomVal += m_stepIteration;
+    }
+
+    int32_t chooseRandomVal()
+    {
+    if(m_randomUniqueNums.empty())
+    {
+    addNums();
+    }
+    auto chosenRandomValIterator = m_randomUniqueNums.begin() + randIntDist(0, m_maxiumRandomVal - 1);
+
+    int32_t chosenRandomVal = *chosenRandomValIterator;
+    m_randomUniqueNums.erase(chosenRandomValIterator);
+    m_maxiumRandomVal--;
+    return chosenRandomVal;
+    }
+
+    std::vector<int> randomUniqueNums()
+    {
+    return m_randomUniqueNums;
+    }
+
+   private:
+    std::vector<int> m_randomUniqueNums;
+    int32_t m_lastVal;
+    int32_t m_maxiumRandomVal;
+    int32_t m_stepIteration;
+    int32_t m_iterationAmount;
+};
+
+}      // namespace EllipseMath

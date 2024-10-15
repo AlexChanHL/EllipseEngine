@@ -7,6 +7,7 @@
 #include "Core/MouseCodes.hpp"
 #include "Core/ScanCodes.hpp"
 #include "Core/Utils.hpp"
+#include "Core/ModelManagerModule.hpp"
 #include "Core/GraphicsContext.hpp"
 #include "Core/Window.hpp"
 #include "Core/OSTime.hpp"

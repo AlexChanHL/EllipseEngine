@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Engine/Module.hpp"
 #include "OSTime.hpp"
 #include "Base.hpp"
@@ -9,7 +8,7 @@ namespace Ellipse
 
 // [ Retrieving the time at mutiple instances, may differ in the
 //   time ]
-struct TimeModule : public IModule
+struct TimeModule : public ILayerModule
 {
     public:
      TimeModule()
@@ -18,6 +17,16 @@ struct TimeModule : public IModule
        m_difference{0}
      {
      setName("TimeModule");
+     }
+
+     virtual void initLayerModule() override
+     {
+
+     }
+
+     virtual void onUpdateLayer() override
+     {
+
      }
     
      void pause()
@@ -74,8 +83,7 @@ struct TimeModule : public IModule
      {
      if(m_isPaused)
      {
-     // [ Weired casting, may lead to conversions to lower size types ]
-     return int64_t((m_pauseStart - m_difference - double(int64_t(m_pauseStart - m_difference))) * pow(10, 9));
+     // [ Weired casting, may lead to conversions to lower size types ] return int64_t((m_pauseStart - m_difference - double(int64_t(m_pauseStart - m_difference))) * pow(10, 9));
      }
      // [ Loses percision when dividing] 
 

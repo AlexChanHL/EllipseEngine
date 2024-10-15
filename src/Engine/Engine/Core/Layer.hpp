@@ -10,6 +10,8 @@
 namespace Ellipse
 {
 
+//     SubModelManager m_subModelManger;
+
 class ILayer
 {
   public:
@@ -32,15 +34,25 @@ class Layer : public ILayer
 {
   public:
     Layer(Engine& engine)
-    : m_timeModule{static_cast<TimeModule&>(engine.getModule("TimeModule"))},
-      m_renderModule{static_cast<RenderModule&>(engine.getModule("RenderModule"))}
+    : m_modules{engine.layerModules()}
+    // [ Cast into layer IModuleLayer ]
     {
 
     }
 
     virtual ~Layer() = default;
 
-    virtual void init() override {}
+    virtual void initUserLayer() = 0;
+    virtual void init() override
+    {    
+    for(SharedPtr<ILayerModule> module : m_modules)
+    {
+    module->initLayerModule();
+    }
+
+    initUserLayer();
+    
+    }
     // virtual void init() override 
     // {
     //   // [ RenderModule should do this ]
@@ -53,151 +65,139 @@ class Layer : public ILayer
     {
     onUpdateUserLayer(dt);
 
-    onUpdateModelMatricies();
 
-    renderModelsToBeRendered();
+    // All updates are done after user updates
+    // so that the module can use resources set
+    //by the user.
+    for(SharedPtr<ILayerModule> module : m_modules)
+    {
+    module->onUpdateLayer();
+    }
     }
 
-    EntityRef addModel(const char* name,
-                  const char* vShader,
-                  const char* fShader,
-                  VerticiesData verts,
-                  UniformList uniforms
-                  )
-    {
-    uLong_t size = m_modelsToBeRendered.size();
-    Model model = m_renderModule.createModel(name, vShader, fShader, verts, uniforms, size);
-    m_modelsToBeRendered.push_back(model);
-
-    // Redirect pointer to the value in vector
-
-    // m_modelsToBeRendered[size].shaderObj().getUniforms().printUniformList();
-      
-    // for(uLong_t i = 0; i < m_modelsToBeRendered.size(); i++)
+    // EntityRef addModel(const char* name,
+    //                    const char* vShader,
+    //                    const char* fShader,
+    //                    VerticiesData verts,
+    //                    UniformList uniforms
+    //                   )
     // {
-    // Mat4* modelMat = &m_modelsToBeRendered[i].modelMat();
-    // m_modelsToBeRendered[i].shaderObj().setUniformPtr(UniformVarible<Mat4>{"model", modelMat});
+    // // uLong_t size = m_modelsToBeRendered.size();
+    // // Model model = m_renderModule.createModel(name, vShader, fShader, verts, uniforms, size);
+    // // m_modelsToBeRendered.push_back(model);
+    //
+    //
+    //
+    // // Redirect pointer to the value in vector
+    // // m_modelsToBeRendered[size].shaderObj().getUniforms().printUniformList();
+    //   
+    // // for(uLong_t i = 0; i < m_modelsToBeRendered.size(); i++) // { // Mat4* modelMat = &m_modelsToBeRendered[i].modelMat();
+    // // m_modelsToBeRendered[i].shaderObj().setUniformPtr(UniformVarible<Mat4>{"model", modelMat});
+    // // }
+    //
+    //   
+    // return size;
     // }
-
-      
-    return size;
-    }
-
-    EntityRef addQuad(Vec3 pos)
-    {
-    uLong_t size = m_modelsToBeRendered.size();
-    Model model = m_renderModule.create2DShape("Quad", size);
-    m_modelsToBeRendered.push_back(model);
-       
-    positionModel(size, pos);
-
-    return size;
-    }
-
-    void scaleModel(EntityRef entity, Vec3 scalarAmount)
-    {
-    Model* model = findModelFromEntity(entity);
-    model->setScalarAmount(scalarAmount);
-    }
-    void rotateModel(EntityRef entity, float radians, Vec3 axis)
-    {
-    Model* model = findModelFromEntity(entity);
-    model->setRotationAmount(radians, axis);
-    }
-    void positionModel(EntityRef entity, Vec3 axis)
-    {
-    Model* model = findModelFromEntity(entity);
-    model->setTranslationAmount(axis);
-    }
-
-    Model* findModelFromEntity(EntityRef entity)
-    {
-    // auto model = std::find_if(m_modelsToBeRendered.begin(),
-    //                           m_modelsToBeRendered.end(),
-    //  [&](Model model){ return model.entityRef() == entity; }
-    //                          );
-
-    auto itVal = m_modelsToBeRendered.begin(); 
-    for(auto it = m_modelsToBeRendered.begin(); it != m_modelsToBeRendered.end(); it++)
-    {
-    if(it->entityRef() == entity)
-    {
-    itVal = it;
-    }
-    }
-
-    if(itVal == m_modelsToBeRendered.end())
-    {
-    ELPSE_ENGINE_LOG_WARN("Couldn't find model");
-    }
-
-    // model->shaderObj().getUniforms().printUniformList();
-
-    return &(*itVal);
-    }
-
-    // [ Use a entity manager for model creation ]
-
-    void onUpdateModelMatricies()
-    {
-    for(Model& model : m_modelsToBeRendered)
-    {
-    model.resetModelMat();
-
-    // std::cout << model.name() << '\n';
-    ::Ellipse::translateModel(model);
-    ::Ellipse::rotateModel(model);
-    ::Ellipse::scaleModel(model);
-    }
-
-    // exit(1);
-
-    }
-    void positionCameraUp(float amount)
-    {
+    //
+    // EntityRef addQuad(Vec3 pos)
+    // {
+    // uLong_t size = m_modelsToBeRendered.size();
+    // Model model = m_renderModule.create2DShape("Quad", size);
+    // m_modelsToBeRendered.push_back(model);
+    //    
+    // positionModel(size, pos);
+    //
+    // return size;
+    // }
+    //
+    // Model* findModelFromEntity(EntityRef entity)
+    // {
+    // // auto model = std::find_if(m_modelsToBeRendered.begin(),
+    // //                           m_modelsToBeRendered.end(),
+    // //  [&](Model model){ return model.entityRef() == entity; }
+    // //                          );
+    //
+    // auto itVal = m_modelsToBeRendered.begin(); 
+    // for(auto it = m_modelsToBeRendered.begin(); it != m_modelsToBeRendered.end(); it++)
+    // {
+    // if(it->entityRef() == entity)
+    // {
+    // itVal = it;
+    // }
+    // }
+    //
+    // if(itVal == m_modelsToBeRendered.end())
+    // {
+    // ELPSE_ENGINE_LOG_WARN("Couldn't find model");
+    // }
+    //
+    // // model->shaderObj().getUniforms().printUniformList();
+    //
+    // return &(*itVal);
+    // }
+    //
+    // // [ Use a entity manager for model creation ]
+    //
+    // void onUpdateModelMatricies()
+    // {
+    // for(Model& model : m_modelsToBeRendered)
+    // {
+    // model.resetModelMat();
+    //
+    // // std::cout << model.name() << '\n';
+    // ::Ellipse::translateModel(model);
+    // ::Ellipse::rotateModel(model);
+    // ::Ellipse::scaleModel(model);
+    // }
+    //
+    // // exit(1);
+    //
+    // }
+    // void positionCameraUp(float amount)
+    // {
+    // m_renderModule.setCameraUp(amount);
+    // }
+    //
+    // void positionCameraDown(float amount)
+    // {
+    // m_renderModule.setCameraDown(amount);
+    // }
+    //
+    //
+    // void positionCameraLeft(float amount)
+    // {
     // m_renderModule.setCameraLeft(amount);
-    }
-
-    void positionCameraDown(float amount)
-    {
-    // m_renderModule.setCameraLeft(amount);
-    }
-
-
-    void positionCameraLeft(float amount)
-    {
-    m_renderModule.setCameraLeft(amount);
-    }
-
-    void positionCameraRight(float amount)
-    {
-    m_renderModule.setCameraRight(amount);
-    }
-
-    // [ Maybe the engine should render module wating for render ]
-    void renderModelsToBeRendered()
-    {
-    for(Model& a : m_modelsToBeRendered)
-    {
-    // std::cout << &a.modelMat() << '\n';
-    // a.shaderObj().getUniforms().printUniformList();
-    m_renderModule.renderModel(a);
-    }
-
-    // [ Hackish solution, make a better way of updating the projection
-    //  matrix to a new screen size ]
-    // Updating Camera
-    m_renderModule.updateCamera();
-
-    }
+    // }
+    //
+    // void positionCameraRight(float amount)
+    // {
+    // m_renderModule.setCameraRight(amount);
+    // }
+    //
+    // // [ Maybe the engine should render module wating for render ]
+    // void renderModelsToBeRendered()
+    // {
+    // for(Model& a : m_modelsToBeRendered)
+    // {
+    // // std::cout << &a.modelMat() << '\n';
+    // // a.shaderObj().getUniforms().printUniformList();
+    // m_renderModule.renderModel(a);
+    // }
+    //
+    // // [ Hackish solution, make a better way of updating the projection
+    // //  matrix to a new screen size ]
+    // // Updating Camera
+    // m_renderModule.updateCamera();
+    //
+    // }
 
     static SharedPtr<ILayer> createDefaultLayer();
 
   protected:
-    void setClearColor(Vec4 col)
-    {
-    m_renderModule.setClearColor(col);
-    }
+    // void setClearColor(Vec4 col)
+    // {
+    // m_renderModule.setClearColor(col);
+    // }
 
     virtual bool isHidden() override { return m_hidden; }
 
@@ -205,11 +205,12 @@ class Layer : public ILayer
     virtual void showLayer() override { m_hidden = false; }
 
   protected:
-    Vector<Model> m_modelsToBeRendered;
+    // Vector<Model> m_modelsToBeRendered;
     // [ Don't have Rendermodule in layer so user can use layers in 
     //   seperate scenerios ]
-    TimeModule& m_timeModule;
-    RenderModule& m_renderModule;
+    // TimeModule& m_timeModule;
+    // RenderModule& m_renderModule;
+    Vector<SharedPtr<ILayerModule>> m_modules;
 
     bool m_hidden = false;
     bool m_throughLayer;

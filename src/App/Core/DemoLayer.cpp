@@ -3,17 +3,19 @@
 
 #include "DemoLayer.hpp"
 
-DemoLayer::DemoLayer(Engine& engine)
-: Layer{engine}
+DemoLayer::DemoLayer(Ellipse::Engine& engine)
+ : Layer{engine},
+   m_engine{engine},
+   m_timeModule{static_cast<Ellipse::TimeModule&>(engine.getModule("TimeModule"))},
+   m_modelManagerLayerModule{static_cast<Ellipse::ModelManagerModule&>(engine.getLayerModule("ModelManagerLayerModule"))}
 {
    m_name = "Placeholder";
    m_throughLayer = false;
 }
 
-void DemoLayer::init()
+void DemoLayer::initUserLayer()
 {
-   // Layer should not set the clear color manually
-   setClearColor(Vec4{1.0f, 1.0f, 0.0f, 1.0f});
+   // [ Layer should not set the clear color manually ]
 
    Vector<float> verticies = 
    {
@@ -22,6 +24,7 @@ void DemoLayer::init()
    -0.5f, -0.5f,  0.0f,
    };
 
+   // [ Make VerticiesData copy constructor ]
    Ellipse::VerticiesData verticiesData{3, verticies.size(), verticies};
 
 
@@ -29,6 +32,106 @@ void DemoLayer::init()
   
    Ellipse::UniformList uniformList;
    uniformList.addUniform(Ellipse::UniformVarible<float>{"offset", &m_offset});
+
+
+   m_modelManagerLayerModule.setViewspace(Ellipse::Viewspace{0,
+    0,
+    Ellipse::Application::get().getWindow().getWindowSize().first / 2,
+    Ellipse::Application::get().getWindow().getWindowSize().second});
+
+
+   // m_modelManagerLayerModule.setWorld("Main World");
+   // [ The camera is added before setting the viewspace ] 
+   // m_modelManagerLayerModule.setViewspace("Camera1");
+   // m_modelManagerLayerModule.setViewspace(0.25, 1.0, 0, 0);
+  
+   // m_modelManagerLayerModule.setWorld("Main World");
+   // m_modelManagerLayerModule.setWorld("Camera1 World");
+   // m_modelManagerLayerModule.setViewspace("Camera1");
+
+   // m_modelManagerLayerModule.addModel(m_entities[0],
+   //                                    "Model", 
+   //                                    "Assets/Shader/Triangle.vert.glsl",
+   //                                    "Assets/Shader/Triangle.frag.glsl",
+   //                                    verticiesData,
+   //                                    uniformList
+   //                                    );
+
+   for(unsigned long i=0;i<100;i++)
+   {
+   m_entities.push_back(Ellipse::ModelID{});
+   }
+
+   m_modelManagerLayerModule.addModel(m_entities[0],
+                                      "Model", 
+                                      "Assets/Shader/Triangle.vert.glsl",
+                                      "Assets/Shader/Triangle.frag.glsl",
+                                      verticiesData,
+                                      uniformList
+                                      );
+
+   // m_modelManagerLayerModule.translateModel(m_entities[0], Vec3{0.5f, 0.0f, 0.0f});
+   // m_modelManagerLayerModule.rotateModel(m_entities[0], float(m_timeModule.secAndNSec()), Vec3{0.0f, 0.0f, 1.0f});
+   // m_modelManagerLayerModule.removeModel(m_entities[0]);
+  
+
+   m_modelManagerLayerModule.setViewspace(Ellipse::Viewspace{
+    Ellipse::Application::get().getWindow().getWindowSize().first / 2,
+    0,
+    Ellipse::Application::get().getWindow().getWindowSize().first / 2,
+    Ellipse::Application::get().getWindow().getWindowSize().second});
+
+   m_modelManagerLayerModule.addModel(m_entities[1],
+                                      "Model1", 
+                                      "Assets/Shader/Triangle.vert.glsl",
+                                      "Assets/Shader/Triangle.frag.glsl",
+                                      verticiesData,
+                                      uniformList
+                                      );
+   // m_modelManagerLayerModule.removeModel(m_entities[1]);
+
+   //
+   // m_modelManagerLayerModule.addModel(m_entities[2],
+   //                                    "Model2", 
+   //                                    "Assets/Shader/Triangle.vert.glsl",
+   //                                    "Assets/Shader/Triangle.frag.glsl",
+   //                                    verticiesData,
+   //                                    uniformList
+   //                                    );
+   // m_modelManagerLayerModule.removeModel(m_entities[2]);
+   //
+   // // m_modelManagerLayerModule.setViewspace(Ellipse::Viewspace{125,3262,314,153});
+   //
+   // m_modelManagerLayerModule.addModel(m_entities[3],
+   //                                    "Model3", 
+   //                                    "Assets/Shader/Triangle.vert.glsl",
+   //                                    "Assets/Shader/Triangle.frag.glsl",
+   //                                    verticiesData,
+   //                                    uniformList
+   //                                    );
+   // m_modelManagerLayerModule.removeModel(m_entities[3]);
+   //
+   // m_modelManagerLayerModule.addModel(m_entities[4],
+   //                                    "Model4", 
+   //                                    "Assets/Shader/Triangle.vert.glsl",
+   //                                    "Assets/Shader/Triangle.frag.glsl",
+   //                                    verticiesData,
+   //                                    uniformList
+   //                                    );
+   // m_modelManagerLayerModule.removeModel(m_entities[4]);
+   //
+   // m_modelManagerLayerModule.addModel(m_entities[5],
+   //                                    "Model5", 
+   //                                    "Assets/Shader/Triangle.vert.glsl",
+   //                                    "Assets/Shader/Triangle.frag.glsl",
+   //                                    verticiesData,
+   //                                    uniformList
+   //                                    );
+   // m_modelManagerLayerModule.removeModel(m_entities[5]);
+
+   // m_modelManagerLayerModule.removeModel(m_entities[1]);
+  
+   // m_modelManagerLayerModule.removeModel(m_entities[1]);
    
    // EntityRef entityRef = addModel("Model",
    //                               "Assets/Shader/Triangle.vert.glsl",
@@ -43,26 +146,27 @@ void DemoLayer::init()
    
    // [ Have a model manager do all this work ]
 
-   for(u32_t i = 0; i < 10; i++)
-   {
-   m_entities.push_back(addQuad(Vec3{-0.25f, 0.4f, 0.0f}));
-   }
-   for(u32_t i = 0; i < 10; i++)
-   {
-   positionModel(m_entities[i], Vec3{EllipseMath::randRealDist(-1.0, 1.0), EllipseMath::randRealDist(-1.0, 1.0), 0.0f});
-   }
-
-   m_entities.push_back(addModel("Model",
-                                 "Assets/Shader/Triangle.vert.glsl",
-                                 "Assets/Shader/Triangle.frag.glsl",
-                                 verticiesData,
-                                 uniformList
-                                 ));
-
-   for(auto entity : m_entities)
-   {
-   scaleModel(entity, Vec3{0.5f, 0.5f, 0.5f});
-   }
+   // for(u32_t i = 0; i < 10; i++)
+   // {
+   // m_entities.push_back(addQuad(Vec3{-0.25f, 0.4f, 0.0f}));
+   // }
+   // for(u32_t i = 0; i < 10; i++)
+   // {
+   // positionModel(m_entities[i], Vec3{EllipseMath::randRealDist(-1.0, 1.0), EllipseMath::randRealDist(-1.0, 1.0), 0.0f});
+   // }
+   //
+   // m_entities.push_back(addModel("Model",
+   //                               "Assets/Shader/Triangle.vert.glsl",
+   //                               "Assets/Shader/Triangle.frag.glsl",
+   //                               verticiesData,
+   //                               uniformList
+   //                               )
+   //                     );
+   //
+   // for(auto entity : m_entities)
+   // {
+   // scaleModel(entity, Vec3{0.5f, 0.5f, 0.5f});
+   // }
 
    // float pos = 0;
    // for(float i=0; i<10;i++)
@@ -81,46 +185,6 @@ void DemoLayer::init()
    //                             uniformList
    //                           );
 
-   // positionModel(m_entity3, Vec3{0.5f, -0.5f, 0.0f});
-   // scaleModel(m_entity3, Vec3{0.5f, 0.5f, 0.5f});
-
-   // EntityRef entity2 = addModel("Model",
-   //                            "Assets/Shader/Triangle.vert.glsl",
-   //                            "Assets/Shader/Triangle.frag.glsl",
-   //                             verticies,
-   //                             uniformList
-   //                           );
-   //
-   // positionModel(entity2, Vec3{-0.2f, 0.45f, 0.0f});
-   // scaleModel(entity2, Vec3{0.5f, 0.5f, 0.5f});
-   //
-   // // EntityRef entity3 = addModel("Model",
-   // //                            "Assets/Shader/Triangle.vert.glsl",
-   // //                            "Assets/Shader/Triangle.frag.glsl",
-   // //                             verticies,
-   // //                             uniformList
-   // //                           );
-   // //
-   // // positionModel(entity3, Vec3{0.1f, 0.35f, 0.0f});
-   // // scaleModel(entity3, Vec3{0.5f, 0.5f, 0.5f});
-   //
-   // m_entity3 = addModel("Model",
-   //                            "Assets/Shader/Triangle.vert.glsl",
-   //                            "Assets/Shader/Triangle.frag.glsl",
-   //                             verticies,
-   //                             uniformList
-   //                           );
-   //
-   // positionModel(m_entity3, Vec3{0.1f, 0.5f, 0.0f});
-   // scaleModel(m_entity3, Vec3{0.5f, 0.5f, 0.5f});
-   //
-   // m_entity4 = addModel("Model",
-   //                            "Assets/Shader/Triangle.vert.glsl",
-   //                            "Assets/Shader/Triangle.frag.glsl",
-   //                             verticies,
-   //                             uniformList
-   //                           );
-   //
    // positionModel(m_entity4, Vec3{-0.2f, -0.35f, 0.0f});
    // scaleModel(m_entity4, Vec3{0.5f, 0.5f, 0.5f});
 
@@ -154,19 +218,29 @@ void DemoLayer::onUpdateUserLayer(float dt)
 {
     // [ Have an specific engine timer so that we can account
     //   for moments when pausing ]
-    if(m_timeModule.setTimer(m_timer1, 1))
-    {
-    // Logger cannot use info
-    ELPSE_APP_LOG_WARN("One second has passed");
-    for(u32_t i = 0; i < m_entities.size(); i++)
-    {
-    positionModel(m_entities[i], Vec3{EllipseMath::randRealDist(-1.0, 1.0), EllipseMath::randRealDist(-1.0, 1.0), 0.0f});
-    }
-    }
-    for(auto entity : m_entities)
-    {
-    rotateModel(entity, float(m_timeModule.secAndNSec()), Vec3{0.0f, 0.0f, 1.0f});
-    }
+    //
+    
+    // std::cout << "Window size: " << Ellipse::Application::get().getWindow().getWindowSize().first << '\n';
+  
+    // m_modelManagerLayerModule.rotateModel(m_entities[0], float(m_timeModule.secAndNSec()), Vec3{0.0f, 0.0f, 1.0f});
+
+    // std::cout << float(m_timeModule.secAndNSec()) << '\n';
+
+    // exit(1);
+
+    // if(m_timeModule.setTimer(m_timer1, 1))
+    // {
+    // // Logger cannot use info
+    // ELPSE_APP_LOG_WARN("One second has passed");
+    // for(u32_t i = 0; i < m_entities.size(); i++)
+    // {
+    // positionModel(m_entities[i], Vec3{EllipseMath::randRealDist(-1.0, 1.0), EllipseMath::randRealDist(-1.0, 1.0), 0.0f});
+    // }
+    // }
+    // for(auto entity : m_entities)
+    // {
+    // rotateModel(entity, float(m_timeModule.secAndNSec()), Vec3{0.0f, 0.0f, 1.0f});
+    // }
 
     // std::cout << "Updated: " << m_name << '\n';
   
@@ -185,17 +259,23 @@ bool DemoLayer::onKeyPressed(KeyboardPressedEvent& e)
 
      switch(e.keyCode())
      {
+     case ELLIPSE_KEY_w:
+     // positionCameraUp(0.025f);
+      break;
+     case ELLIPSE_KEY_s:
+     // positionCameraDown(0.025f);
+      break;
      case ELLIPSE_KEY_a:
-     positionCameraLeft(0.025f);
+     // positionCameraLeft(0.025f);
       break;
      case ELLIPSE_KEY_d:
-     positionCameraRight(0.025f);
+     // positionCameraRight(0.025f);
       break;
      case ELLIPSE_KEY_p:
-     m_timeModule.pause();
+     // m_timeModule.pause();
       break;
      case ELLIPSE_KEY_o:
-     m_timeModule.unPause();
+     // m_timeModule.unPause();
       break;
      default:
       break;

@@ -19,6 +19,11 @@ class VerticiesData
     m_numVerts = static_cast<u32_t>(m_verticiesAmount) / m_offsetToNextVal;
     }
 
+    ~VerticiesData()
+    {
+
+    }
+
     u32_t numVerts()
     {
     return m_numVerts;

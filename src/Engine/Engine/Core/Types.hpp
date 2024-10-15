@@ -10,5 +10,7 @@ typedef uint16_t u16_t;
 typedef int8_t i8_t;
 typedef uint8_t u8_t;
 
+// [ Remove long_t type ]
+
 typedef long long_t;
 typedef unsigned long uLong_t;

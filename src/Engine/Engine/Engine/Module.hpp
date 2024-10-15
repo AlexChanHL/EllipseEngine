@@ -24,6 +24,38 @@ class IModule
    private:
 };
 
+// [ Maybe doesn't need to inherit from IModule ]
+class ILayerModule : public IModule
+{
+   public:
+    virtual void initLayerModule() = 0;
+    virtual void onUpdateLayer() = 0;
+   private:
+
+};
+
+class NoLayerModule : public ILayerModule
+{
+   public:
+    NoLayerModule() = default;
+    virtual ~NoLayerModule() = default;
+
+    // [ Set name: use a name that engine can identify ]
+    virtual String name() 
+    {
+    return m_name;
+    }
+    virtual void setName(const char* name)
+    {
+    m_name = name;
+    }
+
+   protected:
+    String m_name;
+  
+   private:
+};
+
 class NoModule : public IModule
 {
    public:
