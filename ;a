@@ -1,0 +1,706 @@
+#pragma once
+
+#include "Engine/Module.hpp"
+#include "Core/Utils/VectorSharedIteratorHeap.hpp"
+#include "Math/Random/Random.hpp"
+#include "Math/Matrix.hpp"
+#include "Core/Base.hpp"
+
+namespace Ellipse
+{
+
+struct Viewspace
+{
+   public:
+    Viewspace(float posX,
+              float posY,
+              float width,
+              float height)
+     : m_posX{posX},
+       m_posY{posY},
+       m_width{width},
+       m_height{height}
+     {
+
+     }
+    Viewspace(i32_t posX,
+              i32_t posY,
+              i32_t width,
+              i32_t height)
+     : m_posX{static_cast<float>(posX)},
+       m_posY{static_cast<float>(posY)},
+       m_width{static_cast<float>(width)},
+       m_height{static_cast<float>(height)}
+    {
+
+    }
+    Viewspace()
+    : m_posX{0},
+      m_posY{0},
+      m_width{0},
+      m_height{0}
+    {
+
+    }
+   
+    Viewspace(const Viewspace& viewspace)
+    : m_posX{viewspace.m_posX},
+      m_posY{viewspace.m_posY},
+      m_width{viewspace.m_width},
+      m_height{viewspace.m_height}
+    {
+
+    }
+
+    void operator=(const Viewspace& viewspace)
+    {
+    m_posX = viewspace.m_posX;
+    m_posY = viewspace.m_posY;
+    m_width = viewspace.m_width;
+    m_height = viewspace.m_height;
+    }
+
+    bool operator==(Viewspace viewspace)
+    {
+    return m_posX == viewspace.m_posX
+           && m_posY == viewspace.m_posY
+           && m_width == viewspace.m_width 
+           && m_height == viewspace.m_height;
+    }
+    bool operator!=(Viewspace viewspace)
+    {
+    return m_posX != viewspace.m_posX
+           || m_posY != viewspace.m_posY
+           || m_width != viewspace.m_width 
+           || m_height != viewspace.m_height;
+    }
+
+   public:
+    float m_posX;
+    float m_posY;
+    float m_width;
+    float m_height;
+  
+   private: 
+};
+
+struct RotateAmount
+{
+   public:
+    float m_radians;
+    Vec3 m_rotationAxis;
+};
+
+struct ModelID
+{
+   public:
+    ModelID()
+    : m_ID{0}
+    {
+
+    }
+    ModelID(i32_t modelID)
+    : m_ID{modelID}
+    {
+
+    }
+    ~ModelID()
+    {
+
+    }
+
+    
+    bool operator==(ModelID modelID)
+    {
+    return m_ID == modelID.m_ID;
+    }
+
+   public:
+    i32_t m_ID;
+};
+
+struct ModelModuleModel
+{
+   public:
+    // [ Invalid only used by vector ]
+    ModelModuleModel()
+    : m_modelID{ModelID{}},
+      m_modelName{nullptr},
+      m_modelTranslationAmount{Vec3{0.0f}},
+      m_modelRotationAmount{RotateAmount{0.0f, Vec3{1.0f, 1.0f, 1.0f}}},
+      m_modelScalarAmount{Vec3{0.0f}},
+      m_model{0.0f},
+      m_isModified{false},
+      m_isRemoved{false}
+    {
+
+    }
+    ModelModuleModel(ModelID modelID, const char* modelName)
+    : m_modelID{modelID},
+      m_modelName{modelName},
+      m_modelTranslationAmount{Vec3{0.0f, 0.0f, 0.0f}},
+      m_modelRotationAmount{RotateAmount{0.0f, Vec3{1.0f, 1.0f, 1.0f}}},
+      m_modelScalarAmount{Vec3{1.0f, 1.0f, 1.0f}},
+      m_model{1.0f},
+      m_isModified{false},
+      m_isRemoved{false}
+    {
+
+    }
+    ~ModelModuleModel()
+    {
+    }
+
+   public:
+    ModelID m_modelID;
+    const char* m_modelName;
+
+    Vec3 m_modelTranslationAmount;
+    RotateAmount m_modelRotationAmount;
+    Vec3 m_modelScalarAmount;
+    Mat4 m_model;
+    bool m_isModified;
+
+    bool m_isRemoved;
+};
+
+// [ There should be main worlds and sub worlds , the
+//   sub worlds reside inside main worlds and only one 
+//   main world in each layer ]
+//
+// [ Worlds and subworlds should be different and have
+//   different implementations ]
+//
+// [ Segments of world are added ]
+//
+// +-------+------------+----------------+
+// | World | User world |                |
+// +-------+------------+----------------+
+// |       |            |                |
+// +-------+------------+----------------+
+// |       |            |                |
+// |       |            |                |
+// |       |            |                |
+// |       |            |                |
+// |       |            |                |
+// +-------+------------+----------------+
+//
+//                 +------------+
+//                 | User world |
+//                 +------------+
+
+struct ModelWorld
+{
+   public:
+    ModelWorld()
+    : m_layerCount{0},
+      m_name{nullptr},
+      m_orderInList{0},
+      m_viewspaces{Viewspace{}},
+      m_modelPositions{Pair<u32_t, u32_t>{0, 0}},
+      m_currentModelPosition{0}
+    {
+
+    }
+    ModelWorld(u64_t layerCount, const char* name, u32_t orderInList, Viewspace viewspace)
+    : m_layerCount{layerCount},
+      m_name{name},
+      m_orderInList{orderInList},
+      m_viewspaces{viewspace},
+      m_modelPositions{Pair<u32_t, u32_t>{0, 0}},
+      m_currentModelPosition{0}
+    {
+
+    }
+    ModelWorld(u64_t layerCount, const char* name, u32_t orderInList, Viewspace viewspace, u32_t modelOrderCount)
+    : m_layerCount{layerCount},
+      m_name{name},
+      m_orderInList{orderInList},
+      m_viewspaces{viewspace},
+      m_modelPositions{Pair<u32_t, u32_t>{modelOrderCount, 0}},
+      m_currentModelPosition{0}
+    {
+
+    }
+    ~ModelWorld()
+    {
+
+    }
+
+    ModelWorld(const ModelWorld& modelWorld)
+    : m_layerCount{modelWorld.layerCount()},
+      m_name{modelWorld.name()},
+      m_orderInList{modelWorld.orderInList()},
+      m_viewspaces{modelWorld.viewspaces()},
+      m_modelPositions{modelWorld.modelPositions()},
+      m_currentModelPosition{modelWorld.currentModelPosition()}
+    {
+
+    }
+
+    void operator=(const ModelWorld& modelWorld)
+    {
+    m_layerCount = modelWorld.layerCount(),
+    m_name = modelWorld.name();
+    m_orderInList = modelWorld.orderInList();
+    m_viewspaces = modelWorld.viewspaces();
+    m_modelPositions = modelWorld.modelPositions();
+    m_currentModelPosition = modelWorld.currentModelPosition();
+    }
+
+    bool operator==(const ModelWorld& modelWorld)
+    {
+    return strcmp(m_name, modelWorld.name()) == 0;
+    }
+
+    bool operator!=(const ModelWorld& modelWorld)
+    {
+    return strcmp(m_name, modelWorld.name()) != 0;
+    }
+
+    void addModelBeginPosition(u32_t indexInModelList)
+    {
+    m_modelPositions.push_back(Pair<u32_t, u32_t>{indexInModelList, 0});
+    }
+
+    void addModelEndPosition(u32_t indexInModelList)
+    {
+    m_modelPositions[m_modelPositions.size() - 1].second = indexInModelList;
+    }
+
+    void decrementStart()
+    {
+    for(u32_t i = 0; i < m_modelPositions.size(); i++)
+    {
+    m_modelPositions[i].first -= 1;
+    }
+    }
+
+    void decrementEnd()
+    {
+    for(u32_t i = 0; i < m_modelPositions.size(); i++)
+    {
+    m_modelPositions[i].second -= 1;
+    }
+
+    }
+
+    void updateNextSubWorld()
+    {
+    m_currentModelPosition++;
+    if(m_currentModelPosition == m_modelPositions.size())
+    {
+    resetCurrentPosition();
+    }
+    }
+
+    void update(u32_t maxLayerCount)
+    {
+    if(m_layerCount + 1 == maxLayerCount)
+    {
+    m_layerCount = 0;
+    return;
+    }
+    m_layerCount++;
+    }
+
+    void resetCurrentPosition()
+    {
+    m_currentModelPosition = 0;
+    }
+
+    u64_t layerCount() const
+    {
+    return m_layerCount;
+    }
+
+    const char* name() const
+    {
+    return m_name;
+    }
+
+    u32_t orderInList() const
+    {
+    return m_orderInList;
+    }
+
+    Vector<Viewspace> viewspaces() const
+    {
+    return m_viewspaces;
+    }
+ 
+    u32_t start() const
+    {
+    return m_modelPositions[m_currentModelPosition].first;
+    }
+
+    u32_t end() const
+    {
+    return m_modelPositions[m_currentModelPosition].second;
+    }
+
+    u64_t modelPositionCount() const
+    {
+    return m_modelPositions.size();
+    }
+
+    Vector<Pair<u32_t, u32_t>> modelPositions() const
+    {
+    return m_modelPositions;
+    }
+
+    u32_t currentModelPosition() const
+    {
+    return m_currentModelPosition;
+    }
+    
+    
+   private:
+    u64_t m_layerCount;
+    const char* m_name;
+    u32_t m_orderInList;
+    Vector<Viewspace> m_viewspaces;
+    Vector<Pair<u32_t, u32_t>> m_modelPositions;
+    u32_t m_currentModelPosition;
+};
+
+struct MainWorld
+{
+   public:
+    MainWorld(ModelWorld mainWorld, Vector<ModelWorld> subWorlds)
+    : m_mainWorld{mainWorld},
+      m_subWorlds{subWorlds}
+    {
+
+    }
+    ~MainWorld()
+    {
+
+    }
+
+    ModelWorld mainWorld()
+    {
+    return m_mainWorld;
+    }
+
+    Vector<ModelWorld> subWorlds()
+    {
+    return m_subWorlds;
+    }
+
+   public:
+    ModelWorld m_mainWorld;
+    Vector<ModelWorld> m_subWorlds;
+};
+
+// [ Stores own copy of the models ]
+struct UserWorld
+{
+   public:
+    UserWorld()
+    : m_layerCount{0},
+      m_name{nullptr}
+    {
+
+    }
+
+    // void addEditModel()
+    
+    void addUserWorldDrawOrder(u32_t modelWorldPosition)
+    {
+    m_userWorldDrawOrder.push_back(modelWorldPosition);
+    }
+
+    void setUserModelWorlds(MainWorld mainWorld)
+    {
+    // [ Find main world by using modelManager in the set function ]
+    
+    }
+
+    const char* name() const
+    {
+    return m_name;
+    }
+
+    Vector<u32_t> userWorldDraw() const
+    {
+    return m_userWorldDrawOrder;
+    }
+
+   public:
+    u32_t m_layerCount;
+    const char* m_name;
+    const char* m_mainWorldName;
+    Vector<u32_t> m_userWorldDrawOrder;
+
+    // Vector<EditModels> m_editModels;
+    Vector<ModelWorld> m_temporyModels;
+};
+
+struct ModelLayer
+{
+   public:
+    Vector<ModelWorld> m_modelWorlds;
+};
+
+// [ Should rename ModelManagerModule to ModelManagerLayerModule ]
+class ModelManagerModule : public ILayerModule
+{
+   public:
+    ModelManagerModule()
+    {
+    // setName("ModelManagerModule");
+    }
+    ~ModelManagerModule()
+    {
+
+    }
+
+    struct SubModelManager
+    {
+       public:
+        struct Model;
+
+        SubModelManager(
+        const char* modelWorldName,
+        bool isAddNewWorld,
+        ModelID modelID,
+        const char* modelName, 
+        String vertexShader,
+        String fragmentShader,
+        VerticiesData verticies,
+        UniformList uniformList,
+        Mat4& model
+                       )
+        : m_modelWorldName{modelWorldName},
+          m_isAddWorld{isAddNewWorld},
+          m_models{Model{
+                    modelID,
+                    modelName,
+                    vertexShader,
+                    fragmentShader,
+                    verticies,
+                    uniformList,
+                    model
+                      }}
+        {
+
+        }
+
+        void addModel(
+        ModelID modelID,
+        const char* modelName, 
+        String vertexShader,
+        String fragmentShader,
+        VerticiesData verticies,
+        UniformList uniformList,
+        Mat4& model
+                     )
+        {
+        m_models.push_back(Model{modelID,
+                                 modelName,
+                                 vertexShader,
+                                 fragmentShader,
+                                 verticies,
+                                 uniformList,
+                                 model});
+        }
+
+        bool isAddWorld() const
+        {
+        return m_isAddWorld;
+        }
+
+        Vector<Model> models() const
+        {
+        return m_models;
+        }
+
+       public:
+        struct Model
+        {
+          public:
+           Model(ModelID modelID,
+                 const char* name,
+                 String vertexShader,
+                 String fragmentShader,
+                 VerticiesData verticies,
+                 UniformList uniformList,
+                 Mat4& model
+                 )
+           : m_modelID{modelID},
+             m_name{name},
+             m_vertexShader{vertexShader},
+             m_fragmentShader{fragmentShader},
+             m_verticies{verticies},
+             m_uniformList{uniformList},
+             m_model{model}
+           {
+
+           }
+
+           ~Model()
+           {
+
+           }
+
+          public:
+           ModelID m_modelID;
+           const char* m_name;
+           String m_vertexShader;
+           String m_fragmentShader;
+           VerticiesData m_verticies;
+           UniformList m_uniformList;
+           Mat4& m_model;
+        };
+
+        const char* m_modelWorldName;
+        bool m_isAddWorld;
+        Vector<Model> m_models;
+    };
+
+
+    virtual void initLayerModule() override = 0;
+    virtual void onUpdateLayer() override = 0;
+
+    virtual void addModel(ModelID& modelID,
+                          const char* modelName,
+                          String vertexShader,
+                          String fragmentShader,
+                          VerticiesData verticies,
+                          UniformList uniformList
+                          ) = 0;
+
+    virtual void translateModel(ModelID modelID, Vec3 translationAmount) = 0;
+
+    virtual void rotateModel(ModelID modelID, float radians, Vec3 rotationAxis) = 0;
+
+    virtual void scaleModel(ModelID modelID, Vec3 scalarAmount) = 0;
+
+    virtual void setWireframeMode(ModelID modelID, const char* userWorld) = 0;
+
+    virtual void addWorld(const char* name, Viewspace viewspace) = 0;
+
+    virtual void addUserWorld(const char* userWorldName, const char* mainWorldName) = 0;
+    virtual void addSubWorld(const char* subWorldName, const char* userWorldName, const char* mainWorldName) = 0;
+
+    virtual void startWorld(const char* name) = 0;
+    virtual void endWorld() = 0;
+
+    virtual void startSubWorld(const char* name) = 0;
+    virtual void endSubWorld() = 0;
+
+    virtual void removeModel(ModelID modelID) = 0;
+
+    virtual void setDifferentInViewspace(float viewspaceWidth,
+                                         float viewspaceHeight,
+    float originalWindowWidth,
+    float originalWindowHeight) = 0;
+
+    virtual void clearSubModelManagers() = 0;
+
+    virtual void clearModelsToBeRemoved() = 0;
+
+    virtual std::vector<SubModelManager> subModelManagers() const = 0;
+
+    virtual Vector<u32_t> modelsToBeRemovedIndicies() const = 0;
+
+    virtual std::vector<ModelLayer>& modelLayers() = 0;
+
+    virtual std::vector<ModelLayer>::iterator previousModelLayersIterator() = 0;
+
+    virtual ModelWorld currentWorld() const = 0;
+
+    class ModelWorldDrawOrder;
+
+    virtual ModelWorldDrawOrder modelWorldDrawOrder() const = 0;
+
+    virtual void setWorld(const char* worldName) = 0;
+
+    virtual void setViewspace(Viewspace viewspace) = 0;
+
+    static SharedPtr<ModelManagerModule> createModelManagerModule();
+
+   public:
+    class ModelWorldDrawOrder
+    {
+       public:
+        ModelWorldDrawOrder()
+        : m_layerSize{0},
+          m_currentLayer{0}
+        {
+
+        }
+        ~ModelWorldDrawOrder()
+        {
+
+        }
+
+        void initModelWorldDrawOrder()
+        {
+        m_layerSize++;
+        m_modelWorldLayerOrder.addWorld();
+        }
+
+        void addWorld(u32_t modelPosition)
+        {
+        m_modelWorldLayerOrder.m_modelWorldLayerOrder[m_currentLayer].m_modelWorldDrawOrder.push_back(modelPosition);
+        }
+
+        void update()
+        {
+        m_currentLayer++;
+        if(m_currentLayer == m_layerSize)
+        {
+        m_currentLayer = 0;
+        }
+        }
+
+        u64_t layerSize() const
+        {
+        return m_layerSize;
+        }
+
+        u32_t currentLayer() const
+        {
+        return m_currentLayer;
+        }
+
+        Vector<u32_t> modelWorldDrawOrder() const
+        {
+        return m_modelWorldLayerOrder.m_modelWorldLayerOrder[m_currentLayer].m_modelWorldDrawOrder;
+        }
+
+       private:
+        class ModelDrawLayerOrder
+        {
+           public:
+            Vector<u32_t> m_modelWorldDrawOrder;
+        };
+
+        struct ModelDrawOrderList
+        {
+           public:
+            void addWorld()
+            {
+            m_modelWorldLayerOrder.push_back(ModelDrawLayerOrder{});
+            }
+
+           public:
+            Vector<ModelDrawLayerOrder> m_modelWorldLayerOrder;
+        };
+        
+        u64_t m_layerSize;
+        u32_t m_currentLayer;
+        ModelDrawOrderList m_modelWorldLayerOrder;
+    };
+
+   protected:
+    virtual void onUpdateModelMatrices() = 0;
+
+    virtual void translateModelInModelList(Mat4& model, Vec3 translationAmount) = 0;
+    virtual void rotateModelInModelList(Mat4& model, float radians, Vec3 rotationAxis) = 0;
+    virtual void scaleModelInModelList(Mat4& model, Vec3 scalarAmount) = 0;
+};
+
+}   // namespace Ellipse

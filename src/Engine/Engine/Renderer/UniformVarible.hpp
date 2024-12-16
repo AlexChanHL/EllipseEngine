@@ -251,7 +251,7 @@ class UniformList
     }
     // Returning a null mat4, maybe creating shared a getting
     // underlying ptr will cause bugs
-    ELPSE_ENGINE_LOG_WARN("Couldn't find uniform, returing invalid mat");
+    ELLIPSE_ENGINE_LOG_WARN("Couldn't find uniform, returing invalid mat");
     return UniformVarible<Mat4>{"Null", createShared<Mat4>().get()};
     }
 
@@ -261,7 +261,7 @@ class UniformList
     {
     for(uLong_t i = 0; i < uniform.size(); i++)
     {
-    ELPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
+    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
     }
     }
 
@@ -270,7 +270,7 @@ class UniformList
     {
     for(uLong_t i = 0; i < uniform.size(); i++)
     {
-    ELPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
+    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
     }
     }
 
@@ -278,13 +278,13 @@ class UniformList
     {
     for(uLong_t i = 0; i < uniform.size(); i++)
     {
-    ELPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
+    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
     }
     }
 
     for(const auto& uniform : m_vec2Uniforms)
     {
-    ELPSE_ENGINE_LOG_INFO("Uniform value: {} {}",
+    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {} {}",
                            uniform.uniformAt(0).x,
                            uniform.uniformAt(0).y
                            );
@@ -292,7 +292,7 @@ class UniformList
 
     for(const auto& uniform : m_vec3Uniforms)
     {
-    ELPSE_ENGINE_LOG_INFO("Uniform value: {} {} {}",
+    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {} {} {}",
                            uniform.uniformAt(0).x,
                            uniform.uniformAt(0).y,
                            uniform.uniformAt(0).z
@@ -301,7 +301,7 @@ class UniformList
 
     for(const auto& uniform : m_vec4Uniforms)
     {
-    ELPSE_ENGINE_LOG_INFO("Uniform value: {} {} {} {}",
+    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {} {} {} {}",
                            uniform.uniformAt(0).x,
                            uniform.uniformAt(0).y,
                            uniform.uniformAt(0).z,
@@ -311,7 +311,7 @@ class UniformList
 
     for(const auto& uniform : m_mat4Uniforms)
     {
-    ELPSE_ENGINE_LOG_INFO("Uniform name: {}", uniform.name());
+    ELLIPSE_ENGINE_LOG_INFO("Uniform name: {}", uniform.name());
     uniform.printUniforms();
     }
 

@@ -16,6 +16,7 @@
 #include "Renderer/Renderer.hpp"
 #include "Renderer/VerticiesData.hpp"
 
+#include "Math/TrigonometricUnits.hpp"
 #include "Math/Random/Random.hpp"
 #include "Math/Matrix.hpp"
 

@@ -13,9 +13,13 @@ class DemoLayer : public Ellipse::Layer
 
      void onUpdateUserLayer(float dt) override;
 
-     void setName(String name) { m_name = name; }
+     void setName(String name) 
+     {
+     m_name = name;
+     }
 
      bool onKeyPressed(KeyboardPressedEvent& e);
+     bool onMouseMotion(MouseMotionEvent& e);
      bool onMousePressed(MousePressedEvent& e);
      bool onMouseWheel(MouseWheelEvent& e);
 
@@ -25,5 +29,7 @@ class DemoLayer : public Ellipse::Layer
      Ellipse::ModelManagerModule& m_modelManagerLayerModule;
      float m_offset;
      Ellipse::Timer m_timer1;
+     u32_t m_modelIncrement;
+     float m_rotatedDegrees;
      Vector<Ellipse::ModelID> m_entities;
 };

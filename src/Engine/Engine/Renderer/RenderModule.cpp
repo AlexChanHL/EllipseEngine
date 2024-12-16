@@ -56,6 +56,8 @@ class RenderModuleImpl final : public RenderModule
      shaderObj->addUniform(UniformVarible<Mat4>{"view", &m_view});
      shaderObj->addUniform(UniformVarible<Mat4>{"proj", &m_proj});
 
+     // Math::printMat(*model);
+
      return RenderModel{modelID.m_ID, shaderObj, renderObj, model};
      }
      // virtual Model createModel(const char* modelName,
@@ -82,176 +84,145 @@ class RenderModuleImpl final : public RenderModule
      void setName(const char* name) override;
 
     private:
-     void removeModelToBeRemovedModels(std::vector<ModelViewspace>& modelViewspaces)
+     void removeModelsToBeRemovedModels()
      {
-     // [ Loop thorugh all viewspaces and delete models that require deleting ]
-       
-     auto renderViewspaceIterator = m_renderLayerIterator->m_renderViewspaces.begin();
-     for(unsigned long i=0;i<modelViewspaces.size();i++)
+     for(u32_t i = 0; i < m_modelManager.modelsToBeRemovedIndicies().size(); i++)
      {
-
-     for(unsigned long j=0;j<modelViewspaces[i].m_models.size();j++)
-     {
-     long iteration = static_cast<long>(j);
-     auto renderModelIterator = renderViewspaceIterator->m_renderModels.begin() + iteration;
-
-     if(modelViewspaces[i].m_models[j].m_isRemoved)
-     {
-     renderViewspaceIterator->m_renderModels.erase(renderModelIterator);
-     modelViewspaces[i].m_models.erase(
-     modelViewspaces[i].m_models.begin() + j
-                                      );
-     j--;
+     m_renderModels.erase(m_renderModels.begin() + m_modelManager.modelsToBeRemovedIndicies()[i]);
      }
-
-     }
-     renderViewspaceIterator++;
-     }
-
-     long renderViewspaceiteration = 0;
-     for(renderViewspaceIterator = m_renderLayerIterator->m_renderViewspaces.begin(); renderViewspaceIterator != m_renderLayerIterator->m_renderViewspaces.end();)
-     {
-
-     if(renderViewspaceIterator->m_renderModels.empty())
-     {
-     m_renderLayerIterator->m_renderViewspaces.erase(renderViewspaceIterator); 
-     }
-     if(!renderViewspaceIterator->m_renderModels.empty())
-     {
-     renderViewspaceiteration++;
-     }
-
-     renderViewspaceIterator = m_renderLayerIterator->m_renderViewspaces.begin() + renderViewspaceiteration;
-
-     }
-
-     long modelViewspaceIteration = 0;
-     for(auto modelViewspaceIterator = m_modelManager.previousModelLayersIterator()->m_modelViewspaces.begin();
-      modelViewspaceIterator != m_modelManager.previousModelLayersIterator()->m_modelViewspaces.end();
-     )
-     {
-     if(modelViewspaceIterator->m_models.empty())
-     {
-     m_modelManager.previousModelLayersIterator()->m_modelViewspaces.erase(modelViewspaceIterator);
-     }
-     if(!modelViewspaceIterator->m_models.empty())
-     {
-     modelViewspaceIteration++;
-     }
-     modelViewspaceIterator = m_modelManager.previousModelLayersIterator()->m_modelViewspaces.begin() + modelViewspaceIteration;
-
-     }
-
-     ModelWorld queryWorld = m_modelManager.m_currentWorld;
-
-     for(unsigned i = 0; i < m_modelManager.m_currentWorld.modelPositionCount(); i++)
-     {
-
-     for(unsigned long j = queryWorld.start();
-          j < queryWorld.end(); j++)
-     {
-     if(m_renderModels[j].m_ID == modelID)
-     {
-     m_renderModels.erase(m_renderModels.begin() + j);
-     break;
-     }
-     
-     }
-
-     queryWorld.updateNextSubWorld(); 
-
-     }
-     
 
      }
 
      void renderModels()
      {
-     bool endOfRenderModels = false;
 
-     for(;!endOfRenderModels;)
+     for(u64_t i=0;i<m_modelManager.userWorldsPrevious().size();i++)
      {
 
-     for(unsigned long i = 0; i < m_renderLayerIterator->m_renderViewspaces.size(); i++)
-     // for(unsigned long i = 0; i < m_renderLayerIterator->m_worlds.size(); i++)
+     // setCamera(m_modelManager.userWorlds()[i].camera());
+     // setViewspace(m_modelManager.userWorlds()[i].viewspace());
+
+     // [ Resets all world positions ]
+     m_modelManager.removeWorldLastPositions();
+
+
+     for(u32_t userIteration = 0;
+          userIteration < m_modelManager.userWorldsPrevious()[i].userWorldDraw().size();
+          userIteration++)
+     {
+     bool renderUserWorld = false;
+
+     u32_t worldPositionIndex = m_modelManager.userWorldsPrevious()[i].userWorldDraw()[userIteration];
+     const char* mainWorldName = m_modelManager.userWorldsPrevious()[i].mainWorldName();
+
+    ModelWorldQuery modelWorldQuery = m_modelManager.modelWorldFindPrevious(worldPositionIndex, mainWorldName);
+
+     // [ Add a world position ]
+     m_modelManager.worldLastPositionAddWorld(worldPositionIndex);
+
+     for(u64_t k = m_modelManager.
+            modelWorldIndexPrevious(modelWorldQuery
+                      ).modelPosition(m_modelManager.worldLastPosition(worldPositionIndex)).first;
+      k < m_modelManager.
+            modelWorldIndexPrevious(modelWorldQuery
+                      ).modelPosition(m_modelManager.worldLastPosition(worldPositionIndex)).second;
+      k++)
+     {
+     if(!m_modelManager.userWorldsPrevious()[i].editModels().empty())
+     {
+     if(m_modelManager.userWorldsPrevious()[i].editModel().positionInRenderList() == k)
+     {
+     renderUserWorld = true;
+     if(!m_modelManager.userWorldsPrevious()[i].editModel().isInWireframeMode())
      {
 
-     // for(unsigned long j = 0; j < m_renderLayerIterator->m_worlds[i].m_viewspaces.size(); j++)
-     // {
-     setViewport(m_renderLayerIterator->m_renderViewspaces[i].m_viewspace);
-     // setViewport(m_renderLayerIterator->m_worlds[i].m_viewspaces[j]);
-
-     // setCamera(m_renderLayerIterator->m_worlds[i].m_viewspaces[j].m_camera);
-
-     // [ Need to set individual viewports that reside 
-     //   inside RenderViewspaces ]
-     //
-     // [ Worlds contain render viewspaces and all models
-     //   that belong to the world. Any other worlds cannot
-     //   models that do not belong to it. Worlds contain 
-     //   all total models and renderModel() will draw models
-     //   according to their viewspace. ]
-     //  
-     // [ To specify new viewspaces with a new list of models 
-     //   the user craetes a new world ]
-       
-
-     for(unsigned long j = 0; j < m_renderLayerIterator->m_renderViewspaces[i].m_renderModels.size(); j++)
-     {
-     renderModel(m_renderLayerIterator->m_renderViewspaces[i].m_renderModels[j]);
-
-     // [ Render all models in RenderModule list of models
-     //   and query the model to be rendererd using worldCount ]
      }
 
-     // for(unsigned long k = m_renderLayerIterator->m_worlds[i].start(); k < m_renderLayerIterator->m_worlds[i].end(); k++)
-     // {
-     // renderModel(m_renderModels[k]);
-     //
-     // // [ Render all models in RenderModule list of models
-     // //   and query the model to be rendererd using m_renderLayerIterator world ]
-     // }
-     //
-     // if(m_renderModels.begin() + m_renderLayerIterator->m_worlds[i].end())
-     // {
-     // endOfRenderModels = true;
-     // }
+     // [ Need to set user renderModels model pointer to be user model pointer ]
+     if(!m_modelManager.userWorldsPrevious()[i].editModel().isHidden())
+     {
+     renderModel(m_userWorldRenderModels[m_modelManager.userWorldsPrevious()[i].editModel().positionInUserList()]);
+     }
+     m_modelManager.userWorldsPrevious()[i].updateNextEditModel();
+     }
+     }
+
+     if(!renderUserWorld)
+     {
+     if(m_modelManager.isInWireframeModel(k))
+     {
+
+     }
+     if(!m_modelManager.isHiddenModel(k))
+     {
+     renderModel(m_renderModels[k]);
+     // ELLIPSE_ENGINE_LOG_INFO("{}", k);
+     renderUserWorld = false;
+     }
+     }
+
+     // // [ Update next user model ]
+            
+     // [ Update for next world ]
+     //    
+     // m_modelManager.modelWorld(worldPositionIndex.updateNextSubWorl
      // 
-     // m_renderLayerIterator->m_worlds[i].updateNextSubWorld();
-     //
      // }
-   
      }
+     m_modelManager.worldLastPositionUpdate(worldPositionIndex);
 
      }
+
+     // [ Reset all positions ]
+     // for(u32_t userIteration = 0;
+     //      userIteration < m_modelManager.userWorldsPrevious()[i].userWorldDraw().size();
+     //      userIteration++)
+     // {
+     // m_modelManager.modelWorldPrevious(worldPositionIndex,
+     //                                   m_modelManager.userWorldsPrevious()[i].mainWorldName()).resetCurrentPosition();
+     // }
+
+     }
+
+   //   // [ Need to set individual viewports that reside 
+   //   //   inside RenderViewspaces ]
+   //   //
+   //   // [ Worlds contain render viewspaces and all models
+   //   //   that belong to the world. Any other worlds cannot
+   //   //   models that do not belong to it. Worlds contain 
+   //   //   all total models and renderModel() will draw models
+   //   //   according to their viewspace. ]
+   //   //  
+   //   // [ To specify new viewspaces with a new list of models 
+   //   //   the user craetes a new world ]
+      
      }
 
      void reOrderModels()
      {
-     
+ 
      }
 
      void updateViewspaces()
      {
-     auto modelViewspacesIterator = m_modelManager.previousModelLayersIterator()->m_modelViewspaces.begin();
-     for(RenderViewspace& renderViewspace : m_renderLayerIterator->m_renderViewspaces)
-     {
-     renderViewspace.m_viewspace = modelViewspacesIterator->m_viewspace;
-     modelViewspacesIterator++;
-     }
+     // auto modelViewspacesIterator = m_modelManager.previousModelLayersIterator()->m_modelViewspaces.begin();
+     // for(RenderViewspace& renderViewspace : m_renderLayerIterator->m_renderViewspaces)
+     // {
+     // renderViewspace.m_viewspace = modelViewspacesIterator->m_viewspace;
+     // modelViewspacesIterator++;
+     // }
      }
 
     private:
      ModelManagerModule& m_modelManager;
      Renderer& m_renderer;
      Vector<RenderModel> m_renderModels;
-     std::vector<RenderLayer> m_renderLayers;
-     std::vector<RenderLayer>::iterator m_renderLayerIterator;
+     Vector<RenderModel> m_userWorldRenderModels;
+     Vector<RenderLayer> m_renderLayers;
+     Vector<RenderLayer>::iterator m_renderLayerIterator;
 
      // [ Model manager will be NoModule if ModelManager is initalized after RenderModule's onInit() ]
      Draw2D m_draw2D;
-    
-     // Vector<ViewSpace> m_viewSpaces;
     
      // Vector<Camera> m_cameras;
      Camera m_camera;
@@ -324,21 +295,22 @@ void RenderModuleImpl::onUpdateLayer()
    {
    m_renderLayerIterator = m_renderLayers.begin();
    }
+
      
-   // // [ Adds model from subModelManagers list ]
+   // [ Adds model from subModelManagers list ]
    for(unsigned long i=0;i<m_modelManager.subModelManagers().size();i++)
    {
    // [ Adds the model to the world its querying ]
-   RenderViewspace renderViewspace{m_modelManager.subModelManagers()[i].viewspace()};
+   // RenderViewspace renderViewspace{m_modelManager.subModelManagers()[i].viewspace()};
 
 
    // [ Models need to be queried after initalization call, 
    //   if we create a new world that world be accessed
    //   for its models ]
 
-   for(unsigned long j=0;j<m_modelManager.subModelManagers()[i].models().size();j++)
+   for(u64_t j=0;j<m_modelManager.subModelManagers()[i].models().size();j++)
    {
-   renderViewspace.m_renderModels.push_back(
+    m_renderModels.push_back(
       createRenderModel(
    m_modelManager.subModelManagers()[i].models()[j].m_modelID,
    m_modelManager.subModelManagers()[i].models()[j].m_vertexShader,
@@ -349,42 +321,24 @@ void RenderModuleImpl::onUpdateLayer()
                        )
                                            );
    }
-   m_renderLayerIterator->m_renderViewspaces.push_back(renderViewspace);
+
+   // if(m_modelManager.subModelManagers()[i].isAddWorld())
+   // {
+   // m_renderLayerIterator->m_modelWorlds.push_back(ModelWorld{});
+   // }
 
    }
 
 
-   // for(unsigned long i=0;i<m_modelManager.subModelManagers().size();i++)
-   // {
-   //
-   // for(unsigned long j=0;j<m_modelManager.subModelManagers()[i].models().size();j++)
-   // {
-   // m_renderModels.push_back(
-   //    createRenderModel(
-   // m_modelManager.subModelManagers()[i].models()[j].m_modelID,
-   // m_modelManager.subModelManagers()[i].models()[j].m_vertexShader,
-   // m_modelManager.subModelManagers()[i].models()[j].m_fragmentShader,
-   // m_modelManager.subModelManagers()[i].models()[j].m_verticies,
-   // m_modelManager.subModelManagers()[i].models()[j].m_uniformList,
-   // &m_modelManager.subModelManagers()[i].models()[j].m_model
-   //                     )
-   //                                         )
-   //                         );
-   // }
-   //
-   // }
+   removeModelsToBeRemovedModels();
 
-   removeModelToBeRemovedModels(m_modelManager.previousModelLayersIterator()->m_modelViewspaces);
+   // // [ Uses modelManager to tell which models to hide ]
+   // hideAllModelsToBeHidden();
 
-   // [ Use model manaager to set viewspaces in
-   //   RenderModule list of render models ] 
    updateViewspaces();
 
    m_modelManager.clearSubModelManagers();
-
-   // [ Reorder models before drawing them ]
-
-   // reorderModels();
+   m_modelManager.clearModelsToBeRemoved();
 
    renderModels();
 

@@ -242,12 +242,6 @@ class RenderModule : public ILayerModule
 
     }
 
-    struct RenderModelListLocation
-    {
-       public:
-        
-    };
-    
     struct RenderModel
     {
        public:
@@ -274,49 +268,15 @@ class RenderModule : public ILayerModule
         Mat4* m_model;
     };
 
-    struct RenderViewspace
-    {
-       public:
-        RenderViewspace(Viewspace viewspace)
-        : m_viewspace{viewspace}
-        {
-        
-        }
-        ~RenderViewspace()
-        {
-
-        }
-
-       public:
-        Viewspace m_viewspace;
-
-        // Viewspace m_currentViewspace;
-        // ModelWorld m_world;
-        // Vector<Viewspace> m_viewspaces;
-        //
-        // Vector<ModelListLocation> m_modelListLocations;
-      
-        // [ RenderModule should keep a list of
-        //   all models so that it can reorder them ]
-        std::vector<RenderModel> m_renderModels;
-    };
     struct RenderLayer
     {
        public:
-        std::vector<RenderViewspace> m_renderViewspaces;
+        Vector<ModelWorld> m_modelWorlds;
     };
 
     virtual void onUpdateLayer() override = 0;
     virtual void initLayerModule() override = 0;
     
-    // virtual Model createModel(const char* modelName,
-    //                           String vShader,
-    //                           String fShader,
-    //                           VerticiesData verts,
-    //                           UniformList uniforms,
-    //                           uLong_t size
-    //                          ) = 0;
-
     virtual RenderModel createRenderModel(ModelID modelID,
                                           String vShader,
                                           String fShader,

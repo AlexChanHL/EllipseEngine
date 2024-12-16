@@ -8,16 +8,16 @@
 UniquePtr<Window> Window::createWindow(const WindowSettings& specs)
 {
      switch(specs.m_lib)
-      {
-    case WindowLibrary::SDLWindow:
-         {
-        return createUnique<SDLWindow>(specs);
-         }
-    case WindowLibrary::GLFWWindow:
-         {
-        std::cout << "No GLFW class\n";
-        return nullptr;
-         }
+     {
+     case WindowLibrary::SDLWindow:
+     {
+     return createUnique<SDLWindow>(specs);
+     }
+     case WindowLibrary::GLFWWindow:
+     {
+     std::cout << "No GLFW class\n";
+     return nullptr;
+     }
        default:
      // LOG_MESSAGE("Failed to create window");
          return nullptr;

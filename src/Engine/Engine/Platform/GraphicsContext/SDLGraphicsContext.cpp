@@ -44,21 +44,21 @@ UniquePtr<GraphicsContext> createSDLGraphicsContext(SDL_Window* window, Graphics
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
 
     if(!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
-     {
-    ELPSE_ENGINE_LOG_ERROR("Could not load function pointers!");
-     }
+    {
+    ELLIPSE_ENGINE_LOG_ERROR("Could not load function pointers!");
+    }
     return createUnique<SDLOpenGLGraphicsContext>(glContext);
-     }
+    }
     case GraphicsLib::Vulkan:
-     {
+    {
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
     return createUnique<SDLOpenGLGraphicsContext>(glContext);
-     }
+    }
     default:
-     break;
+    break;
     }
 
-    ELPSE_ENGINE_LOG_ERROR("No graphics context");
+    ELLIPSE_ENGINE_LOG_ERROR("No graphics context");
 
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
     return createUnique<SDLOpenGLGraphicsContext>(glContext);

@@ -21,7 +21,7 @@ class ILayer
     virtual void init() = 0;
     virtual void onEvent(Event& event) = 0;
     virtual void onUpdate(float dt) = 0;
-
+  
     virtual bool isHidden() = 0;
     virtual void hideLayer() = 0;
     virtual void showLayer() = 0;
@@ -53,12 +53,6 @@ class Layer : public ILayer
     initUserLayer();
     
     }
-    // virtual void init() override 
-    // {
-    //   // [ RenderModule should do this ]
-    //   setClearColor(m_engine.getDefaultValue("clear color"));
-    //   initUserLayer();
-    // }
     virtual void onEvent(Event& event) override = 0;
     virtual void onUpdateUserLayer(float dt) = 0;
     virtual void onUpdate(float dt) override

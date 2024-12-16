@@ -36,40 +36,40 @@ void OpenGLRenderPlugin::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t 
 
 SharedPtr<RenderObj> OpenGLRenderPlugin::createRenderObj(VerticiesData verts)
 {
-    auto rObj = createUnique<OpenGLRenderObj>();
-    rObj->setVerts(verts.numVerts());
-    rObj->initBuffers(verts.verticies());
-    return rObj;
+     auto rObj = createUnique<OpenGLRenderObj>();
+     rObj->setVerts(verts.numVerts());
+     rObj->initBuffers(verts.verticies());
+     return rObj;
 }
 
 SharedPtr<RenderShaderObj> OpenGLRenderPlugin::createShaderObj(String vShader, String fShader, UniformList uniforms)
 {
-    auto sObj = createShared<OpenGLShaderObj>();
+     auto sObj = createShared<OpenGLShaderObj>();
 
-    sObj->compileShader(vShader.c_str());
-    sObj->compileShader(fShader.c_str());
+     sObj->compileShader(vShader.c_str());
+     sObj->compileShader(fShader.c_str());
 
-    sObj->linkGLShaders();
+     sObj->linkGLShaders();
 
-    sObj->setUniformList(uniforms);
-    sObj->addUniformsToLocList(uniforms);
+     sObj->setUniformList(uniforms);
+     sObj->addUniformsToLocList(uniforms);
   
-    return sObj;
+     return sObj;
 }
 
-int OpenGLRenderPlugin::findUniformLocation(const char* name, const ForwardList<UniformLoc>& locs)
+i32_t OpenGLRenderPlugin::findUniformLocation(const char* name, const ForwardList<UniformLoc>& locs)
 {
-    for(auto& a : locs)
+     for(auto& a : locs)
      {
-    if(strcmp(name, a.m_name) == 0)
-      {
-    return a.m_loc;
-      }
+     if(strcmp(name, a.m_name) == 0)
+     {
+     return a.m_loc;
+     }
      } 
 
-    ELPSE_ENGINE_LOG_ERROR("Uniform not found");
+     ELLIPSE_ENGINE_LOG_ERROR("Uniform not found");
 
-    return 0;
+     return 0;
 }
 
 void OpenGLRenderPlugin::setUniforms(UniformList uniforms, const ForwardList<UniformLoc>& locs) 
@@ -78,101 +78,101 @@ void OpenGLRenderPlugin::setUniforms(UniformList uniforms, const ForwardList<Uni
      {
     int loc = findUniformLocation(uniform.name(), locs);
     switch(uniform.size())
-     {
+    {
     case 1:
     glUniform1i(loc, uniform.uniformAt(0));
-     break;
+    break;
     case 2:
     glUniform2i(loc, uniform.uniformAt(0), uniform.uniformAt(1));
-     break;
+    break;
     case 3:
     glUniform3i(loc, uniform.uniformAt(0), uniform.uniformAt(1), uniform.uniformAt(2));
-     break;
+    break;
     case 4:
     glUniform4i(loc, uniform.uniformAt(0), uniform.uniformAt(1), uniform.uniformAt(2), uniform.uniformAt(3));
-     break;
-     }
-     }
+    break;
+    }
+    }
 
     for(UniformVarible<float>& uniform : uniforms.getFloatUniforms())
-     {
+    {
     int loc = findUniformLocation(uniform.name(), locs);
     switch(uniform.size())
-     {
+    {
     case 1:
     glUniform1f(loc, uniform.uniformAt(0));
-     break;
+    break;
     case 2:
     glUniform2f(loc, uniform.uniformAt(0), uniform.uniformAt(1));
-     break;
+    break;
     case 3:
     glUniform3f(loc, uniform.uniformAt(0), uniform.uniformAt(1), uniform.uniformAt(2));
-     break;
+    break;
     case 4:
     glUniform4f(loc, uniform.uniformAt(0), uniform.uniformAt(1), uniform.uniformAt(2), uniform.uniformAt(3));
-     break;
-     }
-     }
+    break;
+    }
+    }
 
 
     for(UniformVarible<u32_t>& uniform : uniforms.getUnsignedIntUniforms())
-     {
+    {
     int loc = findUniformLocation(uniform.name(), locs);
     switch(uniform.size())
-     {
+    {
     case 1:
     glUniform1ui(loc, uniform.uniformAt(0));
-     break;
+    break;
     case 2:
     glUniform2ui(loc, uniform.uniformAt(0), uniform.uniformAt(1));
-     break;
+    break;
     case 3:
     glUniform3ui(loc, uniform.uniformAt(0), uniform.uniformAt(1), uniform.uniformAt(2));
-     break;
+    break;
     case 4:
     glUniform4ui(loc, uniform.uniformAt(0), uniform.uniformAt(1), uniform.uniformAt(2), uniform.uniformAt(3));
-     break;
-     }
-     }
+    break;
+    }
+    }
 
     // // [ Setting vectors and matricies one at a time, maybe have
     //      a single list of all ]
     for(UniformVarible<Vec2>& uniform : uniforms.getVec2Uniforms())
-     {
+    {
     int loc = findUniformLocation(uniform.name(), locs);
     glUniform2f(loc, uniform.uniformAt(0).x, uniform.uniformAt(0).y);
-     }
+    }
 
     for(UniformVarible<Vec3>& uniform : uniforms.getVec3Uniforms())
-     {
+    {
     int loc = findUniformLocation(uniform.name(), locs);
     glUniform3f(loc, uniform.uniformAt(0).x, uniform.uniformAt(0).y, uniform.uniformAt(0).z);
-     }
+    }
 
     for(UniformVarible<Vec4>& uniform : uniforms.getVec4Uniforms())
-     {
+    {
     int loc = findUniformLocation(uniform.name(), locs);
     glUniform4f(loc, uniform.uniformAt(0).x, uniform.uniformAt(0).y, uniform.uniformAt(0).z, uniform.uniformAt(0).w);
-     }
+    }
 
     for(UniformVarible<Mat2>& uniform : uniforms.getMat2Uniforms())
-     {
+    {
     int loc = findUniformLocation(uniform.name(), locs);
     glUniformMatrix2fv(loc, 1, GL_FALSE, &(uniform.uniformAt(0)[0][0]));
-     }
+    }
 
     for(UniformVarible<Mat3>& uniform : uniforms.getMat3Uniforms())
-     {
+    {
     int loc = findUniformLocation(uniform.name(), locs);
     glUniformMatrix3fv(loc, 1, GL_FALSE, &(uniform.uniformAt(0)[0][0]));
-     }
+    }
 
     for(UniformVarible<Mat4>& uniform : uniforms.getMat4Uniforms())
-     {
+    {
     // uniform.printUniforms();
     int loc = findUniformLocation(uniform.name(), locs);
     glUniformMatrix4fv(loc, 1, GL_FALSE, &(uniform.uniformAt(0)[0][0]));
-     }
+    }
 
 }
 

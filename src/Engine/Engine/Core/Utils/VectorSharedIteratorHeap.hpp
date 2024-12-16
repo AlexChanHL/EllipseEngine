@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Base.hpp"
+#include <memory>
 
 
 template<typename T>
@@ -158,11 +158,23 @@ class VectorSharedIteratorHeap
     return *iterator;
     }
 
+    T& operator[](unsigned long idx) const
+    {
+    Iterator iterator = begin();
+    for(unsigned long i = 0;i < idx;i++)
+    {
+    iterator++;
+    }
+
+    return *iterator; }
+
     void pushBack(T val)
     {
     if(m_begin->m_elem == nullptr)
     {
     m_current->m_elem = std::make_shared<T>(val);
+    m_end->m_prev = m_current;
+    m_current->m_next = m_end;
     m_size++;
     return;
     }
@@ -200,9 +212,14 @@ class VectorSharedIteratorHeap
     {
     if(input == *m_begin)
     {
-    m_begin->m_next->m_prev = nullptr;
     std::shared_ptr<Iterator> iteratorBegin = m_begin->m_next;
+    m_begin->m_elem = nullptr;
+
+    if(iteratorBegin != m_end)
+    {
     m_begin = iteratorBegin;
+    }
+
     m_size--;
     return;
     }
@@ -262,11 +279,6 @@ class VectorSharedIteratorHeap
 
     }
 
-    T back()
-    {
-    return **(m_end->m_prev);
-    }
-
     bool empty()
     {
     if(m_size == 0)
@@ -274,6 +286,11 @@ class VectorSharedIteratorHeap
     return true;
     }
     return false;
+    }
+
+    T back()
+    {
+    return **(m_end->m_prev);
     }
 
     unsigned long size()
@@ -286,7 +303,17 @@ class VectorSharedIteratorHeap
     return *m_begin;
     }
 
+    Iterator begin() const
+    {
+    return *m_begin;
+    }
+
     Iterator end()
+    {
+    return *m_end;
+    }
+
+    Iterator end() const
     {
     return *m_end;
     }
