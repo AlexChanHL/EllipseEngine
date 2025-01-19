@@ -5,6 +5,9 @@
 // [ Make own random library ]
 
 
+namespace Ellipse
+{
+
 // [ Maybe should have seperate random library ]
 namespace EllipseMath
 {
@@ -98,3 +101,5 @@ class RandomRemoveLast
 };
 
 }      // namespace EllipseMath
+
+}      // namepapce Ellipse

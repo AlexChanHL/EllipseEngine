@@ -26,20 +26,20 @@ struct LayerStack
     public:
      LayerStack()
       {
-     first = new Page(Page::Header{nullptr, nullptr}, Layer::createDefaultLayer());
-     current = first;
+      first = new Page(Page::Header{nullptr, nullptr}, Layer::createDefaultLayer());
+      current = first;
       }
      ~LayerStack()
       {
       Page* ptr = first;
       Page* p = first;
 
-         while(ptr)
-          {
-            ptr = ptr->m_header.next;
-             delete p;
-            p = ptr;
-          }
+      while(ptr)
+      {
+      ptr = ptr->m_header.next;
+      delete p;
+      p = ptr;
+      }
 
       }
      

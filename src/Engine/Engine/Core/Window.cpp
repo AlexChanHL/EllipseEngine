@@ -5,6 +5,10 @@
 
 #include "Base.hpp"
 
+
+namespace Ellipse
+{
+
 UniquePtr<Window> Window::createWindow(const WindowSettings& specs)
 {
      switch(specs.m_lib)
@@ -27,3 +31,9 @@ UniquePtr<Window> Window::createWindow(const WindowSettings& specs)
    
     return nullptr;
 }
+
+}     // namespace Ellipse
+
+
+
+

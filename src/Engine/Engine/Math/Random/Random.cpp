@@ -2,6 +2,9 @@
 #include "Random.hpp"
 
 
+namespace Ellipse
+{
+
 namespace EllipseMath
 {
 
@@ -25,3 +28,5 @@ int32_t randIntDist(std::uniform_int_distribution<>& intDist)
 }
 
 }    // namespace EllipseMath
+
+}    // namespace Ellipse

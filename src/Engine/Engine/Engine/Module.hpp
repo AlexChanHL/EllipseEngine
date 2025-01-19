@@ -2,6 +2,10 @@
 
 #include "Core/Base.hpp"
 
+
+namespace Ellipse
+{
+
 class IModule
 {
    public:
@@ -74,3 +78,5 @@ class NoModule : public IModule
 
    private:
 };
+
+}     // namespace Ellipse

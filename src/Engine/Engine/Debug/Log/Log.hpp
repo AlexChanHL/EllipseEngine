@@ -8,11 +8,17 @@ namespace Ellipse
 
 class Log
 {
-  public:
-   static void init();
+   public:
+    static void init();
 
- static SharedPtr<uLog::Logger>& clientLogger() { return m_clientLogger; }
- static SharedPtr<uLog::Logger>& engineLogger() { return m_engineLogger; }
+    static SharedPtr<uLog::Logger>& clientLogger()
+    {
+    return m_clientLogger;
+    }
+    static SharedPtr<uLog::Logger>& engineLogger()
+    {
+    return m_engineLogger;
+    }
 
   private:
     static SharedPtr<uLog::Logger> m_clientLogger;

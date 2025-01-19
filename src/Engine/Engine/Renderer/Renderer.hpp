@@ -17,13 +17,13 @@ class Renderer : public ISystem
     explicit Renderer(ISystem& system);
     virtual ~Renderer() = default;
 
-    virtual void render(const RenderObj& rObj, const RenderShaderObj& sObj) = 0;
+    virtual void render(const RenderObj& rObj, const RenderShaderObj& sObj, const UniformList& uniforms) = 0;
     virtual void clearColorBuffer() = 0;
     virtual void setClearColor(const Vec4& col) = 0;
     virtual void setWindowFrameSize(Pair<int, int> winSize) = 0;
     virtual void setViewport(i32_t posX, i32_t posY,  i32_t width, i32_t height) = 0;
     virtual Pair<int, int> getWindowFrameSize() = 0;
-    virtual SharedPtr<RenderObj> createRenderObj(VerticiesData verts) = 0;
+    virtual SharedPtr<RenderObj> createRenderObj(ModelData data) = 0;
     virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader,
                                                  String fShader,
                                                  UniformList uniforms) = 0;

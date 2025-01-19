@@ -7,66 +7,6 @@
 namespace Ellipse
 {
 
-class ModelManagerModuleImpl : public ModelManagerModule
-{
-   public:
-    ModelManagerModuleImpl()
-    : m_defaultWorld{ModelWorld{"ModelManagerDefaultWorld", 0, 0}},
-      m_randomRemoveLast{int32_t(pow(10,2))},
-      m_modelOrderCount{0},
-      m_modelWorldCount{0},
-      m_modelWorldDrawOrder{}
-    {
-    setName("ModelManagerLayerModule");
-    }
-  
-    ~ModelManagerModuleImpl()
-    {
-
-    }
- 
-    virtual void initLayerModule() override
-    {
-    m_modelWorldDrawOrder.initModelWorldDrawOrder();
-    m_layerTracker.initLayer();
-    m_modelWorlds.initLayer();
-    m_userWorlds.initLayer();
-    m_modelLayers.push_back(ModelLayer{});
-    m_modelLayersIterator = m_modelLayers.begin();
-    m_previousModelLayersIterator = m_modelLayers.begin();
-    }
-
-
-    // [ Updating the next layer is using after
-    //   update call ]
-
-    virtual void onUpdateLayer() override
-    {
-    onUpdateModelMatrices();
-
-    // for(ModelLayer& modelLayer : m_modelLayers)
-    // {
-    // for(ModelViewspace& modelViewspace : modelLayer.m_modelViewspaces)
-    // {
-    // // std::cout << "Model Layer Viewspace posX: " << modelViewspace.m_viewspace.m_posX << '\n'; 
-    // }
-    // }
-
-    m_layerTracker.updateLayer();
-    m_modelWorlds.updateLayer(m_layerTracker);
-    m_userWorlds.updateLayer(m_layerTracker);
-    m_modelWorldDrawOrder.update();
-    concatnateWorlds();
-
-    m_modelLayersIterator++;
-    m_previousModelLayersIterator = m_modelLayersIterator - 1;
-    if(m_modelLayersIterator == m_modelLayers.end())
-    {
-    m_modelLayersIterator = m_modelLayers.begin();
-    }
-
-    }
-
     // Render
     // +=======+==================+=============+
     // | 1     | 2                | 1           |
@@ -116,13 +56,232 @@ class ModelManagerModuleImpl : public ModelManagerModule
     // | 0 | 1 | 2 |
     // +===+===+===+
 
+// class ID
+// {
+//    public:
+//     ID()
+//     {
+//
+//     }
+//     ~ID()
+//     {
+//
+//     }
+//
+//
+//     virtual i32_t id() = 0;
+//     
+//    private:
+// };
+//
+//
 
+class ModelManagerModuleImpl : public ModelManagerModule
+{
+   public:
+    ModelManagerModuleImpl()
+    : m_defaultWorld{ModelWorld{"ModelManagerDefaultWorld", 0, 0}},
+      m_randomRemoveLast{int32_t(pow(10,2))},
+      m_modelOrderCount{0},
+      m_modelWorldCount{0},
+      m_modelWorldDrawOrder{}
+    {
+    setName("ModelManagerLayerModule");
+    }
+  
+    ~ModelManagerModuleImpl()
+    {
+
+    }
+ 
+    virtual void initLayerModule() override
+    {
+    m_modelWorldDrawOrder.initModelWorldDrawOrder();
+    m_layerTracker.initLayer();
+    m_modelWorlds.initLayer();
+    m_userWorlds.initLayer();
+    }
+
+
+    // [ Updating the next layer is using after
+    //   update call ]
+
+    virtual void onUpdateLayer() override
+    {
+    onUpdateModelMatrices();
+
+    m_cameraManager.setFronts();
+
+
+    m_layerTracker.updateLayer();
+    m_modelWorlds.updateLayer(m_layerTracker);
+    m_userWorlds.updateLayer(m_layerTracker);
+    m_modelWorldDrawOrder.update();
+    concatnateWorlds();
+
+    }
+
+    virtual void importModel(String modelImportPath) override
+    // virtual ModelData importModel(String modelImportPath) override
+    {
+    // return m_modelImporter.importModel(modelImportPath);
+      
+    }
+
+    // virtual void addModel(ModelID& modelID,
+    //                       const char* modelName, 
+    //                       String vertexShader,
+    //                       String fragmentShader,
+    //                       VerticiesData verticies,
+    //                       UniformList uniformList
+    //                       ) override
+    // {
+    // ModelWorld queryWorld = m_modelWorlds.currentWorld();
+    //
+    // for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
+    // {
+    // for(u32_t j = queryWorld.start(); j < queryWorld.end(); j++)
+    // {
+    // if(modelID == m_modelModuleModels[j].m_modelID)
+    // {
+    // ELLIPSE_ENGINE_LOG_INFO("Adding already model");
+    // return;
+    // }
+    //
+    // }
+    // queryWorld.updateNextSubWorld();
+    // }
+    //
+    // modelID.m_ID = m_randomRemoveLast.chooseRandomVal();
+    //
+    // if(m_modelAddCollection.empty() || strcmp(m_modelWorlds.previousWorld().name(), m_modelWorlds.currentWorld().name()) != 0)
+    // {
+    //
+    // u32_t modelWorldPosition = 0;
+    //
+    //
+    // // [ Check if main world is same as default world
+    // //   and delete all the check here in this ]
+    //
+    // // Comparing to where the world is in the list as well as
+    // // checking if the world actually exists
+    // bool modelWorldFound = false;
+    // MainWorld queryMainWorld = m_modelWorlds.mainWorld(m_modelWorlds.currentMainWorld().name());
+    //
+    // if(strcmp(queryMainWorld.mainWorld().name(), m_modelWorlds.currentWorld().name()) == 0)
+    // {
+    // modelWorldPosition = queryMainWorld.mainWorld().orderInList();
+    // modelWorldFound = true;
+    // }
+    //
+    // if(!modelWorldFound)
+    // {
+    // auto subWorldIt = queryMainWorld.subWorlds().begin();
+    // for(; subWorldIt != queryMainWorld.subWorlds().end(); subWorldIt++)
+    // {
+    // if(strcmp(m_modelWorlds.currentWorld().name(), subWorldIt->name()) == 0)
+    // {
+    // modelWorldPosition = subWorldIt->orderInList();
+    // modelWorldFound = true;
+    // break;
+    // }
+    // }
+    //
+    // // The user has not specified the world to add the model to
+    // if(!modelWorldFound)
+    // {
+    // return;
+    // }
+    //
+    // }
+    //
+    //
+    // m_userWorlds.addDrawOrder(modelWorldPosition,
+    //                           m_modelWorlds.currentMainWorld().name(),
+    //                           m_modelWorlds.currentWorld().name());
+    //
+    // m_modelWorlds.addModelBeginPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
+    //
+    // m_modelWorlds.addWorldAddOrder(modelWorldPosition, m_modelWorlds.currentMainWorld().name());
+    //
+    //
+    // ModelData modelData;
+    //
+    //
+    // m_modelModuleModels.pushBack(ModelModuleModel{
+    //  modelID,
+    //  modelName
+    //                                              }
+    // );
+    //
+    // m_modelOrderCount++;
+    //
+    //
+    // m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
+    //
+    // m_modelAddCollection.push_back(
+    //  ModelAddCollection{
+    //   m_modelWorlds.currentWorld().name(),
+    //   modelID,
+    //   modelName,
+    //   vertexShader,
+    //   fragmentShader,
+    //   modelData,
+    //   uniformList,
+    //   m_modelModuleModels[m_modelModuleModels.size() - 1].m_model
+    //    }
+    //                           );
+    //
+    // // [ Set the current world end position rather
+    // //   than copying the new world ]
+    // ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(modelWorldPosition);
+    // m_modelWorlds.setCurrentWorld(worldAfterAddModel);
+    // if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
+    // {
+    // m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
+    // }
+    //
+    // m_modelWorlds.setPreviousWorld(worldAfterAddModel);
+    //
+    // return; 
+    // }
+    //
+    // ModelData modelData;
+    //
+    // m_modelModuleModels.pushBack(ModelModuleModel{
+    //  modelID,
+    //  modelName
+    //                                              }
+    // );
+    //
+    //
+    // m_modelOrderCount++;
+    //
+    // m_modelAddCollection[m_modelAddCollection.size() - 1].addModel(
+    //    modelID,
+    //    modelName,
+    //    vertexShader,
+    //    fragmentShader,
+    //    modelData,
+    //    uniformList,
+    //    m_modelModuleModels[m_modelModuleModels.size() - 1].m_model 
+    //   );
+    //
+    // m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
+    // // update current world
+    // ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(m_modelWorlds.currentWorld().orderInList());
+    // m_modelWorlds.setCurrentWorld(worldAfterAddModel);
+    // if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
+    // {
+    // m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
+    // }
+    // }
 
     virtual void addModel(ModelID& modelID,
-                          const char* modelName, 
+                          const char* modelName,
                           String vertexShader,
                           String fragmentShader,
-                          VerticiesData verticies,
+                          String importPath,
                           UniformList uniformList
                           ) override
     {
@@ -134,7 +293,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
     {
     if(modelID == m_modelModuleModels[j].m_modelID)
     {
-    std::cout << "Adding already model\n";
+    ELLIPSE_ENGINE_LOG_INFO("Adding already model");
     return;
     }
 
@@ -143,9 +302,8 @@ class ModelManagerModuleImpl : public ModelManagerModule
     }
 
     modelID.m_ID = m_randomRemoveLast.chooseRandomVal();
-    // [ Check so don't add two models with the same ID ]
-    if(m_subModelMangers.empty() || strcmp(m_modelWorlds.previousWorld().name(), m_modelWorlds.currentWorld().name()) != 0)
-        // || strcmp(m_subModelMangers[m_subModelMangers.size() - 1].modelWorldName(), m_modelWorlds.currentWorld().name()) != 0)
+
+    if(m_modelAddCollection.empty() || strcmp(m_modelWorlds.previousWorld().name(), m_modelWorlds.currentWorld().name()) != 0)
     {
 
     u32_t modelWorldPosition = 0;
@@ -186,23 +344,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     }
 
-    // Checking if the world is different and no model has been
-    // added to it before
-    // [ Remove isDifferentWorld, no need renderModule
-    //   uses modelModule worlds and doesn't ]
- //    bool isDifferentWorld = true;
- //    for(u64_t i = 0; i < m_modelWorlds.addWorlds().size(); i++)
- //    {
- //    if(modelWorldPosition == m_modelWorlds.addWorlds()[i])
- //    {
- //    isDifferentWorld = false;
- //    }
- //    }
- // 
- //    if(isDifferentWorld)
- //    {
- //    m_modelWorlds.addModelDifferent(modelWorldPosition);
- //    }
 
     m_userWorlds.addDrawOrder(modelWorldPosition,
                               m_modelWorlds.currentMainWorld().name(),
@@ -212,6 +353,9 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     m_modelWorlds.addWorldAddOrder(modelWorldPosition, m_modelWorlds.currentMainWorld().name());
 
+    importModel(importPath);
+    ModelData modelData;
+
 
     m_modelModuleModels.pushBack(ModelModuleModel{
      modelID,
@@ -219,20 +363,21 @@ class ModelManagerModuleImpl : public ModelManagerModule
                                                  }
     );
 
+    // createObjectDefinition(objectName, uniformList);
+
     m_modelOrderCount++;
 
 
     m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
 
-    m_subModelMangers.push_back(
-     SubModelManager{
+    m_modelAddCollection.push_back(
+     ModelAddCollection{
       m_modelWorlds.currentWorld().name(),
-      // isDifferentWorld, 
       modelID,
       modelName,
       vertexShader,
       fragmentShader,
-      verticies,
+      modelData,
       uniformList,
       m_modelModuleModels[m_modelModuleModels.size() - 1].m_model
        }
@@ -260,17 +405,21 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     m_modelOrderCount++;
 
-    m_subModelMangers[m_subModelMangers.size() - 1].addModel(
+    importModel(importPath);
+    ModelData modelData;
+
+    m_modelAddCollection[m_modelAddCollection.size() - 1].addModel(
        modelID,
        modelName,
        vertexShader,
        fragmentShader,
-       verticies,
+       modelData,
        uniformList,
        m_modelModuleModels[m_modelModuleModels.size() - 1].m_model 
       );
 
     m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
+
     // update current world
     ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(m_modelWorlds.currentWorld().orderInList());
     m_modelWorlds.setCurrentWorld(worldAfterAddModel);
@@ -278,7 +427,180 @@ class ModelManagerModuleImpl : public ModelManagerModule
     {
     m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
     }
+
     }
+
+    virtual void addCube(ModelID& modelID,
+                         const char* modelName,
+                         UniformList uniformList) override
+    {
+    ModelWorld queryWorld = m_modelWorlds.currentWorld();
+
+    for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
+    {
+    for(u32_t j = queryWorld.start(); j < queryWorld.end(); j++)
+    {
+    if(modelID == m_modelModuleModels[j].m_modelID)
+    {
+    ELLIPSE_ENGINE_LOG_INFO("Adding already model");
+    return;
+    }
+
+    }
+    queryWorld.updateNextSubWorld();
+    }
+
+    modelID.m_ID = m_randomRemoveLast.chooseRandomVal();
+
+    if(m_modelAddCollection.empty() || strcmp(m_modelWorlds.previousWorld().name(), m_modelWorlds.currentWorld().name()) != 0)
+    {
+
+    u32_t modelWorldPosition = 0;
+
+
+    // [ Check if main world is same as default world
+    //   and delete all the check here in this ]
+
+    // Comparing to where the world is in the list as well as
+    // checking if the world actually exists
+    bool modelWorldFound = false;
+    MainWorld queryMainWorld = m_modelWorlds.mainWorld(m_modelWorlds.currentMainWorld().name());
+
+    if(strcmp(queryMainWorld.mainWorld().name(), m_modelWorlds.currentWorld().name()) == 0)
+    {
+    modelWorldPosition = queryMainWorld.mainWorld().orderInList();
+    modelWorldFound = true;
+    }
+
+    if(!modelWorldFound)
+    {
+    auto subWorldIt = queryMainWorld.subWorlds().begin();
+    for(; subWorldIt != queryMainWorld.subWorlds().end(); subWorldIt++)
+    {
+    if(strcmp(m_modelWorlds.currentWorld().name(), subWorldIt->name()) == 0)
+    {
+    modelWorldPosition = subWorldIt->orderInList();
+    modelWorldFound = true;
+    break;
+    }
+    }
+
+    // The user has not specified the world to add the model to
+    if(!modelWorldFound)
+    {
+    return;
+    }
+
+    }
+
+    // UniformList cubeUniformList = retriveObject("cube").uniformList();
+    // if(!isSameUniformDefinition(cubeUniformList, uniformList))
+    // {
+    //
+    // }
+    //
+    //
+    // uniformList uniform0: Type Mat4 Name a0 Value {1,1,0,1}
+    // uniformList uniform1: Type Vec3 Name a1 Value {0,1,1,0}
+    // uniformList uniform2: Type Vec3 Name a2 Value {1,1,1,1}
+    //
+    // cubeUniformList uniform0: Type Mat4 Name a0 Value {0,0,0,0}
+    // cubeUniformList uniform1: Type Vec3 Name a1 Value {0,0,0,0}
+    // cubeUniformList uniform2: Type Vec3 Name a2 Value {0,0,0,0}
+    //
+    // if(cubeUniformList != uniformList)
+    // {
+    // return;
+    // }
+
+
+    m_userWorlds.addDrawOrder(modelWorldPosition,
+                              m_modelWorlds.currentMainWorld().name(),
+                              m_modelWorlds.currentWorld().name());
+
+    m_modelWorlds.addModelBeginPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
+
+    m_modelWorlds.addWorldAddOrder(modelWorldPosition, m_modelWorlds.currentMainWorld().name());
+
+    ObjectID objectID;
+
+
+    m_modelModuleModels.pushBack(ModelModuleModel{
+     modelID,
+     modelName
+                                                 }
+    );
+
+    m_modelOrderCount++;
+
+
+    m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
+
+    m_modelAddCollection.push_back(
+     ModelAddCollection{
+      m_modelWorlds.currentWorld().name(),
+      modelID,
+      modelName,
+      objectID,
+      uniformList,
+      m_modelModuleModels[m_modelModuleModels.size() - 1].m_model
+       }
+                              );
+
+    // [ Set the current world end position rather
+    //   than copying the new world ]
+    ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(modelWorldPosition);
+    m_modelWorlds.setCurrentWorld(worldAfterAddModel);
+    if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
+    {
+    m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
+    }
+
+    m_modelWorlds.setPreviousWorld(worldAfterAddModel);
+
+    return; 
+    }
+
+    m_modelModuleModels.pushBack(ModelModuleModel{
+     modelID,
+     modelName
+                                                 }
+    );
+
+    m_modelOrderCount++;
+
+    ObjectID objectID;
+
+    // ObjectID objectID = findObject("Cube");
+
+    m_modelAddCollection[m_modelAddCollection.size() - 1].addModel(
+       modelID,
+       modelName,
+       objectID,
+       uniformList,
+       m_modelModuleModels[m_modelModuleModels.size() - 1].m_model 
+      );
+
+    m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
+
+    // update current world
+    ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(m_modelWorlds.currentWorld().orderInList());
+    m_modelWorlds.setCurrentWorld(worldAfterAddModel);
+    if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
+    {
+    m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
+    }
+    
+    }
+
+    // virtual void addModelObjectID(ModelID& modelID,
+    //                               const char* modelName, 
+    //                               // ObjectID objectID
+    //                              ) override
+    // {
+    //
+    // 
+    // }
 
     virtual void translateModel(ModelID modelID, Vec3 translationAmount) override
     {
@@ -293,7 +615,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
     {
     if(modelID == m_modelModuleModels[j].m_modelID)
     {
-    // std::cout << "translate amount\n";
     m_modelModuleModels[j].setTranslationAmount(translationAmount);
     m_modelModuleModels[j].setIsModified(true);
     i = queryWorld.modelPositionCount();
@@ -304,7 +625,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
     }
 
     }
-
+ 
     virtual void rotateModel(ModelID modelID, float radians, Vec3 rotationAxis) override
     {
     ModelWorld queryWorld = m_modelWorlds.currentWorld();
@@ -613,6 +934,65 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     }
 
+
+    virtual void addUserCamera(const char* userWorldName,
+                               const char* cameraName) override
+    {
+    m_cameraManager.addCamera(cameraName);
+    m_userWorlds.addCameraToUserWorld(userWorldName, cameraName);
+    }
+
+    virtual void registerMouseUpdate(Pair<float, float> mouseOffsets) override
+    {
+    m_cameraManager.registerMouseUpdate(mouseOffsets);
+    }
+
+    virtual void translateCameraForward(const char* cameraName) override
+    {
+    m_cameraManager.translateForward(m_cameraManager.findCameraIndex(cameraName));
+    }
+    virtual void translateCameraBackward(const char* cameraName) override
+    {
+    m_cameraManager.translateBackward(m_cameraManager.findCameraIndex(cameraName));
+    }
+    virtual void translateCameraLeft(const char* cameraName) override
+    {
+    m_cameraManager.translateLeft(m_cameraManager.findCameraIndex(cameraName));
+    }
+    virtual void translateCameraRight(const char* cameraName) override
+    {
+    m_cameraManager.translateRight(m_cameraManager.findCameraIndex(cameraName));
+    }
+
+    virtual void setCameraPosition(const char* cameraName,
+                                   Vec3 position) override
+    {
+    m_cameraManager.setCameraPosition(m_cameraManager.findCameraIndex(cameraName), position);
+    }
+
+    virtual Camera retrieveCamera(const char* cameraName) override
+    {
+    // u32 index = m_cameraManager.findCamera(cameraName);
+    // if(index == m_cameraManager.cameras().size())
+    // {
+    // ELLIPSE_ENGINE_LOG_INFO("Did not retrieve camera");
+    // return;
+    // }
+
+
+    return m_cameraManager.findCamera(cameraName);
+    }
+
+    virtual u64_t findCameraIndex(const char* cameraName) override
+    {
+    return m_cameraManager.findCameraIndex(cameraName);
+    }
+
+    virtual Camera& cameraIndex(u64_t index) override
+    {
+    return m_cameraManager.cameraIndex(index);
+    }
+
     virtual void setViewspace(Viewspace viewspace) override
     {
     m_currentViewspace = viewspace;
@@ -632,9 +1012,9 @@ class ModelManagerModuleImpl : public ModelManagerModule
     return m_modelWorlds.modelWorldFindPrevious(worldPosition, mainWorldName);
     }
 
-    virtual void clearSubModelManagers() override
+    virtual void clearModelAddCollection() override
     {
-    m_subModelMangers.clear();
+    m_modelAddCollection.clear();
     }
 
     virtual void clearModelsToBeRemoved() override
@@ -655,7 +1035,9 @@ class ModelManagerModuleImpl : public ModelManagerModule
     u32_t worldPositionIndex = userWorlds()[i].userWorldDraw()[j];
 
     ELLIPSE_ENGINE_LOG_INFO("{} :", modelWorld(worldPositionIndex, userWorlds()[i].mainWorldName()).name());
-    ELLIPSE_ENGINE_LOG_INFO("Start: {} End: {}", modelWorld(worldPositionIndex, userWorlds()[i].mainWorldName()).modelPosition(worldLastPosition(worldPositionIndex)).first, modelWorld(worldPositionIndex, userWorlds()[i].mainWorldName()).modelPosition(worldLastPosition(worldPositionIndex)).second);
+    ELLIPSE_ENGINE_LOG_INFO("Start: {} End: {}",
+                            modelWorld(worldPositionIndex, userWorlds()[i].mainWorldName()).modelPosition(worldLastPosition(worldPositionIndex)).first,
+                            modelWorld(worldPositionIndex, userWorlds()[i].mainWorldName()).modelPosition(worldLastPosition(worldPositionIndex)).second);
 
     worldLastPositionUpdate(userWorlds()[i].userWorldDraw()[j]);
     }
@@ -669,11 +1051,8 @@ class ModelManagerModuleImpl : public ModelManagerModule
     {
     for(u64_t j = 0; j < mainWorlds()[i].mainWorld().modelPositions().size(); j++)
     {
-    // ModelWorld world = mainWorlds()[i].mainWorld();
-    // std::cout << world.name() << '\n';
-    std::cout << mainWorlds()[i].mainWorld().name() << '\n';
-    std::cout << "Start: " << mainWorlds()[i].mainWorld().modelPositions()[j].first << " End: ";
-    std::cout << mainWorlds()[i].mainWorld().modelPositions()[j].second << '\n';
+    ELLIPSE_ENGINE_LOG_INFO("{}", mainWorlds()[i].mainWorld().name());
+    ELLIPSE_ENGINE_LOG_INFO("Start: {} End: {}", mainWorlds()[i].mainWorld().modelPositions()[j].first, mainWorlds()[i].mainWorld().modelPositions()[j].second);
     }
     }
 
@@ -746,9 +1125,18 @@ class ModelManagerModuleImpl : public ModelManagerModule
     return m_modelModuleModels[modelPosition].isInWireframeMode();
     }
 
-    virtual std::vector<SubModelManager> subModelManagers() const override
+    virtual Vector<ModelAddCollection> modelAddCollection() const override
     {
-    return m_subModelMangers;
+    return m_modelAddCollection;
+    }
+    virtual Vector<ModelAddCollection>& modelAddCollection() override
+    {
+    return m_modelAddCollection;
+    }
+
+    virtual CameraManager& cameraManager() override
+    {
+    return m_cameraManager;
     }
 
     virtual Vector<MainWorld> mainWorlds() const override
@@ -812,15 +1200,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
     return m_modelsToBeRemovedIndicies;
     }
 
-    virtual std::vector<ModelLayer>& modelLayers() override
-    {
-    return m_modelLayers;
-    } 
-
-    virtual std::vector<ModelLayer>::iterator previousModelLayersIterator() override
-    {
-    return m_previousModelLayersIterator;
-    }
 
     virtual ModelWorldDrawOrder modelWorldDrawOrder() const override
     {
@@ -1010,7 +1389,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
             LayerModelWorlds()
             : m_mainWorlds{Vector<MainWorld>{}},
               m_addModelWorldOrder{Vector<AddedWorldQuery>{}}
-              // m_addModelDifferent{Vector<u32_t>{}}
             {
 
             }
@@ -1035,12 +1413,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
             }
 
             }
-
-            // [ Rename to modelWorld different ]
-            // void addModelDifferent(u32_t modelWorldPosition)
-            // {
-            // m_addModelDifferent.push_back(modelWorldPosition);
-            // }
 
             void addWorldAddOrder(u32_t modelWorldPosition, const char* name)
             {
@@ -1543,6 +1915,23 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
         }
 
+        void addCameraToUserWorld(const char* userWorldName,
+                                  const char* cameraName)
+        {
+        for(u32_t i = 0; i < userWorlds().size(); i++)
+        {
+        if(strcmp(userWorldName, userWorlds()[i].name()) == 0)
+        {
+        // [ Add camera ]
+        userWorlds()[i].setCamera(cameraName);
+        return;
+        }
+        }
+
+        ELLIPSE_ENGINE_LOG_WARN("Couldn't find user world, did not add");
+
+        }
+
         void removeWorldLastPositions()
         {
         m_worldLastPositions.clear();
@@ -1593,7 +1982,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
         Map<u32_t, u32_t> m_worldLastPositions;
     };
 
-    Vector<SubModelManager> m_subModelMangers;
+    Vector<ModelAddCollection> m_modelAddCollection;
     
     VectorSharedIteratorHeap<ModelModuleModel> m_modelModuleModels;
     Vector<u32_t> m_modelsToBeRemovedIndicies;
@@ -1602,11 +1991,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     // Shared between user worlds
     ManagerModuleModelWorlds m_modelWorlds;
-
-    // [ Delete these ]
-    Vector<ModelLayer> m_modelLayers;
-    Vector<ModelLayer>::iterator m_modelLayersIterator;
-    Vector<ModelLayer>::iterator m_previousModelLayersIterator;
 
     ManagerModuleUserWorlds m_userWorlds;
     Vector<u32_t> m_addedWorlds;
@@ -1622,11 +2006,14 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     // [ Rename to m_uniqueIDGenerator ]
     EllipseMath::RandomRemoveLast m_randomRemoveLast;
+
     u32_t m_modelOrderCount;
     u32_t m_modelWorldCount;
 
     // [ Unused, delete this when possible ]
     ModelWorldDrawOrder m_modelWorldDrawOrder;
+
+    CameraManager m_cameraManager;
 };
 
 void ModelManagerModuleImpl::setDifferentInViewspace(float viewspaceWidth,

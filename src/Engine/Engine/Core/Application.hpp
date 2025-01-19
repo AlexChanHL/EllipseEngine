@@ -16,36 +16,44 @@ namespace Ellipse
 
 class ApplicationStackValue
 {
-  public:
-   static void createStackValues()
-   {
-   Ellipse::Log::init();
-   Ellipse::OSTime::init();
-   }
-  private:
+   public:
+    static void createStackValues()
+    {
+    Ellipse::Log::init();
+    Ellipse::OSTime::init();
+    }
+   private:
 };
 
 class ApplicationCMDLineArgs
 {
-  public:
-   ApplicationCMDLineArgs() {}
-   ApplicationCMDLineArgs(int argv, char** argc)
- : m_argv{argv}, m_argc{argc}
+   public:
+    ApplicationCMDLineArgs()
+    {
+
+    }
+    ApplicationCMDLineArgs(int argv, char** argc)
+    : m_argv{argv},
+      m_argc{argc}
+    {
+
+    }
+    ~ApplicationCMDLineArgs()
     {
 
     }
     
-   int argv()
-   {
-   return m_argv;
-   }
-   char** argc()
-   {
-   return m_argc;
-   }
+    i32_t argv()
+    {
+    return m_argv;
+    }
+    char** argc()
+    {
+    return m_argc;
+    }
 
-  private:
-    int m_argv;
+   private:
+    i32_t m_argv;
     char** m_argc;
 };
 
@@ -56,18 +64,25 @@ class ApplicationSpecifications
    
     ApplicationSpecifications()
     {
-      setDefaultWindowValues();
+    setDefaultWindowValues();
+    }
+    ~ApplicationSpecifications()
+    {
+
     }
 
-    void setValues() { }
-
-    void setWindowValues(int width,
-                         int height,
-                         std::string title)
+    void setValues()
     {
-      m_windowSettings.m_width = width;
-      m_windowSettings.m_height = height;
-      m_windowSettings.m_title = title;
+
+    }
+
+    void setWindowValues(i32_t width,
+                         i32_t height,
+                         String title)
+    {
+    m_windowSettings.m_width = width;
+    m_windowSettings.m_height = height;
+    m_windowSettings.m_title = title;
     }
 
     void setDefaultValues()
@@ -76,18 +91,13 @@ class ApplicationSpecifications
     }
     void setDefaultWindowValues() 
     {
-         setWindowValues(1280, 640, "Title");
-    }
-
-
-    ~ApplicationSpecifications() {
-
+    setWindowValues(1280, 640, "Title");
     }
      
    public:
-      WindowSettings m_windowSettings;
-      GraphicsSpec m_graphicSpec;
-      userFn m_userFunc;
+    WindowSettings m_windowSettings;
+    GraphicsSpec m_graphicSpec;
+    userFn m_userFunc;
 
    private:
 };
@@ -98,7 +108,7 @@ class Application
 {
    public:
     Application();
-   ~Application();
+    ~Application();
 
     void init(const ApplicationSpecifications& specs);
      
@@ -106,12 +116,17 @@ class Application
 
     void run();
 
-    void pushLayer(std::shared_ptr<Layer> layer);
+    void quitApplication();
+
+    void pushLayer(SharedPtr<Layer> layer);
 
     bool onWindowClose(WindowUserQuitEvent& windowQuit);
     bool onWindowResize(WindowResizeEvent& resizeEvent);
 
-    static Application& get() { return *sInStance; }
+    static Application& get()
+    {
+    return *sInStance;
+    }
 
     Engine& getEngine() const
     {
@@ -127,9 +142,10 @@ class Application
     }
 
    private:
-    bool m_running{true};
+    bool m_running;
 
     UniquePtr<Window> m_window = nullptr;
+    // [ Engine should have control of renderer ]
     SharedPtr<Renderer> m_renderer = nullptr;
     LayerStack m_layerStack;
     UniquePtr<Engine> m_engine = nullptr;

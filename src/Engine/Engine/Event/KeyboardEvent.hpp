@@ -3,17 +3,21 @@
 #include "Core/ScanCodes.hpp"
 #include "Core/KeyCodes.hpp"
 
+
+namespace Ellipse
+{
+
 class KeyboardEvent : public Event
 {
     public:
      virtual EventType getEventType() const override
-      {
-        return EventType::None;
-      }
-      virtual const char* getEventName() const override
-      {
-        return "KeyboardEvent";
-      }
+     {
+     return EventType::None;
+     }
+     virtual const char* getEventName() const override
+     {
+     return "KeyboardEvent";
+     }
 
     private:
 };
@@ -26,16 +30,21 @@ class KeyboardPressedEvent : public KeyboardEvent
      {
 
      }
-      virtual EventType getEventType() const override
+     virtual EventType getEventType() const override
      {
-       return EventType::KeyboardPressedEvent;
+     return EventType::KeyboardPressedEvent;
      }
-      virtual const char* getEventName() const override
+     virtual const char* getEventName() const override
      {
-      return "KeyboardPressedEvent";
+     return "KeyboardPressedEvent";
      }
 
-     KeyCode keyCode() const { return m_keyCode; }
+     KeyCode keyCode() const
+     {
+     return m_keyCode;
+     }
     private:
      KeyCode m_keyCode;
 };
+
+}    // namespace Ellipse

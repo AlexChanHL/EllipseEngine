@@ -3,6 +3,10 @@
 #include "Core/Base.hpp"
 #include "Module.hpp"
 
+
+namespace Ellipse
+{
+
 class ISystem
 {
   public:
@@ -31,3 +35,9 @@ class NoSystem : public ISystem
 
    private:
 };
+
+}     // namespace Ellipse
+
+
+
+

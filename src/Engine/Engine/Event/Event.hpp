@@ -3,6 +3,9 @@
 #include "Core/Base.hpp"
 
 
+namespace Ellipse
+{
+
 // [ This is wrong, using hexadecimal digits ]
 enum class EventType : u8_t
 {
@@ -83,36 +86,38 @@ void dispatchEvent(EventType type,
     Event& m_event;
 };
 
-#define WINDOW_SHOWN_EVENT               EventType(0x0001u)
-#define WINDOW_EXPOSED_EVENT             EventType(0x0002u)
-#define WINDOW_MOVED_EVENT               EventType(0x0003u)
-#define WINDOW_RESIZED_EVENT             EventType(0x0004u)
-#define WINDOW_MINIMIZED_EVENT           EventType(0x0005u)
-#define WINDOW_MAXIMIZED_EVENT           EventType(0x0006u)
-#define WINDOW_MOUSE_ENTER_EVENT         EventType(0x0007u)
-#define WINDOW_MOSUE_LEAVE_EVENT         EventType(0x0008u)
-#define WINDOW_FOCUS_GAINED_EVENT        EventType(0x0009u)
-#define WINDOW_FOCUS_LOST_EVENT          EventType(0x000au)
-#define WINDOW_FULLSCREEN_EVENT          EventType(0x000bu)
-#define WINDOW_LEAVE_FULLSCREEN_EVENT    EventType(0x000cu)
-#define WINDOW_USER_QUIT_EVENT           EventType(0x000du)
-#define WINDOW_DESTROYED_EVENT           EventType(0x000eu)
-#define KEYBOARD_PRESSED_EVENT           EventType(0x000fu)
-#define KEYBOARD_RELEASED_EVENT          EventType(0x0010u)
-#define TEXT_EDITING_EVENT               EventType(0x0011u)
-#define TEXT_INPUT_EVENT                 EventType(0x0012u)
-#define MOUSE_MOTION_EVENT               EventType(0x0013u)
-#define MOUSE_PRESSED_EVENT              EventType(0x0014u)
-#define MOUSE_RELEASED_EVENT             EventType(0x0015u)
-#define MOUSE_WHEEL_EVENT                EventType(0x0016u)
-#define JOYSTICK_AXIS_MOTION_EVENT       EventType(0x0017u)
-#define JOYSTICK_BALL_MOTION_EVENT       EventType(0x0018u)
-#define JOYSTICK_HAT_MOTION_EVENT        EventType(0x0019u)
-#define JOYSTICK_BUTTON_PRESSED_EVENT    EventType(0x001au)
-#define JOYSTICK_BUTTON_RELEASED_EVENT   EventType(0x001bu)
-#define GAMEPAD_AXIS_MOTION_EVENT        EventType(0x001cu)
-#define GAMEPAD_BUTTON_PRESSED_EVENT     EventType(0x001du)
-#define GAMEPAD_BUTTON_RELEASED_EVENT    EventType(0x001eu)
-#define GAMEPAD_TOCUHPAD_PRESSED_EVENT   EventType(0x001fu)
-#define GAMEPAD_TOUCHPAD_RELEASED_EVENT  EventType(0x0020u)
-#define GAMEPAD_TOUCHPAD_MOTION_EVENT    EventType(0x0021u)
+}    // namespace Ellipse
+
+#define WINDOW_SHOWN_EVENT               Ellipse::EventType(0x0001u)
+#define WINDOW_EXPOSED_EVENT             Ellipse::EventType(0x0002u)
+#define WINDOW_MOVED_EVENT               Ellipse::EventType(0x0003u)
+#define WINDOW_RESIZED_EVENT             Ellipse::EventType(0x0004u)
+#define WINDOW_MINIMIZED_EVENT           Ellipse::EventType(0x0005u)
+#define WINDOW_MAXIMIZED_EVENT           Ellipse::EventType(0x0006u)
+#define WINDOW_MOUSE_ENTER_EVENT         Ellipse::EventType(0x0007u)
+#define WINDOW_MOSUE_LEAVE_EVENT         Ellipse::EventType(0x0008u)
+#define WINDOW_FOCUS_GAINED_EVENT        Ellipse::EventType(0x0009u)
+#define WINDOW_FOCUS_LOST_EVENT          Ellipse::EventType(0x000au)
+#define WINDOW_FULLSCREEN_EVENT          Ellipse::EventType(0x000bu)
+#define WINDOW_LEAVE_FULLSCREEN_EVENT    Ellipse::EventType(0x000cu)
+#define WINDOW_USER_QUIT_EVENT           Ellipse::EventType(0x000du)
+#define WINDOW_DESTROYED_EVENT           Ellipse::EventType(0x000eu)
+#define KEYBOARD_PRESSED_EVENT           Ellipse::EventType(0x000fu)
+#define KEYBOARD_RELEASED_EVENT          Ellipse::EventType(0x0010u)
+#define TEXT_EDITING_EVENT               Ellipse::EventType(0x0011u)
+#define TEXT_INPUT_EVENT                 Ellipse::EventType(0x0012u)
+#define MOUSE_MOTION_EVENT               Ellipse::EventType(0x0013u)
+#define MOUSE_PRESSED_EVENT              Ellipse::EventType(0x0014u)
+#define MOUSE_RELEASED_EVENT             Ellipse::EventType(0x0015u)
+#define MOUSE_WHEEL_EVENT                Ellipse::EventType(0x0016u)
+#define JOYSTICK_AXIS_MOTION_EVENT       Ellipse::EventType(0x0017u)
+#define JOYSTICK_BALL_MOTION_EVENT       Ellipse::EventType(0x0018u)
+#define JOYSTICK_HAT_MOTION_EVENT        Ellipse::EventType(0x0019u)
+#define JOYSTICK_BUTTON_PRESSED_EVENT    Ellipse::EventType(0x001au)
+#define JOYSTICK_BUTTON_RELEASED_EVENT   Ellipse::EventType(0x001bu)
+#define GAMEPAD_AXIS_MOTION_EVENT        Ellipse::EventType(0x001cu)
+#define GAMEPAD_BUTTON_PRESSED_EVENT     Ellipse::EventType(0x001du)
+#define GAMEPAD_BUTTON_RELEASED_EVENT    Ellipse::EventType(0x001eu)
+#define GAMEPAD_TOCUHPAD_PRESSED_EVENT   Ellipse::EventType(0x001fu)
+#define GAMEPAD_TOUCHPAD_RELEASED_EVENT  Ellipse::EventType(0x0020u)
+#define GAMEPAD_TOUCHPAD_MOTION_EVENT    Ellipse::EventType(0x0021u)

@@ -6,6 +6,9 @@
 
 #define BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
+
+// [ Define Ellipse::String used by engine, and for app string ]
+
 template<typename T>
 using Vector = std::vector<T>;
 
@@ -28,8 +31,12 @@ using FStreanOut = std::ofstream;
 template<typename T>
 using UniquePtr = std::unique_ptr<T>;
 
+template<typename T>
+using SharedPtr = std::shared_ptr<T>;
+
 // [ Temporarily use this ]
 using EntityRef = uLong_t;
+
 
 // #if USE_GLM
 #include <glm/glm.hpp>
@@ -45,6 +52,10 @@ using Mat3 = glm::mat3;
 using Mat4 = glm::mat4;
 
 using Radians = float;
+
+
+namespace Ellipse
+{
 
 namespace EllipseMath
 {
@@ -75,9 +86,17 @@ inline Mat4 ortho(float aspectRatio1,
                   float bottom,
                   float near,
                   float far
-                  )
+                 )
 {
-   return glm::ortho(aspectRatio1, aspectRatio2, top, bottom, near, far);
+    return glm::ortho(aspectRatio1, aspectRatio2, top, bottom, near, far);
+}
+
+inline Mat4 perspective(float fov,
+                        float aspectRatio,
+                        float near,
+                        float far)
+{
+    return glm::perspective(fov, aspectRatio, near, far);
 }
 
 inline Vec3 normalize(Vec3 vec)
@@ -95,6 +114,14 @@ inline Vec3 cross(Vec3 vec1, Vec3 vec2)
 //
 // #endif
 
+}     // namespace Ellipse
+
+template<typename T, typename D>
+Pair<T, D> createPair(T t, D d)
+{
+    return std::make_pair<T, D>(std::forward<T>(t), std::forward<D>(d));
+}
+
 template<typename T>
 UniquePtr<T> createUnique(auto&&... args)
 {
@@ -102,17 +129,8 @@ UniquePtr<T> createUnique(auto&&... args)
 }
 
 template<typename T>
-using SharedPtr = std::shared_ptr<T>;
-
-template<typename T>
 SharedPtr<T> createShared(auto&&... args)
 {
     return std::make_shared<T>(std::forward<decltype(args)>(args)...);
 }
-
-struct MousePos
-{
-   float x;
-   float y;
-};
 

@@ -81,7 +81,7 @@ LayerStack::Page* end(LayerStack& stack)
    ptr = ptr->m_header.next;
    }
 
-  return ptr;
+   return ptr;
 }
 
 

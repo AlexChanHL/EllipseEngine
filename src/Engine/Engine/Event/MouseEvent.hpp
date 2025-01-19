@@ -4,8 +4,14 @@
 #include "Core/Base.hpp"
 #include "Core/Utils.hpp"
 #include "Core/MouseCodes.hpp"
+#include "Core/Details/MousePosition.hpp"
+#include "Debug/Log/Log.hpp"
 
 #include "EllipsePCH.hpp"
+
+
+namespace Ellipse
+{
 
 class MouseEvent : public Event
 {
@@ -37,33 +43,33 @@ class MouseMotionEvent : public MouseEvent
 
     void logMousePosition()
     {
-    std::cout << m_mousePos.x << " , " << m_mousePos.y << "\n";
+    ELLIPSE_ENGINE_LOG_INFO("{}, {}", m_mousePos.x(), m_mousePos.y());
     }
 
-    std::pair<float, float> mousePositions() const
+    Pair<float, float> mousePositions() const
     {
-    return std::make_pair<float, float>(mousePosX(), mousePosY());
+    return createPair<float, float>(mousePosX(), mousePosY());
     }
 
-    void setMousePosX(float x)
+    void setMousePositionX(float x)
     {
-    m_mousePos.x = x;
+    m_mousePos.setX(x);
     }
-    void setMousePosY(float y)
+    void setMousePositionY(float y)
     {
-    m_mousePos.y = y;
+    m_mousePos.setY(y);
     }
 
     float mousePosX() const
     {
-    return m_mousePos.x;
-    };
+    return m_mousePos.x();
+    }
     float mousePosY() const
     {
-    return m_mousePos.y;
-    };
+    return m_mousePos.y();
+    }
    private:
-    MousePos m_mousePos;
+    MousePosition m_mousePos;
 };
 
 class MouseWheelEvent : public MouseEvent
@@ -89,11 +95,11 @@ class MouseWheelEvent : public MouseEvent
     return "MouseWheelEvent";
     }
 
-    std::string logMousePosition()
+    String logMousePosition()
     {
-    return Utils::toString(m_mousePos.x) + " , " + Utils::toString(m_mousePos.y);
+    return Utils::toString(m_mousePos.x()) + " , " + Utils::toString(m_mousePos.y());
     }
-    std::string logMouseOffset()
+    String logMouseOffset()
     {
     return "Offset X: " + Utils::toString(m_mouseOffset_X) + " , " + "Offset Y: " + Utils::toString(m_mouseOffset_Y);
     }
@@ -109,16 +115,16 @@ class MouseWheelEvent : public MouseEvent
 
     float mousePosX() const
     {
-    return m_mousePos.x;
+    return m_mousePos.x();
     }
     float mousePosY() const
     {
-    return m_mousePos.y;
+    return m_mousePos.y();
     }
    private:
     float m_mouseOffset_X;
     float m_mouseOffset_Y;
-    MousePos m_mousePos;
+    MousePosition m_mousePos;
 };
 
 class MousePressedEvent : public MouseEvent
@@ -142,9 +148,9 @@ class MousePressedEvent : public MouseEvent
     return "MousePressedEvent";
     }
 
-    std::string logMousePosition()
+    String logMousePositionition()
     {
-    return Utils::toString(m_mousePos.x) + " , " + Utils::toString(m_mousePos.y);
+    return Utils::toString(m_mousePos.x()) + " , " + Utils::toString(m_mousePos.y());
     }
 
     MouseIndex mouseIndex() const
@@ -152,23 +158,23 @@ class MousePressedEvent : public MouseEvent
     return m_mouseIndex;
     }
 
-    std::pair<float, float> mousePos()
+    Pair<float, float> mousePos()
     {
-    return std::make_pair<float, float>(mousePosX(), mousePosY());
+    return createPair<float, float>(mousePosX(), mousePosY());
     }
 
     float mousePosX() const
     {
-    return m_mousePos.x;
+    return m_mousePos.x();
     }
     float mousePosY() const
     {
-    return m_mousePos.y;
+    return m_mousePos.y();
     }
 
    private:
     MouseIndex m_mouseIndex;
-    MousePos m_mousePos;
+    MousePosition m_mousePos;
 };
 
 class MouseReleasedEvent : public MouseEvent
@@ -185,3 +191,5 @@ class MouseReleasedEvent : public MouseEvent
 
    private:
 };
+
+}    // namespace Ellipse

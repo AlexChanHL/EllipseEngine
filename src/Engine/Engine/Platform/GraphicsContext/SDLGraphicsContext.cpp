@@ -5,6 +5,10 @@
 
 #include <glad/glad.h>
 
+
+namespace Ellipse
+{
+
 void makeSDLCurrentContext(SDL_Window* window, GraphicsContext* context)
 {
     switch(context->getGraphicsLib())
@@ -63,3 +67,5 @@ UniquePtr<GraphicsContext> createSDLGraphicsContext(SDL_Window* window, Graphics
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
     return createUnique<SDLOpenGLGraphicsContext>(glContext);
 }
+
+}    // namespace Ellipse

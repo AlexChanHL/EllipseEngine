@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Engine/Module.hpp"
+#include "Renderer/UniformVarible.hpp"
 #include "Core/Utils/VectorSharedIteratorHeap.hpp"
 #include "Math/Random/Random.hpp"
+#include "Math/TrigonometricUnits.hpp"
 #include "Math/Matrix.hpp"
 #include "Core/Base.hpp"
 
@@ -122,6 +124,53 @@ struct ModelID
 
    public:
     i32_t m_ID;
+};
+
+
+class ObjectID
+{
+   public:
+    ObjectID()
+    : m_ID{0}
+    {
+
+    }
+    ObjectID(u32_t ID)
+    : m_ID{ID}
+    {
+
+    }
+    ~ObjectID()
+    {
+
+    }
+
+    bool operator==(ObjectID objectID)
+    {
+    return m_ID == objectID.id();
+    }
+    bool operator!=(ObjectID objectID)
+    {
+    return m_ID != objectID.id();
+    }
+
+    u32_t id() const
+    {
+    return m_ID;
+    }
+
+   private:
+    u32_t m_ID;
+};
+
+class ModelData
+{
+   public:
+
+   private:
+    Vector<float> m_positions;
+    Vector<float> m_normals;
+    Vector<float> m_textureCoords;
 };
 
 struct ModelModuleModel
@@ -646,7 +695,8 @@ struct UserWorld
       m_name{nullptr},
       m_subWorldNames{Vector<const char*>{}},
       m_editModels{Vector<EditModel>{}},
-      m_currentEditModel{0}
+      m_currentEditModel{0},
+      m_cameraName{nullptr}
     {
 
     }
@@ -657,7 +707,8 @@ struct UserWorld
       m_name{userWorldName},
       m_subWorldNames{Vector<const char*>{}},
       m_editModels{Vector<EditModel>{}},
-      m_currentEditModel{0}
+      m_currentEditModel{0},
+      m_cameraName{nullptr}
     {
 
     }
@@ -828,6 +879,11 @@ struct UserWorld
     }
     }
 
+    void setCamera(const char* cameraName)
+    {
+    m_cameraName = cameraName;
+    }
+
     const char* name() const
     {
     return m_name;
@@ -858,6 +914,11 @@ struct UserWorld
     return m_editModels[m_currentEditModel];
     }
 
+    const char* cameraName() const
+    {
+    return m_cameraName; 
+    }
+
    public:
     u32_t m_layerCount;
     const char* m_mainWorldName;
@@ -867,13 +928,334 @@ struct UserWorld
 
     Vector<EditModel> m_editModels;
     u32_t m_currentEditModel;
+
+    const char* m_cameraName;
 };
 
-struct ModelLayer
+class UserWorldQuery
+{
+    UserWorldQuery()
+    : m_isInList{false},
+      m_index{0}
+    {
+    
+    }
+    UserWorldQuery(bool isInList,
+                   u32_t index)
+    : m_isInList{isInList},
+      m_index{index}
+    {
+    
+    }
+    UserWorldQuery(const UserWorldQuery& modelWorldQuery)
+    : m_isInList{modelWorldQuery.isInList()},
+      m_index{modelWorldQuery.index()}
+    {
+
+    }
+    void operator=(const UserWorldQuery& modelWorldQuery)
+    {
+    m_isInList = modelWorldQuery.isInList();
+    m_index = modelWorldQuery.index();
+    }
+    ~UserWorldQuery()
+    {
+
+    }
+
+    bool isInList() const
+    {
+    return m_isInList;
+    }
+    u32_t index() const
+    {
+    return m_index;
+    }
+    
+   private:
+    bool m_isInList;
+    u32_t m_index;
+
+};
+
+
+class CameraID
 {
    public:
-    Vector<ModelWorld> m_modelWorlds;
+    CameraID()
+    : m_ID{0}
+    {
+
+    }
+    ~CameraID()
+    {
+
+    }
+
+
+   private:
+    i32_t m_ID;
 };
+
+class Camera
+{
+   public:
+    Camera()
+    : m_name{nullptr},
+      m_ID{CameraID{}},
+      m_yaw{0},
+      m_pitch{0},
+      m_roll{0},
+      m_cameraSpeed{0.025f},
+      m_sensitivity{0.25f},
+      m_position{Vec3{1.0f, 1.0f, 1.0f}},
+      m_front{Vec3{1.0f, 1.0f, 1.0f}},
+      m_upDirection{Vec3{1.0f, 1.0f, 1.0f}}
+    {
+
+    }
+    Camera(const char* name)
+    : m_name{name},
+      m_ID{CameraID{}},
+      m_yaw{0},
+      m_pitch{0},
+      m_roll{0},
+      m_cameraSpeed{0.025f},
+      m_sensitivity{0.25f},
+      m_position{Vec3{1.0f, 1.0f, 1.0f}},
+      m_front{Vec3{1.0f, 1.0f, 1.0f}},
+      m_upDirection{Vec3{1.0f, 1.0f, 1.0f}}
+    {
+      m_position = Vec3{0.0f, 0.0f, 0.0f};
+      m_front = Vec3{0.0f, 0.0f, -1.0f};
+      m_upDirection = Vec3{0.0f, 1.0f, 0.0f};
+    }
+    ~Camera()
+    {
+
+    }
+
+
+    void setCameraYawValues(Pair<float, float> mouseOffsets)
+    {
+    float offsetX = mouseOffsets.first * m_sensitivity;
+    float offsetY = -mouseOffsets.second * m_sensitivity;
+    // 80 = 320 * 0.25f
+
+    // ELLIPSE_ENGINE_LOG_INFO("Offset x: {} Offset y: {}", offsetX, offsetY);
+
+    m_yaw += offsetX;
+
+    if((m_pitch + offsetY  <= 90.0f) && (m_pitch + offsetY >= -90.0f))
+    {
+    m_pitch += offsetY;
+    }
+
+    // ELLIPSE_ENGINE_LOG_INFO("Pitch: {} Yaw: {}", m_yaw, m_pitch);
+    // ELLIPSE_ENGINE_LOG_INFO("Offset x: {} Offset y: {}", offsetX, offsetY);
+
+    }
+
+    // [ Whenever user sets relative mouse mode off and refocuses
+    //   the window will use the new position and calculate a large offset ]
+    void setCameraFrontFromOffsets()
+    {
+    Vec3 cameraDirection = Vec3{1.0f};
+
+    // float yawRadians = EllipseMath::Radian{m_yaw}.radians() * sensitivity;
+    // float pitchRadians = EllipseMath::Radian{m_pitch}.radians() * sensitivity;
+      
+      
+    float yawRadians = EllipseMath::Radian{m_yaw}.radians();
+    float pitchRadians = EllipseMath::Radian{m_pitch}.radians();
+
+    // 53.0f
+
+    cameraDirection.x = sin(yawRadians) * cos(pitchRadians);
+    cameraDirection.y = sin(pitchRadians);
+    cameraDirection.z = -cos(yawRadians) * cos(pitchRadians);
+
+
+    m_front = EllipseMath::normalize(cameraDirection);
+
+    }
+
+    void setCameraSpeed(float cameraSpeed)
+    {
+    m_cameraSpeed = cameraSpeed;
+    }
+
+    void setPosition(Vec3 position)
+    {
+    m_position = position;
+    }
+
+    void setFront(Vec3 front)
+    {
+    m_front = front;
+    }
+
+    float cameraSpeed() const
+    {
+    return m_cameraSpeed;
+    }
+
+    Vec3 position() const
+    {
+    return m_position;
+    }
+
+    Vec3 front() const
+    {
+    return m_front;
+    }
+
+    Vec3 upDirection() const
+    {
+    return m_upDirection;
+    }
+
+    const char* name() const
+    {
+    return m_name;
+    }
+
+   private:
+    const char* m_name;
+    CameraID m_ID;
+
+    float m_yaw;
+    float m_pitch;
+    float m_roll;
+
+    float m_cameraSpeed;
+    float m_sensitivity;
+
+    Vec3 m_position;
+    Vec3 m_front;
+    Vec3 m_upDirection;
+};
+
+// [ Cannot add cameras of the same name ]
+class CameraManager
+{
+   public:
+    CameraManager()
+    {
+
+    }
+    ~CameraManager()
+    {
+
+    }
+
+
+    void addCamera(const char* name)
+    {
+    m_cameras.push_back(Camera{name});
+    }
+
+    void translateForward(u64_t index)
+    {
+    Camera camera = m_cameras[index];
+
+    m_cameras[index].setPosition(camera.position() + (camera.front() * camera.cameraSpeed()));
+    }
+    
+    void translateBackward(u64_t index)
+    {
+    Camera camera = m_cameras[index];
+
+    m_cameras[index].setPosition(camera.position() - (camera.front() * camera.cameraSpeed()));
+    
+    }
+    void translateLeft(u64_t index)
+    {
+    Camera camera = m_cameras[index];
+
+    m_cameras[index].setPosition(camera.position() - (EllipseMath::cross(camera.front(), camera.upDirection()) * camera.cameraSpeed()));
+    
+    }
+    void translateRight(u64_t index)
+    {
+    Camera camera = m_cameras[index];
+
+    m_cameras[index].setPosition(camera.position() + (EllipseMath::cross(camera.front(), camera.upDirection()) * camera.cameraSpeed()));
+    
+    }
+
+    void registerMouseUpdate(Pair<float, float> mouseOffsets)
+    {
+    for(u32_t i = 0; i < m_cameras.size(); i++)
+    {
+    m_cameras[i].setCameraYawValues(mouseOffsets);
+    m_cameras[i].setCameraFrontFromOffsets();
+    }
+
+    }
+
+    void setFronts()
+    {
+    // for(u32_t i = 0; i < m_cameras.size(); i++)
+    // {
+    // m_cameras[i].setFront(m_cameras[i].position() + Vec3{4.0f, 0.0f, 0.0f});
+    // }
+    }
+
+    void setCameraPosition(u64_t index,
+                           Vec3 position)
+    {
+    m_cameras[index].setPosition(position);
+    }
+
+    Vec3 front(u64_t index) const
+    {
+    return m_cameras[index].front();
+    }
+
+    Camera findCamera(const char* cameraName) const
+    {
+    for(u32_t i = 0; i < m_cameras.size(); i++)
+    {
+    if(strcmp(cameraName, m_cameras[i].name()) == 0)
+    {
+    return m_cameras[i];
+    }
+    }
+
+    ELLIPSE_ENGINE_LOG_WARN("Camera not in list, returning invaild camara");
+
+    return Camera{};
+
+    }
+
+    u64_t findCameraIndex(const char* cameraName) const
+    {
+    for(u64_t i = 0; i < m_cameras.size(); i++)
+    {
+    if(strcmp(cameraName, m_cameras[i].name()) == 0)
+    {
+    return i;
+    }
+    }
+
+    ELLIPSE_ENGINE_LOG_WARN("Camera not in list, returning cameras size");
+
+    return m_cameras.size();
+
+    }
+
+    Camera& cameraIndex(u64_t index)
+    {
+    return m_cameras[index];
+    }
+
+   private:
+    Vector<Camera> m_cameras;
+};
+
+
+// [ ModelManager shouldn't set cameras logic ]
 
 // [ Should rename ModelManagerModule to ModelManagerLayerModule ]
 class ModelManagerModule : public ILayerModule
@@ -888,35 +1270,57 @@ class ModelManagerModule : public ILayerModule
 
     }
 
-    struct SubModelManager
+    struct ModelAddCollection
     {
        public:
-        SubModelManager(
+        
+        // VerticiesData verticies,
+        // [ Use imported model ]
+      
+        ModelAddCollection(
         const char* modelWorldName,
-        // bool isAddNewWorld,
         ModelID modelID,
         const char* modelName, 
         String vertexShader,
         String fragmentShader,
-        VerticiesData verticies,
+        ModelData modelData,
         UniformList uniformList,
         Mat4& model
                        )
         : m_modelWorldName{modelWorldName},
-          m_isAddWorld{false},
           m_models{Model{
-                    modelID,
-                    modelName,
-                    vertexShader,
-                    fragmentShader,
-                    verticies,
-                    uniformList,
-                    model
-                      }}
+                   modelID,
+                   modelName,
+                   vertexShader,
+                   fragmentShader,
+                   modelData,
+                   uniformList,
+                   model
+                        }
+                  }
         {
 
         }
-        ~SubModelManager()
+        ModelAddCollection(
+        const char* modelWorldName,
+        ModelID modelID,
+        const char* modelName, 
+        ObjectID objectID,
+        UniformList uniformList,
+        Mat4& model)
+        : m_modelWorldName{modelWorldName},
+          m_models{Model{modelID,
+                         modelName,
+                         true,
+                         objectID,
+                         uniformList,
+                         model
+                        }
+                  }
+        {
+
+        }
+        ~ModelAddCollection()
         {
 
         }
@@ -928,15 +1332,36 @@ class ModelManagerModule : public ILayerModule
                  const char* name,
                  String vertexShader,
                  String fragmentShader,
-                 VerticiesData verticies,
+                 ModelData modelData,
                  UniformList uniformList,
                  Mat4& model
                  )
            : m_modelID{modelID},
              m_name{name},
+             m_isUsingObjectID{false},
+             m_objectID{ObjectID{}},
              m_vertexShader{vertexShader},
              m_fragmentShader{fragmentShader},
-             m_verticies{verticies},
+             m_modelData{modelData},
+             m_uniformList{uniformList},
+             m_model{model}
+           {
+
+           }
+           Model(ModelID modelID,
+                 const char* name,
+                 bool isUsingObjectID,
+                 ObjectID objectID,
+                 UniformList uniformList,
+                 Mat4& model
+                 )
+           : m_modelID{modelID},
+             m_name{name},
+             m_isUsingObjectID{isUsingObjectID},
+             m_objectID{objectID},
+             m_vertexShader{""},
+             m_fragmentShader{""},
+             m_modelData{ModelData{}},
              m_uniformList{uniformList},
              m_model{model}
            {
@@ -948,12 +1373,59 @@ class ModelManagerModule : public ILayerModule
 
            }
 
-          public:
+           ModelID modelID() const
+           {
+           return m_modelID;
+           }
+
+           bool isUsingObjectID() const
+           {
+           return m_isUsingObjectID;
+           }
+
+           ObjectID objectID() const
+           {
+           return m_objectID;
+           }
+
+           String vertexShader() const
+           {
+           return m_vertexShader;
+           }
+
+           String fragmentShader() const
+           {
+           return m_fragmentShader;
+           }
+
+           ModelData modelData() const
+           {
+           return m_modelData;
+           }
+
+           UniformList uniformList() const
+           {
+           return m_uniformList;
+           }
+
+           UniformList& uniformList()
+           {
+           return m_uniformList;
+           }
+
+           Mat4& model()
+           {
+           return m_model;
+           }
+
+          private:
            ModelID m_modelID;
            const char* m_name;
+           bool m_isUsingObjectID;
+           ObjectID m_objectID;
            String m_vertexShader;
            String m_fragmentShader;
-           VerticiesData m_verticies;
+           ModelData m_modelData;
            UniformList m_uniformList;
            Mat4& m_model;
         };
@@ -964,7 +1436,7 @@ class ModelManagerModule : public ILayerModule
         const char* modelName, 
         String vertexShader,
         String fragmentShader,
-        VerticiesData verticies,
+        ModelData modelData,
         UniformList uniformList,
         Mat4& model
                      )
@@ -973,9 +1445,25 @@ class ModelManagerModule : public ILayerModule
                                  modelName,
                                  vertexShader,
                                  fragmentShader,
-                                 verticies,
+                                 modelData,
                                  uniformList,
-                                 model});
+                                 model}
+                          );
+        }
+
+        void addModel(ModelID modelID,
+                      const char* modelName, 
+                      ObjectID objectID,
+                      UniformList uniformList,
+                      Mat4& model)
+        {
+        m_models.push_back(Model{modelID,
+                                 modelName,
+                                 true,
+                                 objectID,
+                                 uniformList,
+                                 model}
+                          );
         }
 
         void setWorldName(const char* name)
@@ -988,19 +1476,18 @@ class ModelManagerModule : public ILayerModule
         return m_modelWorldName;
         }
 
-        bool isAddWorld() const
+        Vector<Model> models() const
         {
-        return m_isAddWorld;
+        return m_models;
         }
 
-        Vector<Model> models() const
+        Vector<Model>& models()
         {
         return m_models;
         }
 
        private:
         const char* m_modelWorldName;
-        bool m_isAddWorld;
         Vector<Model> m_models;
     };
 
@@ -1008,14 +1495,26 @@ class ModelManagerModule : public ILayerModule
     virtual void initLayerModule() override = 0;
     virtual void onUpdateLayer() override = 0;
 
+    // virtual void addModel(ModelID& modelID,
+    //                       const char* modelName,
+    //                       String vertexShader,
+    //                       String fragmentShader,
+    //                       VerticiesData verticies,
+    //                       UniformList uniformList
+    //                       ) = 0;
+
     virtual void addModel(ModelID& modelID,
                           const char* modelName,
                           String vertexShader,
                           String fragmentShader,
-                          VerticiesData verticies,
+                          String importPath,
                           UniformList uniformList
                           ) = 0;
 
+    virtual void addCube(ModelID& modelID,
+                         const char* modelName,
+                         UniformList uniformList) = 0;
+    
     virtual void translateModel(ModelID modelID, Vec3 translationAmount) = 0;
 
     virtual void rotateModel(ModelID modelID, float radians, Vec3 rotationAxis) = 0;
@@ -1025,6 +1524,7 @@ class ModelManagerModule : public ILayerModule
     virtual void addWorld(const char* name) = 0;
 
     virtual void addSubWorld(const char* subWorldName, const char* mainWorldName) = 0;
+
     virtual void addUserWorld(const char* userWorldName, const char* mainWorldName) = 0;
     virtual void addUserSubWorld(const char* subWorldName, const char* userWorldName) = 0;
 
@@ -1046,6 +1546,25 @@ class ModelManagerModule : public ILayerModule
 
     virtual u32_t worldLastPosition(u32_t worldPosition) = 0;
 
+
+    virtual void addUserCamera(const char* userWorldName,
+                               const char* cameraName) = 0;
+
+    virtual void registerMouseUpdate(Pair<float, float> mouseOffsets) = 0;
+
+    virtual void translateCameraForward(const char* cameraName) = 0;
+    virtual void translateCameraBackward(const char* cameraName) = 0;
+    virtual void translateCameraLeft(const char* cameraName) = 0;
+    virtual void translateCameraRight(const char* cameraName) = 0;
+    virtual void setCameraPosition(const char* cameraName,
+                                   Vec3 position) = 0;
+
+    virtual Camera retrieveCamera(const char* cameraName) = 0;
+    // virtual Camera& retrieveCameraIndex(const char* cameraName) = 0;
+
+    virtual u64_t findCameraIndex(const char* cameraName) = 0;
+    virtual Camera& cameraIndex(u64_t index) = 0;
+
     virtual void setViewspace(Viewspace viewspace) = 0;
 
     virtual void setDifferentInViewspace(float viewspaceWidth,
@@ -1056,7 +1575,9 @@ class ModelManagerModule : public ILayerModule
     virtual ModelWorldQuery modelWorldFind(u32_t worldPosition, const char* mainWorldName) = 0;
     virtual ModelWorldQuery modelWorldFindPrevious(u32_t worldPosition, const char* mainWorldName) = 0;
 
-    virtual void clearSubModelManagers() = 0;
+    // virtual UserWorldQuery userWorldFind(const char* userWorldName, const char* mainWorldName) = 0;
+
+    virtual void clearModelAddCollection() = 0;
 
     virtual void clearModelsToBeRemoved() = 0;
 
@@ -1066,11 +1587,15 @@ class ModelManagerModule : public ILayerModule
     virtual void queryUserWorld(const char* userWorldName) = 0;
     virtual void queryMainWorld(const char* mainWorldName) = 0;
 
+    // [ Remove the two functions isHiddenModel, isInWireframeModel ]
     virtual bool isHiddenModel(u64_t modelPosition) const = 0;
     virtual bool isInWireframeModel(u64_t modelPosition) const = 0;
 
 
-    virtual std::vector<SubModelManager> subModelManagers() const = 0;
+    virtual Vector<ModelAddCollection> modelAddCollection() const = 0;
+    virtual Vector<ModelAddCollection>& modelAddCollection() = 0;
+
+    virtual CameraManager& cameraManager() = 0;
 
     virtual Vector<MainWorld> mainWorlds() const = 0;
 
@@ -1086,20 +1611,16 @@ class ModelManagerModule : public ILayerModule
     virtual ModelWorld& modelWorldPrevious(u32_t modelWorldPosition, const char* worldName) = 0;
     virtual ModelWorld& modelWorldIndex(ModelWorldQuery modelWorldQuery) = 0;
     virtual ModelWorld& modelWorldIndexPrevious(ModelWorldQuery modelWorldQuery) = 0;
-    
-    virtual Vector<UserWorld> userWorlds() const = 0;
 
+    virtual Vector<UserWorld> userWorlds() const = 0;
+//
     // [ Might have to define userWorlds()& to find
-    //   and set user worlds ]
+      // and set user worlds ]
     virtual Vector<UserWorld> userWorldsPrevious() const = 0;
 
     virtual const VectorSharedIteratorHeap<ModelModuleModel>& modelModuleModels() const = 0;
 
     virtual Vector<u32_t> modelsToBeRemovedIndicies() const = 0;
-
-    virtual std::vector<ModelLayer>& modelLayers() = 0;
-
-    virtual std::vector<ModelLayer>::iterator previousModelLayersIterator() = 0;
 
     class ModelWorldDrawOrder;
 
@@ -1182,6 +1703,8 @@ class ModelManagerModule : public ILayerModule
     };
 
    protected:
+    virtual void importModel(String modelImportPath) = 0;
+
     virtual void onUpdateModelMatrices() = 0;
 
     virtual void translateModelInModelList(Mat4& model, Vec3 translationAmount) = 0;

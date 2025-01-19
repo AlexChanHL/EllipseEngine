@@ -8,9 +8,9 @@ class RendererImpl final : public Renderer
 {
    public:
     explicit RendererImpl(UniquePtr<RenderPlugin> plugin);
-    ~RendererImpl() = default;
+    ~RendererImpl();
 
-    void render(const RenderObj& rObj, const RenderShaderObj& sObj) override;
+    void render(const RenderObj& rObj, const RenderShaderObj& sObj, const UniformList& uniforms) override;
     virtual void clearColorBuffer() override;
     void setClearColor(const Vec4& col) override;
     virtual void setWindowFrameSize(Pair<int, int> winSize) override;
@@ -21,7 +21,7 @@ class RendererImpl final : public Renderer
     return Pair<int, int>{m_currentWidth, m_currentHeight};
     }
 
-    virtual SharedPtr<RenderObj> createRenderObj(VerticiesData verts) override;
+    virtual SharedPtr<RenderObj> createRenderObj(ModelData modelData) override;
     virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader,
                                                  String fShader,
                                                  UniformList uniforms) override;
@@ -40,6 +40,10 @@ RendererImpl::RendererImpl(UniquePtr<RenderPlugin> plugin)
 {
     setName("Renderer");
 }
+RendererImpl::~RendererImpl()
+{
+
+}
 
 String RendererImpl::name() 
 {
@@ -50,13 +54,16 @@ void RendererImpl::setName(const char* name)
     m_name = name;
 }
 
-void RendererImpl::render(const RenderObj& rObj, const RenderShaderObj& sObj)
+void RendererImpl::render(const RenderObj& rObj, const RenderShaderObj& sObj, const UniformList& uniforms)
 {
     sObj.use();
 
-    m_plugin->setUniforms(sObj.getUniforms(),
-                          sObj.getUniformLocs());
+    m_plugin->setUniforms(uniforms);
 
+    if(rObj.isTextured())
+    {
+    m_plugin->bindTextures(rObj);
+    }
 
     m_plugin->render(rObj);
 }
@@ -81,9 +88,9 @@ void RendererImpl::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height
     m_plugin->setViewport(posX, posY, width, height);
 }
 
-SharedPtr<RenderObj> RendererImpl::createRenderObj(VerticiesData verts)
+SharedPtr<RenderObj> RendererImpl::createRenderObj(ModelData modelData)
 {
-    return m_plugin->createRenderObj(verts);
+    return m_plugin->createRenderObj(modelData);
 }
 
 SharedPtr<RenderShaderObj> RendererImpl::createShaderObj(String vShader,

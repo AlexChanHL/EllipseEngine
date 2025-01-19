@@ -56,6 +56,7 @@ file(GLOB_RECURSE LOG
 
 add_library(${NAME} STATIC
            ${CURRENT_DIR} ${CORE} ${ENGINE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_GRAPHICS_CONTEXT} ${PLATFORM_WINDOW} ${PLATFORM_RENDER} ${MATH}
+           # Math/Matrix.hpp Math/Matrix.cpp
              )
 
 add_custom_target(CopyAssets ALL

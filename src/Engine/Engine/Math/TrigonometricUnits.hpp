@@ -28,6 +28,6 @@ class Radian
      float m_radians;
 };
 
-};  // namespace EllipseMath
+}     // namespace EllipseMath
 
-};      // namespace Ellipse
+}     // namespace Ellipse

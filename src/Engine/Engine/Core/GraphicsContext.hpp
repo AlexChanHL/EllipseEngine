@@ -15,6 +15,8 @@ class GraphicsContext
     GraphicsContext() = default;
     virtual ~GraphicsContext() = default;
 
+    virtual void deleteContext() = 0;
+
     virtual GraphicsLib getGraphicsLib() = 0;
     virtual void* getContext() = 0;
 

@@ -16,17 +16,20 @@ class OpenGLRenderPlugin final : public RenderPlugin
     virtual void clearColorBuffer() override;
     virtual void setClearColor(const glm::vec4& col) override;
     virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
-    virtual SharedPtr<RenderObj> createRenderObj(VerticiesData verts) override;
+    virtual SharedPtr<RenderObj> createRenderObj(ModelData modelData) override;
     virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader,
                                                        String fShader,
                                                        UniformList uniforms) override;
 
-    virtual void setUniforms(UniformList uniforms, const ForwardList<UniformLoc>& loc) override;
+    virtual void setUniforms(UniformList uniforms) override;
+    virtual void bindTextures(const RenderObj& renderObj) override;
 
-   void renderGL(const OpenGLRenderObj& rObj);
+    void renderGL(const OpenGLRenderObj& rObj);
+    void renderGLMesh(const OpenGLMesh& mesh);
+    
 
-  private:
-   int findUniformLocation(const char* name, const ForwardList<UniformLoc>& locs);
+   private:
+    int findUniformLocation(const char* name, const ForwardList<UniformLoc>& locs);
 
   private:
 };

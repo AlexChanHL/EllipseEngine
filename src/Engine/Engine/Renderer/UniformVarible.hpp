@@ -151,7 +151,7 @@ class UniformList
     }
     }
 
-    std::cout << "Couldn't find uniform when setting\n";
+    ELLIPSE_ENGINE_LOG_WARN("Couldn't find uniform when setting");
     }
     void setUniform(const UniformVarible<float>& uniform)
     {
@@ -170,7 +170,7 @@ class UniformList
     }
     }
 
-    std::cout << "Couldn't find uniform when setting\n";
+    ELLIPSE_ENGINE_LOG_WARN("Couldn't find uniform when setting");
     }
     void setUniform(const UniformVarible<u32_t>& uniform)
     {
@@ -242,17 +242,48 @@ class UniformList
 
     UniformVarible<Mat4> getMat4UniformFromListByName(const char* name)
     {
-    for(const UniformVarible<Mat4>& u : m_mat4Uniforms)
+    for(const UniformVarible<Mat4>& uniform : m_mat4Uniforms)
     {
-    if(strcmp(u.name(), name) == 0)
+    if(strcmp(uniform.name(), name) == 0)
     {
-    return u;
+    return uniform;
     }
     }
+
+
     // Returning a null mat4, maybe creating shared a getting
     // underlying ptr will cause bugs
     ELLIPSE_ENGINE_LOG_WARN("Couldn't find uniform, returing invalid mat");
     return UniformVarible<Mat4>{"Null", createShared<Mat4>().get()};
+    }
+    
+    void printMat4UniformList()
+    {
+    for(const UniformVarible<Mat4>& uniform : m_mat4Uniforms)
+    {
+    const char* uniformName = uniform.name();
+
+    float x0y0 = uniform.uniformAt(0)[0][0];
+    float x1y0 = uniform.uniformAt(0)[1][0];
+    float x2y0 = uniform.uniformAt(0)[2][0];
+    float x3y0 = uniform.uniformAt(0)[3][0];
+    float x0y1 = uniform.uniformAt(0)[0][1];
+    float x1y1 = uniform.uniformAt(0)[1][1];
+    float x2y1 = uniform.uniformAt(0)[2][1];
+    float x3y1 = uniform.uniformAt(0)[3][1];
+    float x0y2 = uniform.uniformAt(0)[0][2];
+    float x1y2 = uniform.uniformAt(0)[1][2];
+    float x2y2 = uniform.uniformAt(0)[2][2];
+    float x3y2 = uniform.uniformAt(0)[3][2];
+    float x0y3 = uniform.uniformAt(0)[0][3];
+    float x1y3 = uniform.uniformAt(0)[1][3];
+    float x2y3 = uniform.uniformAt(0)[2][3];
+    float x3y3 = uniform.uniformAt(0)[3][3];
+
+    ELLIPSE_ENGINE_LOG_INFO("Uniform name: {}\n Uniform values: [{} {} {} {}]\n                 [{} {} {} {}]\n                 [{} {} {} {}]\n                 [{} {} {} {}]",
+                            uniformName, x0y0, x1y0, x2y0, x3y0, x0y1, x1y1, x2y1, x3y1, x0y2, x1y2, x2y2, x3y2, x0y3, x1y3, x2y3, x3y3);
+    }
+
     }
 
     void printUniformList()
@@ -317,6 +348,17 @@ class UniformList
 
     }
 
+    void setUniformLocations(Map<const char*, i32_t> uniformLocations)
+    {
+    m_uniformLocations = uniformLocations;
+    }
+
+    Map<const char*, i32_t> uniformLocations() const
+    {
+    return m_uniformLocations;
+    }
+
+
    private:
     Vector<UniformVarible<i32_t>> m_intUniforms;
     Vector<UniformVarible<float>> m_floatUniforms;
@@ -332,6 +374,8 @@ class UniformList
     Vector<UniformVarible<Mat2>> m_mat2Uniforms;
     Vector<UniformVarible<Mat3>> m_mat3Uniforms;
     Vector<UniformVarible<Mat4>> m_mat4Uniforms;
+
+    Map<const char*, i32_t> m_uniformLocations;
 };
 
 struct UniformLoc

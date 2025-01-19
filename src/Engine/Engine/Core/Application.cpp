@@ -10,6 +10,10 @@ namespace Ellipse
 Application* Application::sInStance = nullptr;
 
 Application::Application()
+: m_running{true},
+  m_window{nullptr},
+  m_renderer{nullptr},
+  m_engine{nullptr}
 {
   sInStance = this;
 }
@@ -45,6 +49,10 @@ void Application::init(const ApplicationSpecifications& specs)
   // [ User might not need some modules, add 
   //   configurbility ]
   m_engine->addModule(TimeModule::createTimeModule());
+
+  // [ ModelManagerModule and RenderModule are linked together and
+  //   need eachother to function, should have render module add
+  //   a default modelmanager ]
   m_engine->addLayerModule(ModelManagerModule::createModelManagerModule());
   m_engine->addLayerModule(RenderModule::createRenderModule(*m_engine));
 
@@ -68,6 +76,7 @@ Application::~Application()
 {
 
 }
+
 void Application::pushLayer(SharedPtr<Layer> layer)
 {
   pushLayerToStack(m_layerStack, layer);
@@ -92,7 +101,7 @@ void Application::run()
 {
   while(m_running)
   {
-  // [ Maybe not have this clear the color buffer ]
+  // [ Clear buffer in module update  ]
   m_renderer->clearColorBuffer();
 
   float dt = 0.0f;
@@ -100,6 +109,12 @@ void Application::run()
 
   m_window->updateWindow();
   }
+}
+
+void Application::quitApplication()
+{
+    m_running = false;
+    m_window->disableReportEvents();
 }
 
 bool Application::onWindowClose(WindowUserQuitEvent& windowQuit)
