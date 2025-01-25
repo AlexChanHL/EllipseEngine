@@ -279,6 +279,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     virtual void addModel(ModelID& modelID,
                           const char* modelName,
+                          const char* objectName,
                           String vertexShader,
                           String fragmentShader,
                           String importPath,
@@ -293,6 +294,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
     {
     if(modelID == m_modelModuleModels[j].m_modelID)
     {
+    ELLIPSE_ENGINE_LOG_INFO("Model ID: {} index: {}", modelID.id(), j);
     ELLIPSE_ENGINE_LOG_INFO("Adding already model");
     return;
     }
@@ -363,8 +365,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
                                                  }
     );
 
-    // createObjectDefinition(objectName, uniformList);
-
     m_modelOrderCount++;
 
 
@@ -375,6 +375,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
       m_modelWorlds.currentWorld().name(),
       modelID,
       modelName,
+      objectName,
       vertexShader,
       fragmentShader,
       modelData,
@@ -411,6 +412,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
     m_modelAddCollection[m_modelAddCollection.size() - 1].addModel(
        modelID,
        modelName,
+       objectName,
        vertexShader,
        fragmentShader,
        modelData,
@@ -430,168 +432,170 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     }
 
-    virtual void addCube(ModelID& modelID,
-                         const char* modelName,
-                         UniformList uniformList) override
-    {
-    ModelWorld queryWorld = m_modelWorlds.currentWorld();
-
-    for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
-    {
-    for(u32_t j = queryWorld.start(); j < queryWorld.end(); j++)
-    {
-    if(modelID == m_modelModuleModels[j].m_modelID)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("Adding already model");
-    return;
-    }
-
-    }
-    queryWorld.updateNextSubWorld();
-    }
-
-    modelID.m_ID = m_randomRemoveLast.chooseRandomVal();
-
-    if(m_modelAddCollection.empty() || strcmp(m_modelWorlds.previousWorld().name(), m_modelWorlds.currentWorld().name()) != 0)
-    {
-
-    u32_t modelWorldPosition = 0;
-
-
-    // [ Check if main world is same as default world
-    //   and delete all the check here in this ]
-
-    // Comparing to where the world is in the list as well as
-    // checking if the world actually exists
-    bool modelWorldFound = false;
-    MainWorld queryMainWorld = m_modelWorlds.mainWorld(m_modelWorlds.currentMainWorld().name());
-
-    if(strcmp(queryMainWorld.mainWorld().name(), m_modelWorlds.currentWorld().name()) == 0)
-    {
-    modelWorldPosition = queryMainWorld.mainWorld().orderInList();
-    modelWorldFound = true;
-    }
-
-    if(!modelWorldFound)
-    {
-    auto subWorldIt = queryMainWorld.subWorlds().begin();
-    for(; subWorldIt != queryMainWorld.subWorlds().end(); subWorldIt++)
-    {
-    if(strcmp(m_modelWorlds.currentWorld().name(), subWorldIt->name()) == 0)
-    {
-    modelWorldPosition = subWorldIt->orderInList();
-    modelWorldFound = true;
-    break;
-    }
-    }
-
-    // The user has not specified the world to add the model to
-    if(!modelWorldFound)
-    {
-    return;
-    }
-
-    }
-
-    // UniformList cubeUniformList = retriveObject("cube").uniformList();
-    // if(!isSameUniformDefinition(cubeUniformList, uniformList))
+    // virtual void addCube(ModelID& modelID,
+    //                      const char* modelName,
+    //                      UniformList uniformList) override
     // {
+    // ModelWorld queryWorld = m_modelWorlds.currentWorld();
     //
+    // for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
+    // {
+    // for(u32_t j = queryWorld.start(); j < queryWorld.end(); j++)
+    // {
+    // if(modelID == m_modelModuleModels[j].m_modelID)
+    // {
+    // ELLIPSE_ENGINE_LOG_INFO("Adding already model");
+    // return;
     // }
     //
+    // }
+    // queryWorld.updateNextSubWorld();
+    // }
     //
-    // uniformList uniform0: Type Mat4 Name a0 Value {1,1,0,1}
-    // uniformList uniform1: Type Vec3 Name a1 Value {0,1,1,0}
-    // uniformList uniform2: Type Vec3 Name a2 Value {1,1,1,1}
+    // modelID.m_ID = m_randomRemoveLast.chooseRandomVal();
     //
-    // cubeUniformList uniform0: Type Mat4 Name a0 Value {0,0,0,0}
-    // cubeUniformList uniform1: Type Vec3 Name a1 Value {0,0,0,0}
-    // cubeUniformList uniform2: Type Vec3 Name a2 Value {0,0,0,0}
+    // if(m_modelAddCollection.empty() || strcmp(m_modelWorlds.previousWorld().name(), m_modelWorlds.currentWorld().name()) != 0)
+    // {
     //
-    // if(cubeUniformList != uniformList)
+    // u32_t modelWorldPosition = 0;
+    //
+    //
+    // // [ Check if main world is same as default world
+    // //   and delete all the check here in this ]
+    //
+    // // Comparing to where the world is in the list as well as
+    // // checking if the world actually exists
+    // bool modelWorldFound = false;
+    // MainWorld queryMainWorld = m_modelWorlds.mainWorld(m_modelWorlds.currentMainWorld().name());
+    //
+    // if(strcmp(queryMainWorld.mainWorld().name(), m_modelWorlds.currentWorld().name()) == 0)
+    // {
+    // modelWorldPosition = queryMainWorld.mainWorld().orderInList();
+    // modelWorldFound = true;
+    // }
+    //
+    // if(!modelWorldFound)
+    // {
+    // auto subWorldIt = queryMainWorld.subWorlds().begin();
+    // for(; subWorldIt != queryMainWorld.subWorlds().end(); subWorldIt++)
+    // {
+    // if(strcmp(m_modelWorlds.currentWorld().name(), subWorldIt->name()) == 0)
+    // {
+    // modelWorldPosition = subWorldIt->orderInList();
+    // modelWorldFound = true;
+    // break;
+    // }
+    // }
+    //
+    // // The user has not specified the world to add the model to
+    // if(!modelWorldFound)
     // {
     // return;
     // }
-
-
-    m_userWorlds.addDrawOrder(modelWorldPosition,
-                              m_modelWorlds.currentMainWorld().name(),
-                              m_modelWorlds.currentWorld().name());
-
-    m_modelWorlds.addModelBeginPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-
-    m_modelWorlds.addWorldAddOrder(modelWorldPosition, m_modelWorlds.currentMainWorld().name());
-
-    ObjectID objectID;
-
-
-    m_modelModuleModels.pushBack(ModelModuleModel{
-     modelID,
-     modelName
-                                                 }
-    );
-
-    m_modelOrderCount++;
-
-
-    m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-
-    m_modelAddCollection.push_back(
-     ModelAddCollection{
-      m_modelWorlds.currentWorld().name(),
-      modelID,
-      modelName,
-      objectID,
-      uniformList,
-      m_modelModuleModels[m_modelModuleModels.size() - 1].m_model
-       }
-                              );
-
-    // [ Set the current world end position rather
-    //   than copying the new world ]
-    ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(modelWorldPosition);
-    m_modelWorlds.setCurrentWorld(worldAfterAddModel);
-    if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
-    {
-    m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
-    }
-
-    m_modelWorlds.setPreviousWorld(worldAfterAddModel);
-
-    return; 
-    }
-
-    m_modelModuleModels.pushBack(ModelModuleModel{
-     modelID,
-     modelName
-                                                 }
-    );
-
-    m_modelOrderCount++;
-
-    ObjectID objectID;
-
-    // ObjectID objectID = findObject("Cube");
-
-    m_modelAddCollection[m_modelAddCollection.size() - 1].addModel(
-       modelID,
-       modelName,
-       objectID,
-       uniformList,
-       m_modelModuleModels[m_modelModuleModels.size() - 1].m_model 
-      );
-
-    m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-
-    // update current world
-    ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(m_modelWorlds.currentWorld().orderInList());
-    m_modelWorlds.setCurrentWorld(worldAfterAddModel);
-    if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
-    {
-    m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
-    }
-    
-    }
+    //
+    // }
+    //
+    // // UniformList cubeUniformList = retriveObject("cube").uniformList();
+    // // if(!isSameUniformDefinition(cubeUniformList, uniformList))
+    // // {
+    // //
+    // // }
+    // //
+    // //
+    // // uniformList uniform0: Type Mat4 Name a0 Value {1,1,0,1}
+    // // uniformList uniform1: Type Vec3 Name a1 Value {0,1,1,0}
+    // // uniformList uniform2: Type Vec3 Name a2 Value {1,1,1,1}
+    // //
+    // // cubeUniformList uniform0: Type Mat4 Name a0 Value {0,0,0,0}
+    // // cubeUniformList uniform1: Type Vec3 Name a1 Value {0,0,0,0}
+    // // cubeUniformList uniform2: Type Vec3 Name a2 Value {0,0,0,0}
+    // //
+    // // if(cubeUniformList != uniformList)
+    // // {
+    // // return;
+    // // }
+    //
+    //
+    // m_userWorlds.addDrawOrder(modelWorldPosition,
+    //                           m_modelWorlds.currentMainWorld().name(),
+    //                           m_modelWorlds.currentWorld().name());
+    //
+    // m_modelWorlds.addModelBeginPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
+    //
+    // m_modelWorlds.addWorldAddOrder(modelWorldPosition, m_modelWorlds.currentMainWorld().name());
+    //
+    // ObjectID objectID;
+    // // ObjectID objectID = findObject("Cube");
+    //
+    //
+    // m_modelModuleModels.pushBack(ModelModuleModel{
+    //  modelID,
+    //  modelName
+    //                                              }
+    // );
+    //
+    // m_modelOrderCount++;
+    //
+    //
+    // m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
+    //
+    // m_modelAddCollection.push_back(
+    //  ModelAddCollection{
+    //   m_modelWorlds.currentWorld().name(),
+    //   modelID,
+    //   modelName,
+    //   objectID,
+    //   "Cube",
+    //   uniformList,
+    //   m_modelModuleModels[m_modelModuleModels.size() - 1].m_model
+    //    }
+    //                           );
+    //
+    // // [ Set the current world end position rather
+    // //   than copying the new world ]
+    // ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(modelWorldPosition);
+    // m_modelWorlds.setCurrentWorld(worldAfterAddModel);
+    // if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
+    // {
+    // m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
+    // }
+    //
+    // m_modelWorlds.setPreviousWorld(worldAfterAddModel);
+    //
+    // return; 
+    // }
+    //
+    // m_modelModuleModels.pushBack(ModelModuleModel{
+    //  modelID,
+    //  modelName
+    //                                              }
+    // );
+    //
+    // m_modelOrderCount++;
+    //
+    // ObjectID objectID;
+    //
+    // // ObjectID objectID = findObject("Cube");
+    //
+    // m_modelAddCollection[m_modelAddCollection.size() - 1].addModel(
+    //    modelID,
+    //    modelName,
+    //    objectID,
+    //    uniformList,
+    //    m_modelModuleModels[m_modelModuleModels.size() - 1].m_model 
+    //   );
+    //
+    // m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
+    //
+    // // update current world
+    // ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(m_modelWorlds.currentWorld().orderInList());
+    // m_modelWorlds.setCurrentWorld(worldAfterAddModel);
+    // if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
+    // {
+    // m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
+    // }
+    // 
+    // }
 
     // virtual void addModelObjectID(ModelID& modelID,
     //                               const char* modelName, 
@@ -796,13 +800,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
     ModelWorldQuery modelWorldQuery = modelWorldFind(addWorldPosition, m_modelWorlds.addWorldAddOrder()[k].mainWorldName());
 
     worldLastPositionAddWorld(addWorldPosition);
-
-    // for(u32_t iterateUpdateWorld = 0; iterateUpdateWorld < modelWorldQuery.updateAmount(); iterateUpdateWorld++)
-    // {
-    // m_userWorlds.worldLastPositionUpdate(worldPositionQuery);
-    // }
-              
-    // std::cout << modelWorldIndex(modelWorldQuery).modelPosition(worldLastPosition(addWorldPosition)).second << '\n';
 
     if(modelWorldQuery.isInList())
     {
@@ -1114,6 +1111,22 @@ class ModelManagerModuleImpl : public ModelManagerModule
     }
 
     }
+
+    CREATE_FUNC_CALLBACK(addModel, void(ModelID& modelID,
+                                        const char* modelName,
+                                        const char* objectName,
+                                        String vertexShader,
+                                        String fragmentShader,
+                                        String importPath,
+                                        UniformList uniformList))
+    CREATE_FUNC_CALLBACK(removeModel, void(ModelID modelID))
+    CREATE_FUNC_CALLBACK(translateModel, void(ModelID modelID, Vec3 translationAmount))
+    CREATE_FUNC_CALLBACK(rotateModel, void(ModelID modelID, float radians, Vec3 rotationAxis))
+    CREATE_FUNC_CALLBACK(scaleModel, void(ModelID modelID, Vec3 scalarAmount))
+    CREATE_FUNC_CALLBACK(startWorld, void(const char* name))
+    CREATE_FUNC_CALLBACK(endWorld, void())
+    CREATE_FUNC_CALLBACK(startSubWorld, void(const char* name))
+    CREATE_FUNC_CALLBACK(endSubWorld, void())
 
     virtual bool isHiddenModel(u64_t modelPosition) const override
     {

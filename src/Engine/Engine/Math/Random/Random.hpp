@@ -82,6 +82,7 @@ class RandomRemoveLast
     auto chosenRandomValIterator = m_randomUniqueNums.begin() + randIntDist(0, m_maxiumRandomVal - 1);
 
     int32_t chosenRandomVal = *chosenRandomValIterator;
+    // ELLIPSE_ENGINE_LOG_INFO("Chosen random value: {}", chosenRandomVal);
     m_randomUniqueNums.erase(chosenRandomValIterator);
     m_maxiumRandomVal--;
     return chosenRandomVal;

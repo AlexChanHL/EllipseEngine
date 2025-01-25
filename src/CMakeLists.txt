@@ -1,5 +1,5 @@
 if(BUILD_DEMO)
- add_subdirectory(app)
+add_subdirectory(App)
 endif()
 
 add_subdirectory(Engine)

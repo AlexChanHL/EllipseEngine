@@ -125,7 +125,7 @@ class SDLWindow : public Window
    }
    case SDL_EVENT_KEY_DOWN:
    {
-   KeyboardPressedEvent event(e->key.keysym.sym);
+   KeyboardPressedEvent event(static_cast<u32_t>(e->key.keysym.sym));
    data->m_eventCallBackFn(event);
    return 0;
    }
@@ -142,8 +142,6 @@ class SDLWindow : public Window
    float offsetY = 0;
 
    SDL_GetRelativeMouseState(&offsetX, &offsetY);
-
-   ELLIPSE_ENGINE_LOG_INFO("Offset x: {} Offset y: {}", offsetX, offsetY);
 
    data->m_offsetX = offsetX;
    data->m_offsetY = offsetY;
@@ -165,9 +163,9 @@ class SDLWindow : public Window
    case SDL_EVENT_MOUSE_WHEEL:
    {
    MouseWheelEvent event(e->wheel.x,
-                   e->wheel.y,
-                   e->wheel.mouse_x,
-                   e->wheel.mouse_y
+                         e->wheel.y,
+                         e->wheel.mouseX,
+                         e->wheel.mouseY
                    );
    data->m_eventCallBackFn(event);
    return 0;

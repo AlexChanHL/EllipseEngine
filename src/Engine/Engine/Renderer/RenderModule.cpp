@@ -22,10 +22,10 @@ class RenderModuleImpl final : public RenderModule
          {
 
          }
-         RenderObject(ObjectID objectID,
+         RenderObject(const char* objectName,
                       SharedPtr<RenderObj> renderObj,
                       SharedPtr<RenderShaderObj> shaderObj)
-         : m_objectID{objectID},
+         : m_objectName{objectName},
            m_renderObj{renderObj},
            m_shaderObj{shaderObj}
          {
@@ -47,13 +47,13 @@ class RenderModuleImpl final : public RenderModule
          return m_shaderObj;
          }
 
-         ObjectID objectID() const
+         const char* objectName() const
          {
-         return m_objectID;
+         return m_objectName;
          }
 
         private:
-         ObjectID m_objectID;
+         const char* m_objectName;
          SharedPtr<RenderObj> m_renderObj;
          SharedPtr<RenderShaderObj> m_shaderObj;
      };
@@ -66,11 +66,11 @@ class RenderModuleImpl final : public RenderModule
 
          }
          RenderModel(ModelID modelID,
-                     ObjectID objectID,
+                     const char* objectName,
                      UniformList uniforms,
                      Mat4* model)
          : m_modelID{modelID},
-           m_objectID{objectID},
+           m_objectName{objectName},
            m_uniforms{uniforms},
            m_model{model}
          {
@@ -82,9 +82,9 @@ class RenderModuleImpl final : public RenderModule
          }
 
 
-         ObjectID objectID() const
+         const char* objectName() const
          {
-         return m_objectID;
+         return m_objectName;
          }
          UniformList uniformList() const
          {
@@ -93,7 +93,7 @@ class RenderModuleImpl final : public RenderModule
 
         private:
          ModelID m_modelID;
-         ObjectID m_objectID;
+         const char* m_objectName;
          UniformList m_uniforms;
          time_t m_timeAdded;
          Mat4* m_model;
@@ -104,11 +104,12 @@ class RenderModuleImpl final : public RenderModule
      virtual void onUpdateLayer() override;
 
      RenderModel createRenderModel(ModelID modelID,
-                                   ObjectID objectID,
+                                   const char* objectName,
                                    UniformList uniforms,
                                    Mat4* model);
     
-     RenderObject createObject(String vShader,
+     RenderObject createObject(const char* objectName,
+                               String vShader,
                                String fShader,
                                ModelData modelData);
 
@@ -213,11 +214,11 @@ class RenderModuleImpl final : public RenderModule
          m_objects.push_back(renderObject);
          }
 
-         RenderObject search(ObjectID objectID)
+         RenderObject findObjectName(const char* objectName)
          {
          for(u32_t i = 0; i < m_objects.size(); i++)
          {
-         if(m_objects[i].objectID() == objectID)
+         if(strcmp(m_objects[i].objectName(), objectName) == 0)
          {
          return m_objects[i];
          }
@@ -229,18 +230,18 @@ class RenderModuleImpl final : public RenderModule
          return m_objects[0];
          }
 
-         QueryModel findIndex(ObjectID objectID)
+         QueryModel findIndex(const char* objectName)
          {
          for(u32_t i = 0; i < m_objects.size(); i++)
          {
-         if(m_objects[i].objectID() == objectID)
+         if(strcmp(m_objects[i].objectName(), objectName) == 0)
          {
          return QueryModel{true, i};
          }
          }
 
          
-         ELLIPSE_ENGINE_LOG_INFO("Couldn't find model");
+         ELLIPSE_ENGINE_LOG_INFO("Model wasn't found, returning no index");
           
          return QueryModel{false, 0};
          }
@@ -384,32 +385,34 @@ void RenderModuleImpl::onUpdateLayer()
     {
     for(u64_t j=0;j<m_modelManager.modelAddCollection()[i].models().size();j++)
     {
-    if(m_modelManager.modelAddCollection()[i].models()[j].isUsingObjectID())
-    {
-    QueryModel queryModel = m_objectPile.findIndex(m_modelManager.modelAddCollection()[i].models()[j].objectID());
+    const char* objectName = m_modelManager.modelAddCollection()[i].models()[j].objectName();
+    QueryModel queryModel = m_objectPile.findIndex(m_modelManager.modelAddCollection()[i].models()[j].objectName());
     if(queryModel.isInList())
     {
     // [ To add models with same uniform variables configure by the user they must specify what
     //   value and add it ]
+        
+    m_modelManager.modelAddCollection()[i].models()[j].uniformList().addUniform(UniformVarible<Mat4>{"model",
+                                                                                &m_modelManager.modelAddCollection()[i].models()[j].model()});
+    addRenderModuleUniform(m_modelManager.modelAddCollection()[i].models()[j].uniformList());
+        
+    m_modelManager.modelAddCollection()[i].models()[j].uniformList().setUniformLocations(
+                m_objectPile.findObjectName(objectName).shaderObj()->findUniformLocationList(m_modelManager.modelAddCollection()[i].models()[j].uniformList())
+
+                                                                                        );
     m_renderModels.push_back(createRenderModel(m_modelManager.modelAddCollection()[i].models()[j].modelID(),
-                                              m_modelManager.modelAddCollection()[i].models()[j].objectID(),
+                                              m_modelManager.modelAddCollection()[i].models()[j].objectName(),
                                               m_modelManager.modelAddCollection()[i].models()[j].uniformList(),
                                               &m_modelManager.modelAddCollection()[i].models()[j].model()
                                              )
                            );
 
-    // addRenderModuleUniform(m_modelManager.modelAddCollection()[i].models()[j].uniforms());
     }
     if(!queryModel.isInList())
     {
-    ELLIPSE_ENGINE_LOG_WARN("Couldn't find using object id, did not add model");
-    }
-    }
-
-    if(!m_modelManager.modelAddCollection()[i].models()[j].isUsingObjectID())
-    {
     m_objectPile.addObject(
     createObject(
+    m_modelManager.modelAddCollection()[i].models()[j].objectName(),
     m_modelManager.modelAddCollection()[i].models()[j].vertexShader(),
     m_modelManager.modelAddCollection()[i].models()[j].fragmentShader(),
     m_modelManager.modelAddCollection()[i].models()[j].modelData()
@@ -435,12 +438,16 @@ void RenderModuleImpl::onUpdateLayer()
     //                        );
 
     m_renderModels.push_back(createRenderModel(m_modelManager.modelAddCollection()[i].models()[j].modelID(),
-                                               m_objectPile.lastAddedObject().objectID(),
+                                               m_objectPile.lastAddedObject().objectName(),
                                                m_modelManager.modelAddCollection()[i].models()[j].uniformList(),
                                                &m_modelManager.modelAddCollection()[i].models()[j].model()
                                               )
                            );
+
+    // ELLIPSE_ENGINE_LOG_WARN("Couldn't find using object id, did not add model");
     }
+
+
     }
 
     }
@@ -463,11 +470,11 @@ void RenderModuleImpl::onUpdateLayer()
 }
 
 RenderModuleImpl::RenderModel RenderModuleImpl::createRenderModel(ModelID modelID,
-                                                                  ObjectID objectID,
+                                                                  const char* objectName,
                                                                   UniformList uniforms,
                                                                   Mat4* model)
 {
-    return RenderModel{modelID, objectID, uniforms, model};
+    return RenderModel{modelID, objectName, uniforms, model};
 }
 
 
@@ -489,12 +496,13 @@ RenderModuleImpl::RenderModel RenderModuleImpl::createRenderModel(ModelID modelI
 
 void RenderModuleImpl::renderModel(const RenderModel& modelQuery) 
 {
-    RenderObject& model = m_objectPile.objectFromindex(m_objectPile.findIndex(modelQuery.objectID()).index());
+    RenderObject& model = m_objectPile.objectFromindex(m_objectPile.findIndex(modelQuery.objectName()).index());
     m_renderer.render(*model.renderObj(), *model.shaderObj(), modelQuery.uniformList());
     // modelQuery.uniformList().printMat4UniformList();
 }
 
-RenderModuleImpl::RenderObject RenderModuleImpl::createObject(String vShader,
+RenderModuleImpl::RenderObject RenderModuleImpl::createObject(const char* objectName,
+                                                              String vShader,
                                                               String fShader,
                                                               ModelData modelData)
 {
@@ -505,8 +513,8 @@ RenderModuleImpl::RenderObject RenderModuleImpl::createObject(String vShader,
 
     auto renderObj = m_renderer.createRenderObj(modelData);
     auto shaderObj = m_renderer.createShaderObj(vShader, fShader, uniforms);
-  
-    return RenderObject(objectID, renderObj, shaderObj);
+
+    return RenderObject(objectName, renderObj, shaderObj);
 }
 
 void RenderModuleImpl::setViewCamera(Camera camera)

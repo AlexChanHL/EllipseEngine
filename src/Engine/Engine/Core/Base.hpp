@@ -6,6 +6,13 @@
 
 #define BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
+#define CREATE_FUNC_CALLBACK_INTERFACE(fn, type) virtual function<type> fn ## CallReturn() = 0;
+
+#define CREATE_FUNC_CALLBACK(fn, type) virtual function<type> fn ## CallReturn() override\
+                                       {\
+                                       return [this](auto&&... args) -> decltype(auto)  { return this->fn(std::forward<decltype(args)>(args)...); };\
+                                       }
+
 
 // [ Define Ellipse::String used by engine, and for app string ]
 
@@ -27,6 +34,9 @@ using String = std::string;
 using FStreamIn = std::ifstream;
 
 using FStreanOut = std::ofstream;
+
+template<typename T>
+using function = std::function<T>;
 
 template<typename T>
 using UniquePtr = std::unique_ptr<T>;
@@ -115,6 +125,9 @@ inline Vec3 cross(Vec3 vec1, Vec3 vec2)
 // #endif
 
 }     // namespace Ellipse
+
+// template<typename T>
+// std::function<T> std::function<
 
 template<typename T, typename D>
 Pair<T, D> createPair(T t, D d)

@@ -93,11 +93,12 @@ struct RotateAmount
     Vec3 m_rotationAxis;
 };
 
+// [ -1 is a invalid state for id ]
 struct ModelID
 {
    public:
     ModelID()
-    : m_ID{0}
+    : m_ID{-1}
     {
 
     }
@@ -1061,15 +1062,9 @@ class Camera
     void setCameraFrontFromOffsets()
     {
     Vec3 cameraDirection = Vec3{1.0f};
-
-    // float yawRadians = EllipseMath::Radian{m_yaw}.radians() * sensitivity;
-    // float pitchRadians = EllipseMath::Radian{m_pitch}.radians() * sensitivity;
-      
       
     float yawRadians = EllipseMath::Radian{m_yaw}.radians();
     float pitchRadians = EllipseMath::Radian{m_pitch}.radians();
-
-    // 53.0f
 
     cameraDirection.x = sin(yawRadians) * cos(pitchRadians);
     cameraDirection.y = sin(pitchRadians);
@@ -1273,14 +1268,12 @@ class ModelManagerModule : public ILayerModule
     struct ModelAddCollection
     {
        public:
-        
-        // VerticiesData verticies,
         // [ Use imported model ]
-      
         ModelAddCollection(
         const char* modelWorldName,
         ModelID modelID,
         const char* modelName, 
+        const char* objectName,
         String vertexShader,
         String fragmentShader,
         ModelData modelData,
@@ -1291,6 +1284,7 @@ class ModelManagerModule : public ILayerModule
           m_models{Model{
                    modelID,
                    modelName,
+                   objectName,
                    vertexShader,
                    fragmentShader,
                    modelData,
@@ -1305,14 +1299,13 @@ class ModelManagerModule : public ILayerModule
         const char* modelWorldName,
         ModelID modelID,
         const char* modelName, 
-        ObjectID objectID,
+        const char* objectName, 
         UniformList uniformList,
         Mat4& model)
         : m_modelWorldName{modelWorldName},
           m_models{Model{modelID,
                          modelName,
-                         true,
-                         objectID,
+                         objectName,
                          uniformList,
                          model
                         }
@@ -1330,6 +1323,7 @@ class ModelManagerModule : public ILayerModule
           public:
            Model(ModelID modelID,
                  const char* name,
+                 const char* objectName,
                  String vertexShader,
                  String fragmentShader,
                  ModelData modelData,
@@ -1338,8 +1332,7 @@ class ModelManagerModule : public ILayerModule
                  )
            : m_modelID{modelID},
              m_name{name},
-             m_isUsingObjectID{false},
-             m_objectID{ObjectID{}},
+             m_objectName{objectName},
              m_vertexShader{vertexShader},
              m_fragmentShader{fragmentShader},
              m_modelData{modelData},
@@ -1350,21 +1343,24 @@ class ModelManagerModule : public ILayerModule
            }
            Model(ModelID modelID,
                  const char* name,
-                 bool isUsingObjectID,
-                 ObjectID objectID,
+                 const char* objectName,
                  UniformList uniformList,
                  Mat4& model
                  )
            : m_modelID{modelID},
              m_name{name},
-             m_isUsingObjectID{isUsingObjectID},
-             m_objectID{objectID},
+             m_objectName{objectName},
              m_vertexShader{""},
              m_fragmentShader{""},
              m_modelData{ModelData{}},
              m_uniformList{uniformList},
              m_model{model}
            {
+           if(objectName == nullptr)
+           {
+           m_objectName = "No name";
+
+           }
 
            }
 
@@ -1378,14 +1374,9 @@ class ModelManagerModule : public ILayerModule
            return m_modelID;
            }
 
-           bool isUsingObjectID() const
+           const char* objectName() const
            {
-           return m_isUsingObjectID;
-           }
-
-           ObjectID objectID() const
-           {
-           return m_objectID;
+           return m_objectName;
            }
 
            String vertexShader() const
@@ -1421,8 +1412,7 @@ class ModelManagerModule : public ILayerModule
           private:
            ModelID m_modelID;
            const char* m_name;
-           bool m_isUsingObjectID;
-           ObjectID m_objectID;
+           const char* m_objectName;
            String m_vertexShader;
            String m_fragmentShader;
            ModelData m_modelData;
@@ -1434,6 +1424,7 @@ class ModelManagerModule : public ILayerModule
         void addModel(
         ModelID modelID,
         const char* modelName, 
+        const char* objectName,
         String vertexShader,
         String fragmentShader,
         ModelData modelData,
@@ -1443,6 +1434,7 @@ class ModelManagerModule : public ILayerModule
         {
         m_models.push_back(Model{modelID,
                                  modelName,
+                                 objectName,
                                  vertexShader,
                                  fragmentShader,
                                  modelData,
@@ -1453,14 +1445,13 @@ class ModelManagerModule : public ILayerModule
 
         void addModel(ModelID modelID,
                       const char* modelName, 
-                      ObjectID objectID,
+                      const char* objectName,
                       UniformList uniformList,
                       Mat4& model)
         {
         m_models.push_back(Model{modelID,
                                  modelName,
-                                 true,
-                                 objectID,
+                                 objectName,
                                  uniformList,
                                  model}
                           );
@@ -1495,25 +1486,18 @@ class ModelManagerModule : public ILayerModule
     virtual void initLayerModule() override = 0;
     virtual void onUpdateLayer() override = 0;
 
-    // virtual void addModel(ModelID& modelID,
-    //                       const char* modelName,
-    //                       String vertexShader,
-    //                       String fragmentShader,
-    //                       VerticiesData verticies,
-    //                       UniformList uniformList
-    //                       ) = 0;
-
     virtual void addModel(ModelID& modelID,
                           const char* modelName,
+                          const char* objectName,
                           String vertexShader,
                           String fragmentShader,
                           String importPath,
                           UniformList uniformList
                           ) = 0;
 
-    virtual void addCube(ModelID& modelID,
-                         const char* modelName,
-                         UniformList uniformList) = 0;
+    // virtual void addCube(ModelID& modelID,
+    //                      const char* modelName,
+    //                      UniformList uniformList) = 0;
     
     virtual void translateModel(ModelID modelID, Vec3 translationAmount) = 0;
 
@@ -1586,6 +1570,22 @@ class ModelManagerModule : public ILayerModule
 
     virtual void queryUserWorld(const char* userWorldName) = 0;
     virtual void queryMainWorld(const char* mainWorldName) = 0;
+
+    CREATE_FUNC_CALLBACK_INTERFACE(addModel, void(ModelID& modelID,
+                                                  const char* modelName,
+                                                  const char* objectName,
+                                                  String vertexShader,
+                                                  String fragmentShader,
+                                                  String importPath,
+                                                  UniformList uniformList))
+    CREATE_FUNC_CALLBACK_INTERFACE(removeModel, void(ModelID modelID))
+    CREATE_FUNC_CALLBACK_INTERFACE(translateModel, void(ModelID modelID, Vec3 translationAmount))
+    CREATE_FUNC_CALLBACK_INTERFACE(rotateModel, void(ModelID modelID, float radians, Vec3 rotationAxis))
+    CREATE_FUNC_CALLBACK_INTERFACE(scaleModel, void(ModelID modelID, Vec3 scalarAmount))
+    CREATE_FUNC_CALLBACK_INTERFACE(startWorld, void(const char* name))
+    CREATE_FUNC_CALLBACK_INTERFACE(endWorld, void())
+    CREATE_FUNC_CALLBACK_INTERFACE(startSubWorld, void(const char* name))
+    CREATE_FUNC_CALLBACK_INTERFACE(endSubWorld, void())
 
     // [ Remove the two functions isHiddenModel, isInWireframeModel ]
     virtual bool isHiddenModel(u64_t modelPosition) const = 0;

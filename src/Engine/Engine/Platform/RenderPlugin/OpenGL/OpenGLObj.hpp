@@ -54,6 +54,7 @@ class OpenGLMesh : public RenderMesh
 
     stbi_set_flip_vertically_on_load(true);
     unsigned char* textureData = stbi_load("Assets/Images/GreenColor.png", &textureWidth, &textureHeight, &textureClrChannels, 0);
+    // unsigned char* textureData = stbi_load("../build/debug/Debug/bin/Assets/Images/GreenColor.png", &textureWidth, &textureHeight, &textureClrChannels, 0);
     if(!textureData)
     {
     ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");

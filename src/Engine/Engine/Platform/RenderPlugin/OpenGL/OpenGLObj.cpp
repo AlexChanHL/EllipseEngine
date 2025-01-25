@@ -112,6 +112,7 @@ void OpenGLShaderObj::compileShader(const char* fname)
      FStreamIn ifs{fname};
      if(!ifs)
      {
+     // ELLIPSE_ENGINE_LOG_WARN("{}", fname);
      ELLIPSE_ENGINE_LOG_WARN("Could open file!" );
      }
 
@@ -289,10 +290,10 @@ Map<const char*, i32_t> OpenGLShaderObj::findUniformLocationList(UniformList uni
 
 void OpenGLShaderObj::checkCompileStatus(GLuint shader)
 {
-     int status;
-     char logLoad[500];
+     i32_t status = 0;
+     UniquePtr<char[]> logLoad = createUnique<char[]>(static_cast<u64_t>(500));
      
-     GLint type;
+     GLint type = 0;
      glGetShaderiv(shader, GL_SHADER_TYPE, &type);
      const char* typeStr = typeToCString(GLenum(type));
    
@@ -300,8 +301,8 @@ void OpenGLShaderObj::checkCompileStatus(GLuint shader)
      glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
      if(!status)
      {
-     glGetShaderInfoLog(shader, 500, NULL, logLoad);
-     ELLIPSE_ENGINE_LOG_WARN("{} error {}", typeStr, logLoad);
+     glGetShaderInfoLog(shader, 500, NULL, logLoad.get());
+     ELLIPSE_ENGINE_LOG_WARN("{} error {}", typeStr, logLoad.get());
      }
 }
 
@@ -335,7 +336,7 @@ void OpenGLShaderObj::checkLinkStatus()
 
 GLenum OpenGLShaderObj::queryType(const char* fname)
 {
-    auto newStr = createUnique<char[]>(strlen(fname) + 1);
+    UniquePtr<char[]> newStr = createUnique<char[]>(strlen(fname) + 1);
     strcpy(newStr.get(), fname);
 
     u64_t extSize = 0;
