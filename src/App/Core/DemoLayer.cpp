@@ -72,6 +72,8 @@ void DemoLayer::initUserLayer()
 
    Ellipse::Application::get().getWindow().lockCursorToWindow();
 
+   // m_entities.addModel();
+
    // m_modelManagerLayerModule.hideAllModels("UserWorld1");
    // m_modelManagerLayerModule.startSubWorld("SubWorld");
 
@@ -140,8 +142,6 @@ void DemoLayer::onEvent(Ellipse::Event& e)
 
 void DemoLayer::onUpdateUserLayer(float dt)
 {
-    // if(m_timeModule.setTimer(m_timer1, 1))
-    // {
     // for(u32_t i=0;i<30;i++)
     // {
     // float x0 = Ellipse::EllipseMath::randRealDist<float>(0, 10);
@@ -150,13 +150,19 @@ void DemoLayer::onUpdateUserLayer(float dt)
     // m_entities.translateModel(i, Vec3{x0, y0, z0});
     // m_entities.rotateModel(i, float(m_timeModule.secAndNSec()), Vec3{0.0f, 0.0f, 1.0f});
     // }
-    //
-    // }
 
     // m_modelManagerLayerModule.queryUserWorld("UserWorld");
 
     // m_modelManagerLayerModule.endWorld();
 
+
+    // if(m_timeModule.setTimer(m_timer1, 1))
+    // {
+    m_entities.addModel();
+    m_entities.addModel();
+    // m_entities.addModel();
+    m_entities.removeModel(m_entities.modelIDs().size() - 1);
+    // }
 
     // m_modelManagerLayerModule.startWorld("Main World");
 

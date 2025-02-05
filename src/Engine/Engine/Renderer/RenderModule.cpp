@@ -273,6 +273,7 @@ class RenderModuleImpl final : public RenderModule
      {
      for(u32_t i = 0; i < m_modelManager.modelsToBeRemovedIndicies().size(); i++)
      {
+     ELLIPSE_ENGINE_LOG_INFO("Render module Model list size: {} Remove position: {}", m_renderModels.size(), m_modelManager.modelsToBeRemovedIndicies()[i]);
      m_renderModels.erase(m_renderModels.begin() + m_modelManager.modelsToBeRemovedIndicies()[i]);
      }
 
@@ -467,6 +468,7 @@ void RenderModuleImpl::onUpdateLayer()
 
     renderModels();
 
+    ELLIPSE_ENGINE_LOG_INFO("Update render end");
 }
 
 RenderModuleImpl::RenderModel RenderModuleImpl::createRenderModel(ModelID modelID,
@@ -476,23 +478,6 @@ RenderModuleImpl::RenderModel RenderModuleImpl::createRenderModel(ModelID modelI
 {
     return RenderModel{modelID, objectName, uniforms, model};
 }
-
-
-// Model RenderModuleImpl::create2DShape(const char* name, uLong_t size)
-// {
-//    Shape shape = m_draw2D.getShape(name);
-//
-//    auto renderObj = m_renderer.createRenderObj(shape.m_verticies);
-//    auto shaderObj = m_renderer.createShaderObj(shape.m_vShader,
-//                                                shape.m_fShader,
-//                                                UniformList{}
-//                                                );
-//
-//    shaderObj->addUniform(UniformVarible<Mat4>{"view", &m_view});
-//    shaderObj->addUniform(UniformVarible<Mat4>{"proj", &m_proj});
-//
-//    return Model{shape.m_name.c_str(), std::move(renderObj), std::move(shaderObj), size, false, false};
-// }
 
 void RenderModuleImpl::renderModel(const RenderModel& modelQuery) 
 {

@@ -7,10 +7,6 @@ add_library(EngineVendor INTERFACE)
 
 include(FetchContent)
 
-# if(BUILD_WITH_SOURCE)
-# createSubdirectory(SDL)
-# createSubdirectory(glm)
-# endif()
 # if(BUILD_WITH_GITHUB_HOOK)
 
 FetchContent_Declare(

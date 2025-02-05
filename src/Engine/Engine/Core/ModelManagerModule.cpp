@@ -286,6 +286,8 @@ class ModelManagerModuleImpl : public ModelManagerModule
                           UniformList uniformList
                           ) override
     {
+    ELLIPSE_ENGINE_LOG_INFO("Add model");
+
     ModelWorld queryWorld = m_modelWorlds.currentWorld();
 
     for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
@@ -305,7 +307,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     modelID.m_ID = m_randomRemoveLast.chooseRandomVal();
 
-    if(m_modelAddCollection.empty() || strcmp(m_modelWorlds.previousWorld().name(), m_modelWorlds.currentWorld().name()) != 0)
+    if(m_modelAddCollection.empty() || (strcmp(m_modelWorlds.previousWorld().name(), m_modelWorlds.currentWorld().name()) != 0))
     {
 
     u32_t modelWorldPosition = 0;
@@ -341,6 +343,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
     // The user has not specified the world to add the model to
     if(!modelWorldFound)
     {
+    ELLIPSE_ENGINE_LOG_INFO("World to add model not specified");
     return;
     }
 
@@ -776,6 +779,8 @@ class ModelManagerModuleImpl : public ModelManagerModule
     //   new world and won't show on queryUserWorld ]
     virtual void removeModel(ModelID modelID) override
     {
+    ELLIPSE_ENGINE_LOG_INFO("Remove model");
+
     ModelWorld queryWorld = m_modelWorlds.currentWorld();
     Pair<u64_t, ModelWorld> modelWorldRemovedPosition;
 
@@ -785,6 +790,12 @@ class ModelManagerModuleImpl : public ModelManagerModule
     {
     if(modelID == m_modelModuleModels[j].m_modelID)
     {
+    queryUserWorld("UserWorld");
+    ELLIPSE_ENGINE_LOG_INFO("Model manager remove position: {} Model list size: {}", j + 1, m_modelModuleModels.size());
+    ELLIPSE_ENGINE_LOG_INFO("{}", m_modelModuleModels.size());
+    // ELLIPSE_ENGINE_LOG_INFO("Model manager remove modelID: {} Model find modelID: {}",
+    //                         (*(m_modelModuleModels.begin() + j)).modelID().id(),
+    //                         modelID.id());
     m_modelModuleModels.erase(m_modelModuleModels.begin() + j);
     m_modelsToBeRemovedIndicies.push_back(j);
     m_modelOrderCount--;
@@ -874,9 +885,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
     }
     }
     }
-
-
-
 
  
     }

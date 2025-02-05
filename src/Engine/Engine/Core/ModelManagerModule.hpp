@@ -248,6 +248,11 @@ struct ModelModuleModel
     m_model = Mat4(1.0f);
     }
 
+    ModelID modelID() const
+    {
+    return m_modelID;
+    }
+
     const char* name() const
     {
     return m_modelName;

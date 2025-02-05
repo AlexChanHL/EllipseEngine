@@ -57,16 +57,19 @@ class Layer : public ILayer
     virtual void onUpdateUserLayer(float dt) = 0;
     virtual void onUpdate(float dt) override
     {
+    ELLIPSE_ENGINE_LOG_INFO("UserLayer update");
     onUpdateUserLayer(dt);
 
 
     // All updates are done after user updates
     // so that the module can use resources set
-    //by the user.
+    // by the user.
     for(SharedPtr<ILayerModule> module : m_modules)
     {
+    ELLIPSE_ENGINE_LOG_INFO("Module update: {}", module->name());
     module->onUpdateLayer();
     }
+
     }
 
     // EntityRef addModel(const char* name,
