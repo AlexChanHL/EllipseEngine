@@ -56,7 +56,6 @@ file(GLOB_RECURSE LOG
 
 add_library(${NAME} STATIC
            ${CURRENT_DIR} ${CORE} ${ENGINE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_GRAPHICS_CONTEXT} ${PLATFORM_WINDOW} ${PLATFORM_RENDER} ${MATH}
-           # Math/Matrix.hpp Math/Matrix.cpp
              )
 
 add_custom_target(CopyAssets ALL
@@ -68,7 +67,11 @@ add_custom_target(CopyAssets ALL
 
 add_dependencies(${NAME} CopyAssets)
 
-target_link_libraries(${NAME} PUBLIC EngineVendor ProjectWarnings)
+# target_link_libraries(${NAME} PUBLIC EngineVendor ProjectWarnings)
+
+target_link_libraries(${NAME} PUBLIC EngineVendor)
+
+target_link_libraries(${NAME} PRIVATE ProjectWarnings)
 
 if(BUILD_ENGINE_WITH_PRECOMPILED_HEADERS)
 target_precompile_headers(${NAME} PUBLIC EllipsePCH.hpp)

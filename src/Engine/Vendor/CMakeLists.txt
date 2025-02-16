@@ -23,3 +23,4 @@ GIT_REPOSITORY https://github.com/AUniqueLaver/uLogger
 FetchContent_MakeAvailable(uLogger)
 
 target_link_libraries(EngineVendor INTERFACE uLogger glad glm stb_image sdl3)
+

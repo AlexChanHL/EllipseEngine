@@ -174,6 +174,14 @@ class ModelData
     Vector<float> m_textureCoords;
 };
 
+// class A
+// {
+//    public:
+//     i32_t m_num;
+//     i32
+// };
+
+
 struct ModelModuleModel
 {
    public:
