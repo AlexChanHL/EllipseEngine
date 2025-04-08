@@ -315,7 +315,7 @@ bool DemoLayer::onMouseMotion(Ellipse::MouseMotionEvent& e)
 bool DemoLayer::onMousePressed(Ellipse::MousePressedEvent& e)
 {
     ELLIPSE_APP_LOG_INFO("{}   detected mouse press!\n", m_name);
-    ELLIPSE_APP_LOG_INFO("Pos: : {} {}" ,  e.mousePosX(), e.mousePosY());
+    ELLIPSE_APP_LOG_INFO("Pos: {} {}" ,  e.mousePosX(), e.mousePosY());
 
     // [ Adding model within a blocking event, ? if user pressed and event is event then the entity will 
     //   be before the first 30 entities and translate those ]

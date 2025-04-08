@@ -1280,7 +1280,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
     worldLastPositionAddWorld(worldPositionIndex);
 
 
-    if(worldPositionIndex == worldPositionNextIndex &&
+    if((worldPositionIndex == worldPositionNextIndex) &&
        (modelWorldIndex(modelWorldQuery).modelPosition(worldLastPosition(worldPositionIndex)).second == modelWorldIndex(modelWorldQueryNext).modelPosition(worldLastPosition(worldPositionIndex) + 1).first))
     {
     modelWorldIndex(modelWorldQuery).setModelEndPosition(worldLastPosition(worldPositionIndex), modelWorldIndex(modelWorldQuery).modelPosition(worldLastPosition(worldPositionIndex) + 1).second);

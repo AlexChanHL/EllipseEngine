@@ -593,7 +593,6 @@ void RenderModuleImpl::renderModels()
     // ELLIPSE_ENGINE_LOG_INFO("{}", m_modelManager.userWorldsPrevious()[i].cameraName());
 
     if(m_modelManager.userWorldsPrevious()[i].cameraName() != nullptr)
-    // if(m_modelManager.userWorldsPrevious()[i].isUsingCamera() != nullptr)
     {
     setViewCamera(m_modelManager.retrieveCamera(
                                   m_modelManager.userWorldsPrevious()[i].cameraName()
@@ -638,6 +637,9 @@ void RenderModuleImpl::renderModels()
     {
 
     }
+
+    // - 0 1 2 3 4 5 6 7 -
+    //   u u i i i u u u
 
     // [ Need to set user renderModels model pointer to be user model pointer ]
     if(!m_modelManager.userWorldsPrevious()[i].editModel().isHidden())
