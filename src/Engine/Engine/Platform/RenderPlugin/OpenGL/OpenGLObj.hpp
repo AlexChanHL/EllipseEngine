@@ -326,7 +326,7 @@ struct OpenGLRenderObj : public RenderObj
 
     }
 
-    virtual void initializeFromResources(ModelData& data) override
+    virtual void initializeFromResources(RenderObjData& data) override
     {
     OpenGLMesh openGLMesh;
     openGLMesh.initializeMesh();

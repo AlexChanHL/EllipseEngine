@@ -298,6 +298,11 @@ class VectorSharedIteratorHeap
     return m_size;
     }
 
+    unsigned long size() const
+    {
+    return m_size;
+    }
+
     Iterator begin()
     {
     return *m_begin;

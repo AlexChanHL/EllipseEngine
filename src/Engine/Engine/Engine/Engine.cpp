@@ -45,6 +45,8 @@ ISystem& EngineImpl::getSystem(const char* name)
     }
     }
 
+    std::cout << "Return invalid system\n";
+
     return *m_invalidSystem;
 }
 
@@ -63,6 +65,7 @@ IModule& EngineImpl::getModule(const char* name)
     }
 
     // [ Have module manager ]
+    std::cout << "Return invalid module\n";
 
     return *m_invalidModule;
 }
@@ -76,12 +79,15 @@ ILayerModule& EngineImpl::getLayerModule(const char* name)
 {
     for(auto& m : m_layerModules)
     {
-    if(m->name() == name)
+    if(strcmp(m->name().c_str(), name) == 0)
     {
     return *m;
     }
     }
+
     // [ Add logging to notify returning of invalid layer module ]
+    std::cout << "Returning invalid\n"; 
+
     return *m_invalidLayerModule;
 }
 

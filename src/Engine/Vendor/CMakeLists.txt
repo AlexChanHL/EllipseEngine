@@ -9,15 +9,16 @@ include(FetchContent)
 
 # if(BUILD_WITH_GITHUB_HOOK)
 
-FetchContent_Declare(
-uLogger
-GIT_REPOSITORY https://github.com/AUniqueLaver/uLogger
-# GIT_TAG
-
-                   )
-
-FetchContent_MakeAvailable(uLogger)
+# FetchContent_Declare(
+# uLogger
+# GIT_REPOSITORY https://github.com/AUniqueLaver/uLogger
+# # GIT_TAG
+#
+#                    )
+#
+# FetchContent_MakeAvailable(uLogger)
 
 add_library(uLogger INTERFACE)
 
-target_link_libraries(EngineVendor INTERFACE uLogger glad glm stb_image sdl3)
+target_link_libraries(EngineVendor INTERFACE uLogger glad glm stb_image sdl3 fmt)
+
