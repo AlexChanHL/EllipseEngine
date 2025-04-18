@@ -57,7 +57,6 @@ class Layer : public ILayer
     virtual void onUpdateUserLayer(float dt) = 0;
     virtual void onUpdate(float dt) override
     {
-    ELLIPSE_ENGINE_LOG_INFO("UserLayer update");
     onUpdateUserLayer(dt);
 
 
@@ -66,7 +65,6 @@ class Layer : public ILayer
     // by the user.
     for(SharedPtr<ILayerModule> module : m_modules)
     {
-    ELLIPSE_ENGINE_LOG_INFO("Module update: {}", module->name());
     module->onUpdateLayer();
     }
 

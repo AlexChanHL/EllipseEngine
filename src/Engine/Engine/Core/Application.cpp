@@ -103,6 +103,7 @@ void Application::run()
   {
   // [ Clear buffer in module update  ]
   m_renderer->clearColorBuffer();
+  m_renderer->clearDepthBuffer();
 
   float dt = 0.0f;
   updateLayerStack(m_layerStack, dt);

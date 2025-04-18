@@ -24,14 +24,25 @@ void OpenGLRenderPlugin::renderGL(const OpenGLRenderObj& rObj)
 
 void OpenGLRenderPlugin::renderGLMesh(const OpenGLMesh& mesh)
 {
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     glBindVertexArray(mesh.vao()); 
     glDrawElements(GL_TRIANGLES, static_cast<i32_t>(mesh.indicies().size()), GL_UNSIGNED_INT, NULL);
     glBindVertexArray(0);
 }
 
+void OpenGLRenderPlugin::enable(u64_t glUint)
+{
+    glEnable(GL_DEPTH_TEST);
+}
+
 void OpenGLRenderPlugin::clearColorBuffer()
 {
     glClear(GL_COLOR_BUFFER_BIT);
+}
+void OpenGLRenderPlugin::clearDepthBuffer()
+{
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void OpenGLRenderPlugin::setClearColor(const glm::vec4& col)
@@ -44,21 +55,18 @@ void OpenGLRenderPlugin::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t 
     glViewport(posX, posY, width, height);
 }
 
-// UniquePtr<RenderObj> OpenGLRenderPlugin::createRenderObj(RenderObjData modelData)
-RenderObj* OpenGLRenderPlugin::createRenderObj(RenderObjData modelData)
+UniquePtr<RenderObj> OpenGLRenderPlugin::createRenderObj(RenderObjData modelData)
 {
-    // auto rObj = createUnique<OpenGLRenderObj>();
-    auto rObj = new OpenGLRenderObj();
+    auto rObj = createUnique<OpenGLRenderObj>();
     
     rObj->initializeFromResources(modelData);
 
     return rObj;
 }
 
-RenderShaderObj* OpenGLRenderPlugin::createShaderObj(String vShader, String fShader)
+UniquePtr<RenderShaderObj> OpenGLRenderPlugin::createShaderObj(String vShader, String fShader)
 {
-    // auto sObj = createUnique<OpenGLShaderObj>();
-    auto sObj = new OpenGLShaderObj();
+    auto sObj = createUnique<OpenGLShaderObj>();
 
     sObj->compileShader(vShader.c_str());
     sObj->compileShader(fShader.c_str());
@@ -168,6 +176,7 @@ void OpenGLRenderPlugin::setUniforms(UniformList uniforms)
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    glUniform3f(loc, uniform.uniformAt(0).x, uniform.uniformAt(0).y, uniform.uniformAt(0).z);
+   // ELLIPSE_ENGINE_LOG_INFO("{}, {}, {}", uniform.uniformAt(0).x, uniform.uniformAt(0).y, uniform.uniformAt(0).z);
    }
 
    for(UniformVarible<Vec4>& uniform : uniforms.getVec4Uniforms())
@@ -194,6 +203,12 @@ void OpenGLRenderPlugin::setUniforms(UniformList uniforms)
    glUniformMatrix4fv(loc, 1, GL_FALSE, &(uniform.uniformAt(0)[0][0]));
    // std::cout << loc << '\n';
    // Ellipse::EllipseMath::printMat(uniform.uniformAt(0));
+   }
+
+   for(UniformVarible<bool>& uniform : uniforms.getBoolUniforms())
+   {
+   i32_t loc = uniforms.uniformLocations()[uniform.name()];
+   glUniform1i(loc, uniform.uniformAt(0));
    }
 
 }

@@ -130,7 +130,7 @@ void RenderModuleImpl::setName(const char* name)
 
 void RenderModuleImpl::initLayerModule()
 {
-
+   m_renderer.plugin()->enable(0);
 }
 
 void RenderModuleImpl::onUpdateLayer()
@@ -141,8 +141,6 @@ void RenderModuleImpl::onUpdateLayer()
                                 );
 
     renderModels();
- 
-    ELLIPSE_ENGINE_LOG_INFO("Update render end");
 }
 
 // void RenderModuleImpl::renderModel() 
@@ -212,15 +210,11 @@ void RenderModuleImpl::renderModels()
     for(u64_t i=0;i<m_modelManager.models().size();i++)
     {
     const Model& renderModelModel = m_modelManager.models()[i];
-    // if(renderModelModel.renderObject() == nullptr)
-    // {
-    // std::cout << "no pointer " << i << '\n';
-    // }
     if(renderModelModel.renderObject() != nullptr)
     {
-    std::cout << i << '\n';
-    // renderModel(renderModelModel.renderObject(), renderModelModel.shaderObject(), renderModelModel.uniformList());
+    renderModel(renderModelModel.renderObject(), renderModelModel.shaderObject(), renderModelModel.uniformList());
     }
+
     }
 
 }

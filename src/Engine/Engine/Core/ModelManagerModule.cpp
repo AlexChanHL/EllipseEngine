@@ -68,10 +68,8 @@ class ModelObject
     // }
     //
     ModelObject(const char* objectName,
-                // UniquePtr<RenderObj> renderObject,
-                // UniquePtr<RenderShaderObj> shaderObject
-                RenderObj* renderObject,
-                RenderShaderObj* shaderObject
+                UniquePtr<RenderObj> renderObject,
+                UniquePtr<RenderShaderObj> shaderObject
                )
     : m_objectName{objectName},
       m_isInList{false},
@@ -112,14 +110,14 @@ class ModelObject
     // m_shaderObject = std::move(shaderObj);
     // }
 
-    void setRenderObj(RenderObj** renderObj)
+    void setRenderObj(UniquePtr<RenderObj> renderObj)
     {
-    m_renderObject = *renderObj;
+    m_renderObject = std::move(renderObj);
     }
 
-    void setShaderObj(RenderShaderObj** shaderObj)
+    void setShaderObj(UniquePtr<RenderShaderObj> shaderObj)
     {
-    m_shaderObject = *shaderObj;
+    m_shaderObject = std::move(shaderObj);
     }
 
     const char* name() const
@@ -132,8 +130,7 @@ class ModelObject
     return m_isInList;
     }
 
-    // UniquePtr<RenderObj>& renderObject()
-    RenderObj*& renderObject()
+    UniquePtr<RenderObj>& renderObject()
     {
     return m_renderObject;
     }
@@ -143,8 +140,7 @@ class ModelObject
     // return m_renderObject;
     // }
 
-    // UniquePtr<RenderShaderObj>& shaderObject()
-    RenderShaderObj*& shaderObject()
+    UniquePtr<RenderShaderObj>& shaderObject()
     {
     return m_shaderObject;
     }
@@ -157,10 +153,8 @@ class ModelObject
    private:
     const char* m_objectName;
     bool m_isInList;
-    // UniquePtr<RenderObj> m_renderObject;
-    // UniquePtr<RenderShaderObj> m_shaderObject;
-    RenderObj* m_renderObject;
-    RenderShaderObj* m_shaderObject;
+    UniquePtr<RenderObj> m_renderObject;
+    UniquePtr<RenderShaderObj> m_shaderObject;
 };
 
 class ModelManagerModuleImpl : public ModelManagerModule
@@ -283,34 +277,20 @@ class ModelManagerModuleImpl : public ModelManagerModule
     {
     if(object.isInList())
     {
-    // m_models[index].setRenderObj(m_objects[j].renderObject().get());
-    // m_models[index].setShaderObj(m_objects[j].shaderObject().get());
-    m_models[index].setRenderObj(&m_objects[j].renderObject());
-    m_models[index].setShaderObj(&m_objects[j].shaderObject());
+    m_models[index].setRenderObj(m_objects[j].renderObject().get());
+    m_models[index].setShaderObj(m_objects[j].shaderObject().get());
     }
     if(!object.isInList())
     {
-    // auto renderObj = renderer.createRenderObj(model.renderObjData());
-    // auto shaderObj = renderer.createShaderObj(model.vertex(), model.fragment());
-
     auto renderObj = renderer.createRenderObj(model.renderObjData());
     auto shaderObj = renderer.createShaderObj(model.vertex(), model.fragment());
 
     m_objects[j].setIsInList(true);
-    // m_objects[j].setRenderObj(std::move(renderObj));
-    // m_objects[j].setShaderObj(std::move(shaderObj));
+    m_objects[j].setRenderObj(std::move(renderObj));
+    m_objects[j].setShaderObj(std::move(shaderObj));
 
-    m_objects[j].setRenderObj(&renderObj);
-    m_objects[j].setShaderObj(&shaderObj);
-
-    // m_models[index].setRenderObj(m_objects[j].renderObject().get());
-    // m_models[index].setShaderObj(m_objects[j].shaderObject().get());
-
-    // m_models[index].setRenderObj(m_objects[j].renderObject());
-    // m_models[index].setShaderObj(m_objects[j].shaderObject());
-
-    m_models[index].setRenderObj(&renderObj);
-    m_models[index].setShaderObj(&shaderObj);
+    m_models[index].setRenderObj(m_objects[j].renderObject().get());
+    m_models[index].setShaderObj(m_objects[j].shaderObject().get());
     }
 
     }
@@ -322,11 +302,9 @@ class ModelManagerModuleImpl : public ModelManagerModule
     {
     std::cout << index << '\n';
     // std::cout << m_models[index].renderObject().use_count() << '\n';
-    std::cout << m_models[index].renderObject() << '\n';
+    // std::cout << m_models[index].renderObject() << '\n';
     }
         
-    // m_models[index].setIsDefined(true);
-
     m_models[index].uniformList().addUniform(UniformVarible<Mat4>{"model", &m_models[index].model()});
 
     RenderModule& renderModule = static_cast<RenderModule&>(m_engine.getLayerModule("RenderModule"));
@@ -334,7 +312,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
     m_models[index].uniformList().addUniform(UniformVarible<Mat4>{"view", &renderModule.view()});
 
     // m_models[index].uniformList().setUniformLocations(shaderObj->findUniformLocationList(m_models[index].uniformList()));
-    // RenderShaderObj* p = *m_models[index].shaderObject();
     m_models[index].uniformList().setUniformLocations(m_models[index].shaderObject()->findUniformLocationList(m_models[index].uniformList()));
     }
 

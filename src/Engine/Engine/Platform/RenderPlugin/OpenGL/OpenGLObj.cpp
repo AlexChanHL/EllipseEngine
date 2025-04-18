@@ -1,5 +1,6 @@
 
 #include "OpenGLObj.hpp"
+#include "Core/Formatter.hpp"
 #include "Debug/Log/Log.hpp"
 
 namespace Ellipse

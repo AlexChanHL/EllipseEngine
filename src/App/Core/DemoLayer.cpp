@@ -11,7 +11,8 @@ DemoLayer::DemoLayer(Ellipse::Engine& engine)
    m_renderModule{static_cast<Ellipse::RenderModule&>(engine.getLayerModule("RenderModule"))},
    m_modelIncrement{0},
    m_rotatedDegrees{0.0f},
-   m_modelList{engine}
+   m_modelList{engine},
+   m_weapon{m_modelList, engine}
 {
    m_name = "Placeholder";
    m_throughLayer = false;
@@ -35,17 +36,27 @@ void DemoLayer::initUserLayer()
                                           }
                        );
 
-   m_modelList.addModelDefinition("1");
+   // m_modelList.addModelDefinition("1");
+   m_light.init(m_modelList, "LightCube", "Assets/Shader/Light.vert.glsl", "Assets/Shader/Light.frag.glsl");
+  
+   m_light.setPosition(m_modelList, Vec3{1.0f, 2.0f, 1.0f});
 
-   m_modelList.addModel("2");
+   m_modelList.addModelDefinition("1", m_renderModule.camera(), m_light.light());
 
-   m_modelList.model("1").setTranslateAmount(Vec3{0.0f, 0.0f, -10.0f});
+
+   
+   m_modelList.model("1").setTranslateAmount(Vec3{0.0f, 0.0f, 0.0f});
    m_modelList.model("1").setRotateAmount(Ellipse::EllipseMath::Radian{90.0f}.radians(), Vec3{1.0f, 1.0f, 0.0f});
+
+   // m_modelList.addModel(m_light.light(), m_renderModule.camera());
+   // m_modelList.addModel(m_light, m_renderModule.camera());
+
+   // m_modelList.model(previousModel(m_modelList)).uniformList().addUniform(UniformVarible<Vec3>{"light", &m_light.direction()});
+   // m_modelList.model(previousModel(m_modelList)).uniformList().addUniform(UniformVarible<Vec3>{"light", &m_light.position()});
+  
+
+
    // modelVal.setScaleAmount(Vec3{1.0f});
-
-   m_modelList.model("2").setTranslateAmount(Vec3{1.0f, 0.0f, 0.0f});
-
-   m_modelList.removeModel("1");
 
    // m_modelList.addModel("3");
    // m_modelList.model("3").setTranslateAmount(Vec3{0.0f});
@@ -92,6 +103,8 @@ void DemoLayer::onEvent(Ellipse::Event& e)
 void DemoLayer::onUpdateUserLayer(float dt)
 {
     m_modelList.addAmounts();
+
+    m_weapon.update();
 
     // for(u32_t i=0;i<30;i++)
     // {
@@ -153,27 +166,34 @@ bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e)
      case ELLIPSE_KEY_ESCAPE:
      Ellipse::Application::get().quitApplication();
      break;
-     case ELLIPSE_KEY_9:
-     // m_modelManagerLayerModule.addModel(lastestModel());
-     // updateLastestModel();
-      break;
-     case ELLIPSE_KEY_0:
-     // m_entities.removeModel(m_entities.modelIDs().size() - 1);
-     break;
      case ELLIPSE_KEY_1:
-     Ellipse::Application::get().getWindow().lockCursorToWindow();
+     m_weapon.changeWeaponType(WeaponType::Pistol);
      break;
      case ELLIPSE_KEY_2:
+     m_weapon.changeWeaponType(WeaponType::Shotgun);
+     break;
+     case ELLIPSE_KEY_3:
+     break;
+     case ELLIPSE_KEY_9:
+     Ellipse::Application::get().getWindow().lockCursorToWindow();
+     break;
+     case ELLIPSE_KEY_0:
      Ellipse::Application::get().getWindow().unlockCursorToWindow();
      break;
      case ELLIPSE_KEY_o:
      // m_timeModule.unPause();
-      break;
+     break;
+     case ELLIPSE_KEY_i:
+     {
+     String modelName = Ellipse::format("{}", (m_modelList.models().size() - 1));
+     m_modelList.removeModel(modelName.c_str());
+     }
+     break;
      default:
-      break;
+     break;
      }
 
-   return m_throughLayer ? false : true;
+     return m_throughLayer ? false : true;
 }
 
 bool DemoLayer::onMouseMotion(Ellipse::MouseMotionEvent& e)
@@ -190,11 +210,7 @@ bool DemoLayer::onMouseMotion(Ellipse::MouseMotionEvent& e)
    // [ Rename to cameraUpdateOffsetValues ]
    // ELLIPSE_APP_LOG_INFO("Mouse offset X: {} Mouse off Y: {}", Ellipse::Application::get().getWindow().mouseOffsetsLast().first, Ellipse::Application::get().getWindow().mouseOffsetsLast().second);
   
-   // Ellipse::EllipseMath::printVec(m_modelManagerLayerModule.retrieveCamera("Camera").front());
-  
    // e.logMousePosition();
-   // m_modelManagerLayerModule.registerMouseUpdate(e.offsets());
-   // m_modelManagerLayerModule.registerMouseUpdate(Ellipse::Application::get().getWindow().mouseOffsets());
    m_renderModule.camera().registerMouseUpdate(Ellipse::Application::get().getWindow().mouseOffsets());
    // m_modelManagerLayerModule.cameraUpdateOffsetValues();
 
@@ -203,26 +219,27 @@ bool DemoLayer::onMouseMotion(Ellipse::MouseMotionEvent& e)
 
 bool DemoLayer::onMousePressed(Ellipse::MousePressedEvent& e)
 {
-    ELLIPSE_APP_LOG_INFO("{}   detected mouse press!\n", m_name);
-    ELLIPSE_APP_LOG_INFO("Pos: {} {}" ,  e.mousePosX(), e.mousePosY());
+    // ELLIPSE_APP_LOG_INFO("{}   detected mouse press!\n", m_name);
+    // ELLIPSE_APP_LOG_INFO("Pos: {} {}" ,  e.mousePosX(), e.mousePosY());
 
     // [ Adding model within a blocking event, ? if user pressed and event is event then the entity will 
     //   be before the first 30 entities and translate those ]
     // m_entities.addModel();
   
-    m_modelList.addModel("3");
-    // String modelName = .model(Ellipse::format("{}", (m_modelList.models().size() - 1)).c_str()).setTranslateAmount(m_renderModule.camera().position() + (Ellipse::EllipseMath::normalize(m_renderModule.camera().front()) * 1.0f));
-    // m_modelList.model(Ellipse::format("{}", (m_modelList.models().size() - 1)).c_str()).setTranslateAmount(m_renderModule.camera().position() + (Ellipse::EllipseMath::normalize(m_renderModule.camera().front()) * 1.0f));
-  
-    // Ellipse::Camera& camera = m_modelManagerLayerModule.cameraManager().cameraIndex(m_modelManagerLayerModule.cameraManager().findCameraIndex("Camera"));
-    // m_entities.translateModel(m_entities.modelIDs().size() - 1, camera.position() + (4.0f * camera.front()));
+    m_weapon.fire();
+
+    // if((m_weapon.weaponType() == WeaponType::AssaultRifle) && i)
+    // {
+    // 
+    // }
+
 
     return m_throughLayer ? false : true;
 }
 
 bool DemoLayer::onMouseWheel(Ellipse::MouseWheelEvent& e)
 {
-    ELLIPSE_APP_LOG_INFO("{}", e.logMouseOffset());
+    // ELLIPSE_APP_LOG_INFO("{}", e.logMouseOffset());
 
     return m_throughLayer ? false : true;
 }

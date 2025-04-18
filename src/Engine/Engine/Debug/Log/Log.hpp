@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Base.hpp"
+#include "Core/Formatter.hpp"
 // #include "uLogger/Logger.hpp"
 
 namespace Ellipse
@@ -30,21 +31,21 @@ std::ostream& operator<<(std::ostream& os, glm::mat<4, 4, float>& mat4);
 }    //Ellipse
 
 
-#define ELLIPSE_APP_LOG_TRACE(...)
-#define ELLIPSE_ENGINE_LOG_TRACE(...)
+#define ELLIPSE_APP_LOG_TRACE(...) std::cout << Ellipse::format(__VA_ARGS__) << '\n';
+#define ELLIPSE_ENGINE_LOG_TRACE(...)std::cout << Ellipse::format(__VA_ARGS__) << '\n';
 
-#define ELLIPSE_APP_LOG_DEBUG(...)
-#define ELLIPSE_ENGINE_LOG_DEBUG(...)
+#define ELLIPSE_APP_LOG_DEBUG(...) std::cout << Ellipse::format(__VA_ARGS__) << '\n';
+#define ELLIPSE_ENGINE_LOG_DEBUG(...) std::cout << Ellipse::format(__VA_ARGS__) << '\n';
 
-#define ELLIPSE_APP_LOG_INFO(...)
-#define ELLIPSE_ENGINE_LOG_INFO(...)
+#define ELLIPSE_APP_LOG_INFO(...) std::cout << Ellipse::format(__VA_ARGS__) << '\n';
+#define ELLIPSE_ENGINE_LOG_INFO(...) std::cout << Ellipse::format(__VA_ARGS__) << '\n';
 
-#define ELLIPSE_APP_LOG_WARN(...)
-#define ELLIPSE_ENGINE_LOG_WARN(...)
+#define ELLIPSE_APP_LOG_WARN(...) std::cout << Ellipse::format(__VA_ARGS__) << '\n';
+#define ELLIPSE_ENGINE_LOG_WARN(...) std::cout << Ellipse::format(__VA_ARGS__) << '\n';
 
-#define ELLIPSE_APP_LOG_ERROR(...)
-#define ELLIPSE_ENGINE_LOG_ERROR(...)
+#define ELLIPSE_APP_LOG_ERROR(...) std::cout << Ellipse::format(__VA_ARGS__) << '\n';
+#define ELLIPSE_ENGINE_LOG_ERROR(...) std::cout << Ellipse::format(__VA_ARGS__) << '\n';
 
-#define ELLIPSE_APP_LOG_FATAL(...)
-#define ELLIPSE_ENGINE_LOG_FATAL(...)
+#define ELLIPSE_APP_LOG_FATAL(...) std::cout << Ellipse::format(__VA_ARGS__) << '\n';
+#define ELLIPSE_ENGINE_LOG_FATAL(...) std::cout << Ellipse::format(__VA_ARGS__) << '\n';
 

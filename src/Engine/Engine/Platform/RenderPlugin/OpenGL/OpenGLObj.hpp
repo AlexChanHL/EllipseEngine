@@ -131,38 +131,71 @@ class OpenGLMesh : public RenderMesh
      0.5f, -0.5f, -0.5f
     };
 
-    Vector<Vec3> cubeNormals;  
+    // Vector<Vec3> cubeNormals;  
+    //
+    // Vector<Vec3> point;
+    // Vector<float> storeFloats;
+    //
+    // for(uint32_t i = 0; i < m_positions.size(); i++)
+    // {
+    // storeFloats.push_back(m_positions[i]);
+    // if(((i + 1) % 3) == 0)
+    // {
+    // point.push_back(Vec3(storeFloats[0], storeFloats[1], storeFloats[2]));
+    // storeFloats.clear();
+    // }
+    //
+    // if(((i + 1) % 12) == 0)
+    // {
+    // cubeNormals.push_back(EllipseMath::cross((point[0] - point[1]), (point[0] - point[2])));
+    // point.clear();
+    // }
+    //
+    // }
+    //
+    // for(uint32_t i = 0; i < cubeNormals.size(); i++)
+    // {
+    // for(uint32_t j = 0; j < 4; j++)
+    // {
+    // m_normals.push_back(cubeNormals[i].x);
+    // m_normals.push_back(cubeNormals[i].y);
+    // m_normals.push_back(cubeNormals[i].z);
+    // }
+    //
+    // }
 
-    Vector<Vec3> point;
-    Vector<float> storeFloats;
-
-    for(uint32_t i = 0; i < m_positions.size(); i++)
+    m_normals = std::vector<float>
     {
-    storeFloats.push_back(m_positions[i]);
-    if(((i + 1) % 3) == 0)
-    {
-    point.push_back(Vec3(storeFloats[0], storeFloats[1], storeFloats[2]));
-    storeFloats.clear();
-    }
+     0,  0,  1,
+     0,  0,  1,
+     0,  0,  1,
+     0,  0,  1,
 
-    if(((i + 1) % 12) == 0)
-    {
-    cubeNormals.push_back(EllipseMath::cross((point[0] - point[1]), (point[0] - point[2])));
-    point.clear();
-    }
+     1,  0,  0,
+     1,  0,  0,
+     1,  0,  0,
+     1,  0,  0,
 
-    }
+     0,  0, -1,
+     0,  0, -1,
+     0,  0, -1,
+     0,  0, -1,
 
-    for(uint32_t i = 0; i < cubeNormals.size(); i++)
-    {
-    for(uint32_t j = 0; j < 4; j++)
-    {
-    m_normals.push_back(cubeNormals[i].x);
-    m_normals.push_back(cubeNormals[i].y);
-    m_normals.push_back(cubeNormals[i].z);
-    }
+    -1,  0,  0,
+    -1,  0,  0,
+    -1,  0,  0,
+    -1,  0,  0,
 
-    }
+     0,  1,  0,
+     0,  1,  0,
+     0,  1,  0,
+     0,  1,  0,
+
+     0, -1,  0,
+     0, -1,  0,
+     0, -1,  0,
+     0, -1,  0
+    };
 
     m_textureCoords = Vector<float>
     {

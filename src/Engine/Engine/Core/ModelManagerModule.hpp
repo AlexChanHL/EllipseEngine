@@ -232,14 +232,14 @@ class Model
 
     }
 
-    void setRenderObj(RenderObj** renderObj)
+    void setRenderObj(RenderObj* renderObj)
     {
-    m_renderObject = *renderObj;
+    m_renderObject = renderObj;
     }
 
-    void setShaderObj(RenderShaderObj** shaderObj)
+    void setShaderObj(RenderShaderObj* shaderObj)
     {
-    m_shaderObject = *shaderObj;
+    m_shaderObject = shaderObj;
     }
 
     Mat4& model()
@@ -411,6 +411,11 @@ class Camera
     }
 
     Vec3 position() const
+    {
+    return m_position;
+    }
+
+    Vec3& position()
     {
     return m_position;
     }
