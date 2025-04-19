@@ -165,6 +165,7 @@ class Weapon
 
     m_modelList.addModel(m_bullets[m_bullets.size() - 1].name().c_str());
     m_modelList.model(m_bullets[m_bullets.size() - 1].name().c_str()).setTranslateAmount(m_bullets[m_bullets.size() - 1].position());
+    break;
     default:
     break;
     }
@@ -174,6 +175,11 @@ class Weapon
     void changeWeaponType(WeaponType weaponType)
     {
     m_weaponType = weaponType;
+    }
+
+    WeaponType weaponType() const
+    {
+    return m_weaponType;
     }
 
    private:

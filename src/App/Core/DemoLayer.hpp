@@ -4,6 +4,7 @@
 
 #include "ModelList.hpp"
 #include "Weapon.hpp"
+#include "CubeMadeCube.hpp"
 
 
 class LightModel
@@ -84,4 +85,5 @@ class DemoLayer : public Ellipse::Layer
 
     LightModel m_light;
     Weapon m_weapon;
+    CubeMadeCube m_cubeMadeCube;
 };

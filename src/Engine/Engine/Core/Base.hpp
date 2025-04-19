@@ -19,6 +19,9 @@
 template<typename T>
 using Vector = std::vector<T>;
 
+template<typename T, u64_t N>
+using Array = std::array<T, N>;
+
 template<typename T>
 using ForwardList = std::forward_list<T>;
 
@@ -85,6 +88,16 @@ inline Mat4 translate(Mat4 model, Vec3 translateAmount)
    return glm::translate(model, translateAmount);
 }
 
+inline Mat3 inverse(Mat3 model)
+{
+   return glm::inverse(model);
+}
+
+inline Mat3 transpose(Mat3 model)
+{
+   return glm::transpose(model);
+}
+
 inline Mat4 lookAt(Vec3 camPos, Vec3 camDir, Vec3 camUp)
 {
    return glm::lookAt(camPos, camDir, camUp);
@@ -108,6 +121,12 @@ inline Mat4 perspective(float fov,
 {
     return glm::perspective(fov, aspectRatio, near, far);
 }
+
+inline float length(Vec3 vec)
+{
+    return glm::length(vec);
+}
+
 
 inline Vec3 normalize(Vec3 vec)
 {

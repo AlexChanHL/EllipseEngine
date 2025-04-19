@@ -28,13 +28,36 @@ class Material
 
     }
 
-    // void operator=(Material& rhs)
-    void operator=(const Material& rhs)
+    Material operator=(Material& rhs)
     {
-    // m_ambient = std::move(rhs.ambient());
-    // m_diffuse = std::move(rhs.diffuse());
-    // m_specular = std::move(rhs.specular());
-    // m_reflectiveness = std::move(rhs.reflectiveness());
+    // Material material;
+    //
+    // material.setAmbient(std::move(rhs.ambient()));
+    // material.setDiffuse(std::move(rhs.diffuse()));
+    // material.setSpecular(std::move(rhs.specular()));
+    // material.setReflectiveness(std::move(rhs.reflectiveness()));
+
+    return Material{rhs};
+    }
+
+    void setAmbient(UniquePtr<Vec3> ambient)
+    {
+    m_ambient = std::move(ambient);
+    }
+
+    void setDiffuse(UniquePtr<Vec3> diffuse)
+    {
+    m_diffuse = std::move(diffuse);
+    }
+
+    void setSpecular(UniquePtr<Vec3> specular)
+    {
+    m_specular = std::move(specular);
+    }
+
+    void setReflectiveness(UniquePtr<float> reflectiveness)
+    {
+    m_reflectiveness = std::move(reflectiveness);
     }
 
     UniquePtr<Vec3>& ambient()
@@ -85,6 +108,7 @@ class ModelVal
    public:
     ModelVal()
     : m_model{Mat4{1.0f}},
+      m_normalMatrix{createUnique<Mat3>(1.0f)},
       m_translationAmount{Vec3{1.0f}},
       m_rotationAmount{Pair<Vec3, float>{Vec3{1.0f}, 0.0f}},
       m_scaleAmount{Vec3{1.0f}}
@@ -94,6 +118,40 @@ class ModelVal
     ~ModelVal()
     {
 
+    }
+
+    ModelVal(ModelVal& modelVal)
+    : m_model{modelVal.model()},
+      m_normalMatrix{std::move(modelVal.normalMatrix())},
+      m_translationAmount{modelVal.translationAmount()},
+      m_rotationAmount{modelVal.rotationAmount()},
+      m_scaleAmount{modelVal.scaleAmount()}
+    {
+
+    }
+
+    ModelVal operator=(ModelVal modelVal)
+    {
+    // ModelVal modelValue;
+    //
+    // modelValue.setModel(modelVal.model());
+    // modelValue.setNormalMatrix(std::move(modelVal.normalMatrix()));
+    // modelValue.setTranslateAmount(modelVal.translationAmount());
+    // modelValue.setRotateAmount(modelVal.rotationAmount().second, modelVal.rotationAmount().first);
+    // modelValue.setScaleAmount(modelVal.scaleAmount());
+
+    // return modelValue;
+    return ModelVal{modelVal};
+    }
+
+    void setModel(Mat4 model)
+    {
+    m_model = model;
+    }
+
+    void setNormalMatrix(UniquePtr<Mat3> normalMatrix)
+    {
+    m_normalMatrix = std::move(normalMatrix);
     }
 
     void setTranslateAmount(Vec3 translateAmount)
@@ -118,11 +176,33 @@ class ModelVal
     translateModel(m_model, m_translationAmount);
     rotateModel(m_model, m_rotationAmount.second, m_rotationAmount.first);
     scaleModel(m_model, m_scaleAmount);
+
+    *m_normalMatrix = Ellipse::EllipseMath::inverse(Ellipse::EllipseMath::transpose(Mat3{m_model}));
     }
 
     Mat4 model() const
     {
     return m_model;
+    }
+
+    UniquePtr<Mat3>& normalMatrix()
+    {
+    return m_normalMatrix;
+    }
+
+    Vec3 translationAmount() const
+    {
+    return m_translationAmount;
+    }
+
+    Pair<Vec3, float> rotationAmount()
+    {
+    return m_rotationAmount;
+    }
+
+    Vec3 scaleAmount()
+    {
+    return m_scaleAmount;
     }
 
     Material& material()
@@ -132,6 +212,9 @@ class ModelVal
 
    private:
     Mat4 m_model;
+
+    UniquePtr<Mat3> m_normalMatrix;
+
     Vec3 m_translationAmount;
     Pair<Vec3, float> m_rotationAmount;
     Vec3 m_scaleAmount;
@@ -231,6 +314,8 @@ inline void addLight(Ellipse::UniformList& uniformList, Light& light)
 
 inline void addMaterials(Ellipse::UniformList& uniformList, ModelVal& modelVal)
 {
+    uniformList.addUniform(Ellipse::UniformVarible<Mat3>{"normalMatrixObject", modelVal.normalMatrix().get()});
+
     uniformList.addUniform(Ellipse::UniformVarible<Vec3>{"materialObject.m_ambient", modelVal.material().ambient().get()});
     uniformList.addUniform(Ellipse::UniformVarible<Vec3>{"materialObject.m_diffuse", modelVal.material().diffuse().get()});
     uniformList.addUniform(Ellipse::UniformVarible<Vec3>{"materialObject.m_specular.m_specular", modelVal.material().specular().get()});

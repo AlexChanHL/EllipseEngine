@@ -36,7 +36,7 @@ struct Material
     Specular m_specular; 
 };
 
-uniform mat3 normalMatrixUser;
+// uniform mat3 normalMatrixObject;
 
 uniform sampler2D sampler1;
 // uniform sampler2D sampler2;
@@ -96,7 +96,7 @@ void main()
    // vec3 previousLight = vec3(0.0f, 0.0f, 0.0f);
    //
    vec3 normalDirection = normalize(outNormalDirection);
-   // // normalDirection = normalDirection * normalMatrixUser;
+   // normalDirection = normalDirection * normalMatrixObject;
    // 
    vec3 lightDirection = vec3(0.0f, 0.0f, 0.0f);
    // if(light.m_isDirectional)

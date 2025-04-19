@@ -83,7 +83,6 @@ class ModelList
     addMaterials(modelModuleVal(name).uniformList(), model(name));
 
     addLight(modelModuleVal(name).uniformList(), light);
-
     }
 
     void addModel()
