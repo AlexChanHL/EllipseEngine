@@ -53,7 +53,7 @@ void Application::init(const ApplicationSpecifications& specs)
   // [ ModelManagerModule and RenderModule are linked together and
   //   need eachother to function, should have render module add
   //   a default modelmanager ]
-  m_engine->addLayerModule(ModelManagerModule::createModelManagerModule());
+  m_engine->addLayerModule(ModelManagerModule::createModelManagerModule(*m_engine));
   m_engine->addLayerModule(RenderModule::createRenderModule(*m_engine));
 
   // m_engine->initModules(initData);
@@ -103,6 +103,7 @@ void Application::run()
   {
   // [ Clear buffer in module update  ]
   m_renderer->clearColorBuffer();
+  m_renderer->clearDepthBuffer();
 
   float dt = 0.0f;
   updateLayerStack(m_layerStack, dt);
@@ -141,12 +142,12 @@ bool Application::onWindowResize(WindowResizeEvent& resizeEvent)
 
   // Updates all viewspaces within all layers
   // of the ModelManagerModule
-  modelManagerModule.setDifferentInViewspace(
-    static_cast<float>(viewspaceDiffernceWidth),
-    static_cast<float>(viewspaceDiffernceHeight),
-    static_cast<float>(windowSize.first),
-    static_cast<float>(windowSize.second)
-                                            );
+  // modelManagerModule.setDifferentInViewspace(
+  //   static_cast<float>(viewspaceDiffernceWidth),
+  //   static_cast<float>(viewspaceDiffernceHeight),
+  //   static_cast<float>(windowSize.first),
+  //   static_cast<float>(windowSize.second)
+  //                                           );
 
   m_renderer->setViewport(0, 0, resizeEvent.width(), resizeEvent.height());
   m_renderer->setWindowFrameSize(Pair<i32_t, i32_t>{resizeEvent.width(), resizeEvent.height()});

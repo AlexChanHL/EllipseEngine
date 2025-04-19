@@ -12,6 +12,7 @@ class RendererImpl final : public Renderer
 
     void render(const RenderObj& rObj, const RenderShaderObj& sObj, const UniformList& uniforms) override;
     virtual void clearColorBuffer() override;
+    virtual void clearDepthBuffer() override;
     void setClearColor(const Vec4& col) override;
     virtual void setWindowFrameSize(Pair<int, int> winSize) override;
     void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
@@ -21,10 +22,14 @@ class RendererImpl final : public Renderer
     return Pair<int, int>{m_currentWidth, m_currentHeight};
     }
 
-    virtual SharedPtr<RenderObj> createRenderObj(ModelData modelData) override;
-    virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader,
-                                                 String fShader,
-                                                 UniformList uniforms) override;
+    virtual UniquePtr<RenderObj> createRenderObj(RenderObjData modelData) override;
+    virtual UniquePtr<RenderShaderObj> createShaderObj(String vShader,
+                                                       String fShader) override;
+
+    virtual UniquePtr<RenderPlugin>& plugin() override
+    {
+    return m_plugin;
+    }
 
     virtual String name() override;
     virtual void setName(const char* name) override;
@@ -72,6 +77,12 @@ void RendererImpl::clearColorBuffer()
 {
     m_plugin->clearColorBuffer();
 }
+
+void RendererImpl::clearDepthBuffer()
+{
+    m_plugin->clearDepthBuffer();
+}
+
 void RendererImpl::setClearColor(const Vec4& col)
 {
     m_plugin->setClearColor(col);
@@ -88,16 +99,15 @@ void RendererImpl::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height
     m_plugin->setViewport(posX, posY, width, height);
 }
 
-SharedPtr<RenderObj> RendererImpl::createRenderObj(ModelData modelData)
+UniquePtr<RenderObj> RendererImpl::createRenderObj(RenderObjData modelData)
 {
     return m_plugin->createRenderObj(modelData);
 }
 
-SharedPtr<RenderShaderObj> RendererImpl::createShaderObj(String vShader,
-                                    String fShader,
-                                    UniformList uniforms)
+UniquePtr<RenderShaderObj> RendererImpl::createShaderObj(String vShader,
+                                                         String fShader)
 {
-    return m_plugin->createShaderObj(vShader, fShader, uniforms);
+    return m_plugin->createShaderObj(vShader, fShader);
 }
 
 SharedPtr<Renderer> Renderer::createRenderer(UniquePtr<RenderPlugin> plugin)

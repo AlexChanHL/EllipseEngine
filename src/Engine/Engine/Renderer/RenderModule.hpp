@@ -42,25 +42,23 @@ class RenderModule : public ILayerModule
 
     virtual void setViewCamera(Camera camera) = 0;
 
-    virtual void setCameraUp(float amount) = 0;
-    virtual void setCameraDown(float amount) = 0;
+    virtual void setCameraFront(float amount) = 0;
+    virtual void setCameraBackward(float amount) = 0;
     virtual void setCameraRight(float amount) = 0;
     virtual void setCameraLeft(float amount) = 0;
-    virtual void updateCamera() = 0;
-
 
     virtual void setViewport(Viewspace viewspace) = 0;
     virtual void setClearColor(Vec4 col) = 0;
 
+    virtual Mat4& proj() = 0;
+    virtual Mat4& view() = 0;
+
+    virtual Camera& camera() = 0;
 
     static SharedPtr<ILayerModule> createRenderModule(Engine& engine);
 
    protected:
     virtual void configureCameras() = 0;
-
-
-   private:
-
 };
 
 }    // namespace Ellipse

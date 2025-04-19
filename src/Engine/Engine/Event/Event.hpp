@@ -63,23 +63,23 @@ class Event
 
 struct EventDispatcher
 {
-   public:
-    EventDispatcher(Event& event)
-     : m_event{event}
+  public:
+   EventDispatcher(Event& event)
+    : m_event{event}
     {
 
     }
 
-     template<typename T, typename F>
-void dispatchEvent(EventType type,
-                   F func)
+    template<typename T, typename F>
+    void dispatchEvent(EventType type,
+                       F func)
 {
-   if(m_event.getEventType() == type)
-     {
-   m_event.m_handled = func(static_cast<T&>(m_event));
-     }
+    if(m_event.getEventType() == type)
+    {
+    m_event.m_handled = func(static_cast<T&>(m_event));
+    }
 
-      return;
+    return;
 }
 
    private:

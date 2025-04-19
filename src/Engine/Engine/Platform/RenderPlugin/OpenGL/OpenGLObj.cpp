@@ -1,5 +1,6 @@
 
 #include "OpenGLObj.hpp"
+#include "Core/Formatter.hpp"
 #include "Debug/Log/Log.hpp"
 
 namespace Ellipse
@@ -155,6 +156,7 @@ void OpenGLShaderObj::use() const
      {
      ELLIPSE_ENGINE_LOG_WARN("Invalid shader program handle");
      }
+
      glUseProgram(m_shaderProgram);
 }
 
@@ -185,7 +187,6 @@ Map<const char*, i32_t> OpenGLShaderObj::findUniformLocationList(UniformList uni
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
-
     }
 
     // // [ Setting vectors and matricies one at a time, maybe have
@@ -195,7 +196,6 @@ Map<const char*, i32_t> OpenGLShaderObj::findUniformLocationList(UniformList uni
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
-
     }
 
     for(UniformVarible<Vec3>& uniform : uniformList.getVec3Uniforms())
@@ -203,7 +203,6 @@ Map<const char*, i32_t> OpenGLShaderObj::findUniformLocationList(UniformList uni
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
-
     }
 
     for(UniformVarible<Vec4>& uniform : uniformList.getVec4Uniforms())
@@ -211,7 +210,6 @@ Map<const char*, i32_t> OpenGLShaderObj::findUniformLocationList(UniformList uni
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
-
     }
 
     for(UniformVarible<Mat2>& uniform : uniformList.getMat2Uniforms())
@@ -219,7 +217,6 @@ Map<const char*, i32_t> OpenGLShaderObj::findUniformLocationList(UniformList uni
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
-
     }
 
     for(UniformVarible<Mat3>& uniform : uniformList.getMat3Uniforms())
@@ -227,7 +224,6 @@ Map<const char*, i32_t> OpenGLShaderObj::findUniformLocationList(UniformList uni
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
-
     }
 
     for(UniformVarible<Mat4>& uniform : uniformList.getMat4Uniforms())
@@ -235,11 +231,9 @@ Map<const char*, i32_t> OpenGLShaderObj::findUniformLocationList(UniformList uni
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
-
     }
 
     return uniformLocations;
-    
 }
 
 // void OpenGLShaderObj::addUniformsToLocList(UniformList uniforms)

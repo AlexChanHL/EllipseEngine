@@ -98,6 +98,11 @@ class UniformList
     UniformList() = default;
     ~UniformList() = default;
 
+    void addUniform(const UniformVarible<bool>& uniform)
+    {
+    m_boolUniforms.push_back(uniform);
+    }
+
     void addUniform(const UniformVarible<i32_t>& uniform)
     {
     m_intUniforms.push_back(uniform);
@@ -202,6 +207,11 @@ class UniformList
     }
     }
     }
+
+    Vector<UniformVarible<bool>> getBoolUniforms()
+    {
+    return m_boolUniforms;
+    }
     
     Vector<UniformVarible<i32_t>> getIntUniforms()
     {
@@ -288,6 +298,14 @@ class UniformList
 
     void printUniformList()
     {
+    for(const auto& uniform : m_boolUniforms)
+    {
+    for(uLong_t i = 0; i < uniform.size(); i++)
+    {
+    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
+    }
+    }
+
     for(const auto& uniform : m_intUniforms)
     {
     for(uLong_t i = 0; i < uniform.size(); i++)
@@ -360,6 +378,8 @@ class UniformList
 
 
    private:
+    Vector<UniformVarible<bool>> m_boolUniforms;
+
     Vector<UniformVarible<i32_t>> m_intUniforms;
     Vector<UniformVarible<float>> m_floatUniforms;
     Vector<UniformVarible<u32_t>> m_unsignedIntUniforms;
