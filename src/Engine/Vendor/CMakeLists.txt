@@ -21,4 +21,3 @@ include(FetchContent)
 add_library(uLogger INTERFACE)
 
 target_link_libraries(EngineVendor INTERFACE uLogger glad glm stb_image sdl3 fmt)
-

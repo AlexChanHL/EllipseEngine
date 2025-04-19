@@ -17,4 +17,4 @@ include(CMake/ProjectWarnings.cmake)
 set_project_warnings(ProjectWarnings)
 
 add_subdirectory(src)
-add_subdirectory(vendor)
+add_subdirectory(Vendor)
