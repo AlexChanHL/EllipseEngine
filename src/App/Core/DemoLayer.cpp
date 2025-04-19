@@ -8,113 +8,89 @@ DemoLayer::DemoLayer(Ellipse::Engine& engine)
    m_engine{engine},
    m_timeModule{static_cast<Ellipse::TimeModule&>(engine.getModule("TimeModule"))},
    m_modelManagerLayerModule{static_cast<Ellipse::ModelManagerModule&>(engine.getLayerModule("ModelManagerLayerModule"))},
-   // m_renderLayerModule{static_cast<Ellipse::RenderLayerModule&>(engine.getLayerModule("RenderLayerModule"))},
+   m_renderModule{static_cast<Ellipse::RenderModule&>(engine.getLayerModule("RenderModule"))},
    m_modelIncrement{0},
-   m_rotatedDegrees{0.0f}
+   m_rotatedDegrees{0.0f},
+   m_modelList{engine},
+   m_weapon{m_modelList, engine},
+   m_cubeMadeCube{m_modelList}
 {
    m_name = "Placeholder";
    m_throughLayer = false;
-
-   m_entities.setModelFunc(m_modelManagerLayerModule);
 }
 
 void DemoLayer::initUserLayer()
 {
    // [ Layer should not set the clear color manually ]
 
-   m_modelManagerLayerModule.addWorld("Main World");
-   m_modelManagerLayerModule.addSubWorld("SubWorld", "Main World");
-   m_modelManagerLayerModule.addSubWorld("SubWorld1", "Main World");
-   // m_modelManagerLayerModule.addSubWorld("SubWorld2", "Main World");
-   // m_modelManagerLayerModule.addWorld("Main World", Ellipse::Viewspace{
-   //  Ellipse::Application::get().getWindow().getWindowSize().first,
-   //  Ellipse::Application::get().getWindow().getWindowSize().second,
-   //  0,
-   //  0
-   //                                                                    }
-   //                                   );
-  
-   m_modelManagerLayerModule.addUserWorld("Main World", "UserWorld");
-   m_modelManagerLayerModule.addUserCamera("UserWorld", "Camera");
-   m_modelManagerLayerModule.addUserSubWorld("SubWorld", "UserWorld");
-
-   // [ Add a default camera if user does not specify ]
-   // m_modelManagerLayerModule.addUserWorld("Main World", "UserWorld1");
-   // m_modelManagerLayerModule.addUserSubWorld("SubWorld1", "UserWorld1");
-
-   // m_modelManagerLayerModule.setViewspace(Ellipse::Viewspace{0,
-   //  0,
-   //  Ellipse::Application::get().getWindow().getWindowSize().first / 2,
-   //  Ellipse::Application::get().getWindow().getWindowSize().second}); 
-
 
    // [ Adding models will create models with the same name ]
+  
+   // Ellipse::RenderModule& renderModule = static_cast<Ellipse::RenderModule&>(m_engine.getLayerModule("RenderModule"));
+  
+   Ellipse::RenderModule& renderer = static_cast<Ellipse::RenderModule&>(m_engine.getLayerModule("RenderModule"));
+   Pair<i32_t, i32_t> size = Ellipse::Application::get().getWindow().getWindowSize();
+   renderer.setViewport(Ellipse::Viewspace{0,
+                                           0,
+                                           size.first,
+                                           size.second
+                                          }
+                       );
 
-   // m_modelManagerLayerModule.startWorld("Main World");
+   // m_modelList.addModelDefinition("1");
+   m_light.init(m_modelList, "LightCube", "Assets/Shader/Light.vert.glsl", "Assets/Shader/Light.frag.glsl");
+  
+   m_light.setPosition(m_modelList, Vec3{1.0f, 2.0f, 1.0f});
 
-   // for(u32_t i=0;i<30;i++)
+   m_modelList.addModelDefinition("1", m_renderModule.camera(), m_light.light());
+
+   
+   m_modelList.model("1").setTranslateAmount(Vec3{0.0f, 0.0f, 0.0f});
+   // m_modelList.model("1").setRotateAmount(Ellipse::EllipseMath::Radian{90.0f}.radians(), Vec3{1.0f, 1.0f, 0.0f});
+
+   m_cubeMadeCube.init();
+
+   // m_cubeMadeCube.linearFunc([](Pixel& pixel){ pixel.setPosition(pixel.worldPosition() + Vec3{1.0f, 8.0f, -10.0f}); });
+   // m_cubeMadeCube.linearFunc([](Pixel& pixel)
    // {
-   // m_entities.addModel();
+   // Vec3 position = pixel.position();
+   //
+   // float degreesRotated = Radian{45.0f}.radians();
+   //
+   // Mat3 xAxisMatrix{1.0f};
+   //
+   // xAxisMatrix[1][1] = cos(degreesRotated);
+   // xAxisMatrix[1][2] = sin(degreesRotated);
+   // xAxisMatrix[2][1] = -sin(degreesRotated);
+   // xAxisMatrix[2][2] = cos(degreesRotated);
+   //
+   // position = position * xAxisMatrix;
+   //
+   // Mat3 yAxisMatrix{1.0f};
+   //
+   // xAxisMatrix[0][0] = cos(degreesRotated);
+   // xAxisMatrix[0][2] = sin(degreesRotated);
+   // xAxisMatrix[2][0] = -sin(degreesRotated);
+   // xAxisMatrix[2][2] = cos(degreesRotated);
+   //
+   // position = position * yAxisMatrix;
+   //
+   // Mat3 zAxisMatrix{1.0f};
+   //
+   // xAxisMatrix[0][0] = cos(degreesRotated);
+   // xAxisMatrix[0][1] = sin(degreesRotated);
+   // xAxisMatrix[0][1] = -sin(degreesRotated);
+   // xAxisMatrix[1][1] = cos(degreesRotated);
+   //
+   // position = position * zAxisMatrix;
+   //
+   // pixel.setPosition(position); 
    // }
-   // // translateModelIndex(0, Vec3{0.0f, 0.0f, 0.0f});
-   // // rotateModelIndex(0, Ellipse::EllipseMath::Radian{45.0f}.radians(), Vec3{1.0f, 1.0f, 0.0f});
-   // for(u32_t i=0;i<30;i++)
-   // {
-   // float x0 = Ellipse::EllipseMath::randRealDist<float>(0, 10);
-   // float y0 = Ellipse::EllipseMath::randRealDist<float>(0, 10);
-   // float z0 = Ellipse::EllipseMath::randRealDist<float>(0, 10);
-   // // translateModelIndex(i, Vec3{x0, y0, z0});
-   // }
-
-    m_modelManagerLayerModule.cameraManager().cameraIndex(
-     m_modelManagerLayerModule.cameraManager().findCameraIndex("Camera")
-     ).setPosition(Vec3{0.0f, 0.0f, 8.0f});
+   //                          );
+   //
+   // m_cubeMadeCube.linearFunc([](Pixel& pixel){ pixel.setPosition(Vec3{1.0f, 2.0f, 1.0f}); });
 
    Ellipse::Application::get().getWindow().lockCursorToWindow();
-
-   // m_modelManagerLayerModule.hideAllModels("UserWorld1");
-   // m_modelManagerLayerModule.startSubWorld("SubWorld");
-
-   // m_modelManagerLayerModule.setWireFrameModel(m_entities[0], "UserWorld1");
-
-   // m_modelManagerLayerModule.startSubWorld("SubWorld1");
-   //
-   // m_modelManagerLayerModule.endSubWorld();
-   // //
-   // m_modelManagerLayerModule.startSubWorld("SubWorld");
-  
-   // m_modelManagerLayerModule.setWireFrameModel(m_entities[0], "UserWorld1");
-
-   // m_modelManagerLayerModule.endSubWorld();
-
-   // m_modelManagerLayerModule.queryUserWorld("UserWorld");
-   // m_modelManagerLayerModule.queryUserWorld("UserWorld1");
-
-   // m_modelManagerLayerModule.startSubWorld("SubWorld1");
-   //
-   // m_modelManagerLayerModule.endSubWorld();
-   //
-   // m_modelManagerLayerModule.endWorld();
-  
-   // This camera will have a different position in the world
-   // m_modelManagerLayerModule.setSubWorld("Camera 2");
-
-
-   // m_modelManagerLayerModule.setViewspace(Ellipse::Viewspace{
-   //  Ellipse::Application::get().getWindow().getWindowSize().first / 2,
-   //  0,
-   //  Ellipse::Application::get().getWindow().getWindowSize().first / 2,
-   //  Ellipse::Application::get().getWindow().getWindowSize().second});
-   //
-   // [ Have a model manager do all this work ]
-   // for(u32_t i = 0; i < 10; i++)
-   // {
-   // m_entities.push_back(addQuad(Vec3{-0.25f, 0.4f, 0.0f}));
-   // }
-   // for(u32_t i = 0; i < 10; i++)
-   // {
-   // positionModel(m_entities[i], Vec3{EllipseMath::randRealDist(-1.0, 1.0), EllipseMath::randRealDist(-1.0, 1.0), 0.0f});
-   // }
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e)
@@ -140,73 +116,62 @@ void DemoLayer::onEvent(Ellipse::Event& e)
 
 void DemoLayer::onUpdateUserLayer(float dt)
 {
-    // if(m_timeModule.setTimer(m_timer1, 1))
-    // {
-    // for(u32_t i=0;i<30;i++)
-    // {
-    // float x0 = Ellipse::EllipseMath::randRealDist<float>(0, 10);
-    // float y0 = Ellipse::EllipseMath::randRealDist<float>(0, 10);
-    // float z0 = Ellipse::EllipseMath::randRealDist<float>(0, 10);
-    // m_entities.translateModel(i, Vec3{x0, y0, z0});
-    // m_entities.rotateModel(i, float(m_timeModule.secAndNSec()), Vec3{0.0f, 0.0f, 1.0f});
-    // }
-    //
-    // }
+    // ELLIPSE_APP_LOG_INFO("{}", m_timeModule.secAndNSec())
+    m_modelList.model("1").setRotateAmount(Ellipse::EllipseMath::Radian{static_cast<float>(m_timeModule.secAndNSec() * 16)}.radians(),
+                                           Vec3{1.0f, 0.0f, 0.0f}
+                                          );
 
-    // m_modelManagerLayerModule.queryUserWorld("UserWorld");
+    m_modelList.addAmounts();
 
-    // m_modelManagerLayerModule.endWorld();
+    if((m_weapon.weaponType() == WeaponType::AssaultRifle) && Ellipse::Input::isMousePressed(ELLIPSE_MOUSE_BUTTON_LEFT))
+    {
+    m_weapon.fire();
+    }
+
+    m_weapon.update();
 
 
-    // m_modelManagerLayerModule.startWorld("Main World");
+    m_cubeMadeCube.linearFunc([&](Pixel& pixel)
+    {
+    Vec3 position = pixel.worldPosition();
 
-    // m_modelManagerLayerModule.queryUserWorld("UserWorld");
-    // translateModelIndex(0, Vec3{0.5f, 0.0f, 0.0f});
-    // rotateModelIndex(0, 45.0f, Vec3{0.0f, 0.0f, 1.0f});
-    // rotateModelIndex(0, float(m_timeModule.secAndNSec()), Vec3{0.0f, 0.0f, 1.0f});
-    // scaleModelIndex(0, Vec3{1.0f, 1.0f, 1.0f});
-    // removeModelIndex(0);
-    // if(m_timeModule.setTimer(m_timer1, 1))
-    // {
-    // rotateModelIndex(0, float(m_timeModule.secAndNSec()), Vec3{0.0f, 0.0f, 1.0f});
-    // }
-  
-    // m_modelManagerLayerModule.startSubWorld("SubWorld1");
+    double time = m_timeModule.secAndNSec() * 16;
+    // float radiansRotated = Ellipse::EllipseMath::Radian{static_cast<float>(m_timeModule.secAndNSec())}.radians();
+    float radiansRotated = Ellipse::EllipseMath::Radian{static_cast<float>(time)}.radians();
 
-    // m_modelManagerLayerModule.endSubWorld();
-    //
-    // m_modelManagerLayerModule.startSubWorld("SubWorld");
-   
-    // m_modelManagerLayerModule.setWireFrameModel(m_entities[0], "UserWorld1");
-    // rotateModelIndex(2, Ellipse::EllipseMath::Radian(45.0f).radians(), Vec3{0.0f, 0.0f, 1.0f});
+    // ELLIPSE_APP_LOG_INFO("time value {}", time);
 
-    // m_modelManagerLayerModule.endSubWorld();
+    Mat3 xAxisMatrix{1.0f};
 
-    // m_modelManagerLayerModule.queryUserWorld("UserWorld");
-    // m_modelManagerLayerModule.queryUserWorld("UserWorld1");
+    xAxisMatrix[1][1] = cos(radiansRotated);
+    xAxisMatrix[1][2] = sin(radiansRotated);
+    xAxisMatrix[2][1] = -sin(radiansRotated);
+    xAxisMatrix[2][2] = cos(radiansRotated);
 
-    // m_modelManagerLayerModule.startSubWorld("SubWorld1");
-    //
-    // m_modelManagerLayerModule.endSubWorld();
-    //
-    // m_modelManagerLayerModule.endWorld();
+    position = position * xAxisMatrix;
 
-    // if(m_timeModule.setTimer(m_timer1, 1))
-    // {
-    // // Logger cannot use info
-    // ELLIPSE_APP_LOG_WARN("One second has passed");
-    // for(u32_t i = 0; i < m_entities.size(); i++)
-    // {
-    // positionModel(m_entities[i], Vec3{EllipseMath::randRealDist(-1.0, 1.0), EllipseMath::randRealDist(-1.0, 1.0), 0.0f});
-    // }
-    // }
-    // for(auto entity : m_entities)
-    // {
-    // rotateModel(entity, float(m_timeModule.secAndNSec()), Vec3{0.0f, 0.0f, 1.0f});
-    // }
+    Mat3 yAxisMatrix{1.0f};
 
-    // std::cout << "Updated: " << m_name << '\n';
-  
+    yAxisMatrix[0][0] = cos(radiansRotated);
+    yAxisMatrix[0][2] = sin(radiansRotated);
+    yAxisMatrix[2][0] = -sin(radiansRotated);
+    yAxisMatrix[2][2] = cos(radiansRotated);
+
+    position = position * yAxisMatrix;
+
+    Mat3 zAxisMatrix{1.0f};
+
+    // zAxisMatrix[0][0] = cos(radiansRotated);
+    // zAxisMatrix[0][1] = sin(radiansRotated);
+    // zAxisMatrix[1][0] = -sin(radiansRotated);
+    // zAxisMatrix[1][1] = cos(radiansRotated);
+
+    position = position * zAxisMatrix;
+
+    pixel.setPosition(position); 
+    }
+                             );
+
     // m_player->onUpdate(dt);
 
     // RenderData data = m_renderModule.getRenderData();
@@ -214,7 +179,7 @@ void DemoLayer::onUpdateUserLayer(float dt)
 
 bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e)
 {
-     bool aPressed = Input::isKeyPressed(ELLIPSE_KEY_a);
+     bool aPressed = Ellipse::Input::isKeyPressed(ELLIPSE_KEY_a);
      if(aPressed)
      {
      // ELLIPSE_APP_LOG_INFO("'a' key is pressed");
@@ -223,57 +188,65 @@ bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e)
      switch(e.keyCode())
      {
      case ELLIPSE_KEY_w:
-     m_modelManagerLayerModule.translateCameraForward("Camera");
-      break;
+     m_renderModule.setCameraFront(1.0f);
+     break;
      case ELLIPSE_KEY_s:
-     m_modelManagerLayerModule.translateCameraBackward("Camera");
-      break;
+     m_renderModule.setCameraBackward(1.0f);
+     break;
      case ELLIPSE_KEY_a:
-     m_modelManagerLayerModule.translateCameraLeft("Camera");
-      break;
+     m_renderModule.setCameraLeft(1.0f);
+     break;
      case ELLIPSE_KEY_d:
-     m_modelManagerLayerModule.translateCameraRight("Camera");
-      break;
+     m_renderModule.setCameraRight(1.0f);
+     break;
      case ELLIPSE_KEY_p:
-     m_modelManagerLayerModule.setCameraPosition("Camera", Vec3{0.0f, 0.0f, 0.0f});
+     // m_modelManagerLayerModule.setCameraPosition("Camera", Vec3{0.0f, 0.0f, 0.0f});
      break;
      case ELLIPSE_KEY_b:
      {
-     Ellipse::Camera& camera = m_modelManagerLayerModule.cameraIndex(m_modelManagerLayerModule.findCameraIndex("Camera"));
+     // Ellipse::Camera& camera = m_modelManagerLayerModule.cameraIndex(m_modelManagerLayerModule.findCameraIndex("Camera"));
 
-     camera.setCameraSpeed(camera.cameraSpeed() + 1.0f);
+     // camera.setCameraSpeed(camera.cameraSpeed() + 1.0f);
      }
      break;
      case ELLIPSE_KEY_n:
      {
-     Ellipse::Camera& camera = m_modelManagerLayerModule.cameraIndex(m_modelManagerLayerModule.findCameraIndex("Camera"));
-     camera.setCameraSpeed(camera.cameraSpeed() - 1.0f);
+     // Ellipse::Camera& camera = m_modelManagerLayerModule.cameraIndex(m_modelManagerLayerModule.findCameraIndex("Camera"));
+     // camera.setCameraSpeed(camera.cameraSpeed() - 1.0f);
      }
      break;
      case ELLIPSE_KEY_ESCAPE:
      Ellipse::Application::get().quitApplication();
      break;
-     case ELLIPSE_KEY_9:
-     // m_modelManagerLayerModule.addModel(lastestModel());
-     // updateLastestModel();
-      break;
-     case ELLIPSE_KEY_0:
-     m_entities.removeModel(m_entities.modelIDs().size() - 1);
-     break;
      case ELLIPSE_KEY_1:
-     Ellipse::Application::get().getWindow().lockCursorToWindow();
+     m_weapon.changeWeaponType(WeaponType::Pistol);
      break;
      case ELLIPSE_KEY_2:
+     m_weapon.changeWeaponType(WeaponType::Shotgun);
+     break;
+     case ELLIPSE_KEY_3:
+     m_weapon.changeWeaponType(WeaponType::AssaultRifle);
+     break;
+     case ELLIPSE_KEY_9:
+     Ellipse::Application::get().getWindow().lockCursorToWindow();
+     break;
+     case ELLIPSE_KEY_0:
      Ellipse::Application::get().getWindow().unlockCursorToWindow();
      break;
      case ELLIPSE_KEY_o:
      // m_timeModule.unPause();
-      break;
+     break;
+     case ELLIPSE_KEY_i:
+     {
+     String modelName = Ellipse::format("{}", (m_modelList.models().size() - 1));
+     m_modelList.removeModel(modelName.c_str());
+     }
+     break;
      default:
-      break;
+     break;
      }
 
-   return m_throughLayer ? false : true;
+     return m_throughLayer ? false : true;
 }
 
 bool DemoLayer::onMouseMotion(Ellipse::MouseMotionEvent& e)
@@ -290,39 +263,33 @@ bool DemoLayer::onMouseMotion(Ellipse::MouseMotionEvent& e)
    // [ Rename to cameraUpdateOffsetValues ]
    // ELLIPSE_APP_LOG_INFO("Mouse offset X: {} Mouse off Y: {}", Ellipse::Application::get().getWindow().mouseOffsetsLast().first, Ellipse::Application::get().getWindow().mouseOffsetsLast().second);
   
-   // Ellipse::EllipseMath::printVec(m_modelManagerLayerModule.retrieveCamera("Camera").front());
-  
    // e.logMousePosition();
-   // m_modelManagerLayerModule.registerMouseUpdate(e.offsets());
-   m_modelManagerLayerModule.registerMouseUpdate(Ellipse::Application::get().getWindow().mouseOffsets());
+   m_renderModule.camera().registerMouseUpdate(Ellipse::Application::get().getWindow().mouseOffsets());
    // m_modelManagerLayerModule.cameraUpdateOffsetValues();
-
-   m_modelManagerLayerModule.startWorld("Main World");
-
-   // m_modelManagerLayerModule.translateModel(m_entities[0], Vec3{xPos, yPos, 0.0f});
-
-   m_modelManagerLayerModule.endWorld();
 
    return m_throughLayer ? false : true;
 }
 
 bool DemoLayer::onMousePressed(Ellipse::MousePressedEvent& e)
 {
-    ELLIPSE_APP_LOG_INFO("{}   detected mouse press!\n", m_name);
-    ELLIPSE_APP_LOG_INFO("Pos: : {} {}" ,  e.mousePosX(), e.mousePosY());
+    // ELLIPSE_APP_LOG_INFO("{}   detected mouse press!\n", m_name);
+    // ELLIPSE_APP_LOG_INFO("Pos: {} {}" ,  e.mousePosX(), e.mousePosY());
 
     // [ Adding model within a blocking event, ? if user pressed and event is event then the entity will 
     //   be before the first 30 entities and translate those ]
-    m_entities.addModel();
-    Ellipse::Camera& camera = m_modelManagerLayerModule.cameraManager().cameraIndex(m_modelManagerLayerModule.cameraManager().findCameraIndex("Camera"));
-    m_entities.translateModel(m_entities.modelIDs().size() - 1, camera.position() + (4.0f * camera.front()));
+  
+    // m_modelList.addModel();
+    // m_modelList.model(Ellipse::format("{}", m_modelList.models().size() - 1).c_str()).setTranslateAmount(m_renderModule.camera().position() + (Ellipse::EllipseMath::normalize(m_renderModule.camera().front())) * 2.0f);
+    
+    m_weapon.fire();
+  
 
     return m_throughLayer ? false : true;
 }
 
 bool DemoLayer::onMouseWheel(Ellipse::MouseWheelEvent& e)
 {
-    ELLIPSE_APP_LOG_INFO("{}", e.logMouseOffset());
+    // ELLIPSE_APP_LOG_INFO("{}", e.logMouseOffset());
 
     return m_throughLayer ? false : true;
 }

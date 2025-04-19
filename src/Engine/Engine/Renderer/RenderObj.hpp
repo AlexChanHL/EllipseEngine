@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Core/ModelManagerModule.hpp"
+// #include "Core/ModelManagerModule.hpp"
+// #include "Core/.hpp"
 #include "Core/Base.hpp"
 
 #include "UniformVarible.hpp"
@@ -58,6 +59,16 @@ class RenderMesh
    private:
 };
 
+class RenderObjData
+{
+   public:
+
+   private:
+    Vector<float> m_positions;
+    Vector<float> m_normals;
+    Vector<float> m_textureCoords;
+};
+
 // Contains model
 struct RenderObj
 {
@@ -72,7 +83,7 @@ struct RenderObj
     }
 
 
-    virtual void initializeFromResources(ModelData& data) = 0;
+    virtual void initializeFromResources(RenderObjData& data) = 0;
 
     virtual bool isTextured() const = 0;
     virtual Vector<UniquePtr<RenderMesh>> meshes() = 0;

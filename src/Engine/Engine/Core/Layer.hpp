@@ -62,11 +62,12 @@ class Layer : public ILayer
 
     // All updates are done after user updates
     // so that the module can use resources set
-    //by the user.
+    // by the user.
     for(SharedPtr<ILayerModule> module : m_modules)
     {
     module->onUpdateLayer();
     }
+
     }
 
     // EntityRef addModel(const char* name,

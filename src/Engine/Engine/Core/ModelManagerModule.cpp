@@ -1,6 +1,6 @@
 
-// [ UniformVariable.hpp ]
 #include "Renderer/UniformVarible.hpp"
+#include "Renderer/RenderModule.hpp"
 #include "Renderer/VerticiesData.hpp"
 #include "ModelManagerModule.hpp"
 
@@ -56,35 +56,114 @@ namespace Ellipse
     // | 0 | 1 | 2 |
     // +===+===+===+
 
-// class ID
-// {
-//    public:
-//     ID()
-//     {
-//
-//     }
-//     ~ID()
-//     {
-//
-//     }
-//
-//
-//     virtual i32_t id() = 0;
-//     
-//    private:
-// };
-//
-//
+class ModelObject
+{
+   public:
+    // ModelObject()
+    // : m_objectName{nullptr},
+    //   m_renderObject{nullptr},
+    //   m_shaderObject{nullptr}
+    // {
+    //
+    // }
+    //
+    ModelObject(const char* objectName,
+                UniquePtr<RenderObj> renderObject,
+                UniquePtr<RenderShaderObj> shaderObject
+               )
+    : m_objectName{objectName},
+      m_isInList{false},
+      // m_renderObject{std::move(renderObject)},
+      // m_shaderObject{std::move(shaderObject)}
+      m_renderObject{nullptr},
+      m_shaderObject{nullptr}
+    {
+
+    }
+
+    ~ModelObject()
+    {
+
+    }
+
+    ModelObject(const ModelObject& rhs)
+    : m_objectName{rhs.name()},
+      m_isInList{false},
+      m_renderObject{nullptr},
+      m_shaderObject{nullptr}
+    {
+
+    }
+
+    void setIsInList(bool isInList)
+    {
+    m_isInList = isInList;
+    }
+
+    // void setRenderObj(UniquePtr<RenderObj> renderObj)
+    // {
+    // m_renderObject = std::move(renderObj);
+    // }
+    //
+    // void setShaderObj(UniquePtr<RenderShaderObj> shaderObj)
+    // {
+    // m_shaderObject = std::move(shaderObj);
+    // }
+
+    void setRenderObj(UniquePtr<RenderObj> renderObj)
+    {
+    m_renderObject = std::move(renderObj);
+    }
+
+    void setShaderObj(UniquePtr<RenderShaderObj> shaderObj)
+    {
+    m_shaderObject = std::move(shaderObj);
+    }
+
+    const char* name() const
+    {
+    return m_objectName;
+    }
+
+    bool isInList() const
+    {
+    return m_isInList;
+    }
+
+    UniquePtr<RenderObj>& renderObject()
+    {
+    return m_renderObject;
+    }
+
+    // UniquePtr<RenderObj> renderObject() const
+    // {
+    // return m_renderObject;
+    // }
+
+    UniquePtr<RenderShaderObj>& shaderObject()
+    {
+    return m_shaderObject;
+    }
+
+    // UniquePtr<RenderShaderObj> shaderObject() const
+    // {
+    // return m_shaderObject;
+    // }
+
+   private:
+    const char* m_objectName;
+    bool m_isInList;
+    UniquePtr<RenderObj> m_renderObject;
+    UniquePtr<RenderShaderObj> m_shaderObject;
+};
 
 class ModelManagerModuleImpl : public ModelManagerModule
 {
    public:
-    ModelManagerModuleImpl()
-    : m_defaultWorld{ModelWorld{"ModelManagerDefaultWorld", 0, 0}},
-      m_randomRemoveLast{int32_t(pow(10,2))},
-      m_modelOrderCount{0},
-      m_modelWorldCount{0},
-      m_modelWorldDrawOrder{}
+    ModelManagerModuleImpl(Engine& engine)
+    : m_engine{engine},
+      m_modelLastAddedCount{0},
+      m_randomRemoveLast{int32_t(pow(10,2))}
     {
     setName("ModelManagerLayerModule");
     }
@@ -94,12 +173,83 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     }
  
+    struct ModelNotSet
+    {
+       public:
+        ModelNotSet(RenderObjData renderObjectData,
+                    String vertex,
+                    String fragment,
+                    Mat4 model,
+                    ModelID modelID,
+                    UniformList uniformList,
+                    const char* objectName
+                   )
+        : m_renderObjectData{renderObjectData},
+          m_vertex{vertex},
+          m_fragment{fragment},
+          m_model{model},
+          m_modelID{modelID},
+          m_uniformList{uniformList},
+          m_objectName{objectName}
+        {
+
+        }
+        ~ModelNotSet()
+        {
+
+        }
+
+        RenderObjData renderObjData() const
+        {
+        return m_renderObjectData;
+        }
+
+        String vertex() const
+        {
+        return m_vertex;
+        }
+        
+        String fragment() const
+        {
+        return m_fragment;
+        }
+
+        Mat4 model() const
+        {
+        return m_model;
+        }
+      
+        ModelID id() const
+        {
+        return m_modelID;
+        }
+
+        UniformList uniformList() const
+        {
+        return m_uniformList;
+        }
+
+        const char* objectName() const
+        {
+        return m_objectName;
+        }
+
+       private:
+        RenderObjData m_renderObjectData;
+        String m_vertex;
+        String m_fragment;
+        Mat4 m_model;
+        ModelID m_modelID;
+        UniformList m_uniformList;
+        const char* m_objectName;
+    };
+
     virtual void initLayerModule() override
     {
-    m_modelWorldDrawOrder.initModelWorldDrawOrder();
-    m_layerTracker.initLayer();
-    m_modelWorlds.initLayer();
-    m_userWorlds.initLayer();
+    // m_modelWorldDrawOrder.initModelWorldDrawOrder();
+    // m_layerTracker.initLayer();
+    // m_modelWorlds.initLayer();
+    // m_userWorlds.initLayer();
     }
 
 
@@ -108,16 +258,73 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     virtual void onUpdateLayer() override
     {
-    onUpdateModelMatrices();
+    // m_cameraManager.setFronts();
+    //
+    Renderer& renderer = static_cast<Renderer&>(m_engine.getSystem("Renderer"));
 
-    m_cameraManager.setFronts();
+
+    for(u64_t i=0;i<m_modelsNotSet.size();i++)
+    {
+    u64_t index = m_modelLastAddedCount + i;
+    ModelNotSet model = m_modelsNotSet[i];
+
+    std::cout << "index: " << index << '\n';
+
+    for(u64_t j=0;j<m_objects.size();j++)
+    {
+    ModelObject& object = m_objects[j];
+    if(strcmp(model.objectName(), object.name()) == 0)
+    {
+    if(object.isInList())
+    {
+    m_models[index].setRenderObj(m_objects[j].renderObject().get());
+    m_models[index].setShaderObj(m_objects[j].shaderObject().get());
+    }
+    if(!object.isInList())
+    {
+    auto renderObj = renderer.createRenderObj(model.renderObjData());
+    auto shaderObj = renderer.createShaderObj(model.vertex(), model.fragment());
+
+    m_objects[j].setIsInList(true);
+    m_objects[j].setRenderObj(std::move(renderObj));
+    m_objects[j].setShaderObj(std::move(shaderObj));
+
+    m_models[index].setRenderObj(m_objects[j].renderObject().get());
+    m_models[index].setShaderObj(m_objects[j].shaderObject().get());
+    }
+
+    }
+
+    }
 
 
-    m_layerTracker.updateLayer();
-    m_modelWorlds.updateLayer(m_layerTracker);
-    m_userWorlds.updateLayer(m_layerTracker);
-    m_modelWorldDrawOrder.update();
-    concatnateWorlds();
+    if(m_models[index].renderObject() != nullptr)
+    {
+    std::cout << index << '\n';
+    // std::cout << m_models[index].renderObject().use_count() << '\n';
+    // std::cout << m_models[index].renderObject() << '\n';
+    }
+        
+    m_models[index].uniformList().addUniform(UniformVarible<Mat4>{"model", &m_models[index].model()});
+
+    RenderModule& renderModule = static_cast<RenderModule&>(m_engine.getLayerModule("RenderModule"));
+    m_models[index].uniformList().addUniform(UniformVarible<Mat4>{"proj", &renderModule.proj()});
+    m_models[index].uniformList().addUniform(UniformVarible<Mat4>{"view", &renderModule.view()});
+
+    // m_models[index].uniformList().setUniformLocations(shaderObj->findUniformLocationList(m_models[index].uniformList()));
+    m_models[index].uniformList().setUniformLocations(m_models[index].shaderObject()->findUniformLocationList(m_models[index].uniformList()));
+    }
+
+    m_modelLastAddedCount = m_modelLastAddedCount + m_modelsNotSet.size();
+    m_modelsNotSet.clear();
+
+
+    for(u64_t i=0;i<m_removeModels.size();i++)
+    {
+    removeModelId(m_removeModels[i]);
+    }
+
+    m_removeModels.clear();
 
     }
 
@@ -128,647 +335,112 @@ class ModelManagerModuleImpl : public ModelManagerModule
       
     }
 
-    // virtual void addModel(ModelID& modelID,
-    //                       const char* modelName, 
-    //                       String vertexShader,
-    //                       String fragmentShader,
-    //                       VerticiesData verticies,
-    //                       UniformList uniformList
-    //                       ) override
-    // {
-    // ModelWorld queryWorld = m_modelWorlds.currentWorld();
-    //
-    // for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
-    // {
-    // for(u32_t j = queryWorld.start(); j < queryWorld.end(); j++)
-    // {
-    // if(modelID == m_modelModuleModels[j].m_modelID)
-    // {
-    // ELLIPSE_ENGINE_LOG_INFO("Adding already model");
-    // return;
-    // }
-    //
-    // }
-    // queryWorld.updateNextSubWorld();
-    // }
-    //
-    // modelID.m_ID = m_randomRemoveLast.chooseRandomVal();
-    //
-    // if(m_modelAddCollection.empty() || strcmp(m_modelWorlds.previousWorld().name(), m_modelWorlds.currentWorld().name()) != 0)
-    // {
-    //
-    // u32_t modelWorldPosition = 0;
-    //
-    //
-    // // [ Check if main world is same as default world
-    // //   and delete all the check here in this ]
-    //
-    // // Comparing to where the world is in the list as well as
-    // // checking if the world actually exists
-    // bool modelWorldFound = false;
-    // MainWorld queryMainWorld = m_modelWorlds.mainWorld(m_modelWorlds.currentMainWorld().name());
-    //
-    // if(strcmp(queryMainWorld.mainWorld().name(), m_modelWorlds.currentWorld().name()) == 0)
-    // {
-    // modelWorldPosition = queryMainWorld.mainWorld().orderInList();
-    // modelWorldFound = true;
-    // }
-    //
-    // if(!modelWorldFound)
-    // {
-    // auto subWorldIt = queryMainWorld.subWorlds().begin();
-    // for(; subWorldIt != queryMainWorld.subWorlds().end(); subWorldIt++)
-    // {
-    // if(strcmp(m_modelWorlds.currentWorld().name(), subWorldIt->name()) == 0)
-    // {
-    // modelWorldPosition = subWorldIt->orderInList();
-    // modelWorldFound = true;
-    // break;
-    // }
-    // }
-    //
-    // // The user has not specified the world to add the model to
-    // if(!modelWorldFound)
-    // {
-    // return;
-    // }
-    //
-    // }
-    //
-    //
-    // m_userWorlds.addDrawOrder(modelWorldPosition,
-    //                           m_modelWorlds.currentMainWorld().name(),
-    //                           m_modelWorlds.currentWorld().name());
-    //
-    // m_modelWorlds.addModelBeginPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-    //
-    // m_modelWorlds.addWorldAddOrder(modelWorldPosition, m_modelWorlds.currentMainWorld().name());
-    //
-    //
-    // ModelData modelData;
-    //
-    //
-    // m_modelModuleModels.pushBack(ModelModuleModel{
-    //  modelID,
-    //  modelName
-    //                                              }
-    // );
-    //
-    // m_modelOrderCount++;
-    //
-    //
-    // m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-    //
-    // m_modelAddCollection.push_back(
-    //  ModelAddCollection{
-    //   m_modelWorlds.currentWorld().name(),
-    //   modelID,
-    //   modelName,
-    //   vertexShader,
-    //   fragmentShader,
-    //   modelData,
-    //   uniformList,
-    //   m_modelModuleModels[m_modelModuleModels.size() - 1].m_model
-    //    }
-    //                           );
-    //
-    // // [ Set the current world end position rather
-    // //   than copying the new world ]
-    // ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(modelWorldPosition);
-    // m_modelWorlds.setCurrentWorld(worldAfterAddModel);
-    // if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
-    // {
-    // m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
-    // }
-    //
-    // m_modelWorlds.setPreviousWorld(worldAfterAddModel);
-    //
-    // return; 
-    // }
-    //
-    // ModelData modelData;
-    //
-    // m_modelModuleModels.pushBack(ModelModuleModel{
-    //  modelID,
-    //  modelName
-    //                                              }
-    // );
-    //
-    //
-    // m_modelOrderCount++;
-    //
-    // m_modelAddCollection[m_modelAddCollection.size() - 1].addModel(
-    //    modelID,
-    //    modelName,
-    //    vertexShader,
-    //    fragmentShader,
-    //    modelData,
-    //    uniformList,
-    //    m_modelModuleModels[m_modelModuleModels.size() - 1].m_model 
-    //   );
-    //
-    // m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-    // // update current world
-    // ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(m_modelWorlds.currentWorld().orderInList());
-    // m_modelWorlds.setCurrentWorld(worldAfterAddModel);
-    // if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
-    // {
-    // m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
-    // }
-    // }
+    virtual void addModel(ModelID& modelID,
+                          const char* objectName,
+                          Mat4 model,
+                          UniformList uniformList
+                          ) override
+    {
+    ModelID idLocation{m_randomRemoveLast.chooseRandomVal()};
+
+    modelID = idLocation;
+
+    for(const ModelObject& object : m_objects)
+    {
+    if(strcmp(objectName, object.name()) == 0)
+    {
+    m_modelsNotSet.push_back(ModelNotSet{RenderObjData{},
+                                         "",
+                                         "",
+                                         model,
+                                         idLocation,
+                                         uniformList,
+                                         objectName
+                                        }
+                             );
+
+    m_models.pushBack(Model{model,
+                            idLocation,
+                            uniformList,
+                            nullptr,
+                            nullptr
+                           }
+                      );
+
+    return;
+    }
+    }
+
+    std::cout << "Object not list\n";
+    }
 
     virtual void addModel(ModelID& modelID,
-                          const char* modelName,
                           const char* objectName,
+                          Mat4 model,
                           String vertexShader,
                           String fragmentShader,
                           String importPath,
                           UniformList uniformList
                           ) override
     {
-    ModelWorld queryWorld = m_modelWorlds.currentWorld();
+    ModelID idLocation{m_randomRemoveLast.chooseRandomVal()};
+    
+    modelID = idLocation;
 
-    for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
-    {
-    for(u32_t j = queryWorld.start(); j < queryWorld.end(); j++)
-    {
-    if(modelID == m_modelModuleModels[j].m_modelID)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("Model ID: {} index: {}", modelID.id(), j);
-    ELLIPSE_ENGINE_LOG_INFO("Adding already model");
-    return;
-    }
-
-    }
-    queryWorld.updateNextSubWorld();
-    }
-
-    modelID.m_ID = m_randomRemoveLast.chooseRandomVal();
-
-    if(m_modelAddCollection.empty() || strcmp(m_modelWorlds.previousWorld().name(), m_modelWorlds.currentWorld().name()) != 0)
-    {
-
-    u32_t modelWorldPosition = 0;
-
-
-    // [ Check if main world is same as default world
-    //   and delete all the check here in this ]
-
-    // Comparing to where the world is in the list as well as
-    // checking if the world actually exists
-    bool modelWorldFound = false;
-    MainWorld queryMainWorld = m_modelWorlds.mainWorld(m_modelWorlds.currentMainWorld().name());
-
-    if(strcmp(queryMainWorld.mainWorld().name(), m_modelWorlds.currentWorld().name()) == 0)
-    {
-    modelWorldPosition = queryMainWorld.mainWorld().orderInList();
-    modelWorldFound = true;
-    }
-
-    if(!modelWorldFound)
-    {
-    auto subWorldIt = queryMainWorld.subWorlds().begin();
-    for(; subWorldIt != queryMainWorld.subWorlds().end(); subWorldIt++)
-    {
-    if(strcmp(m_modelWorlds.currentWorld().name(), subWorldIt->name()) == 0)
-    {
-    modelWorldPosition = subWorldIt->orderInList();
-    modelWorldFound = true;
-    break;
-    }
-    }
-
-    // The user has not specified the world to add the model to
-    if(!modelWorldFound)
-    {
-    return;
-    }
-
-    }
-
-
-    m_userWorlds.addDrawOrder(modelWorldPosition,
-                              m_modelWorlds.currentMainWorld().name(),
-                              m_modelWorlds.currentWorld().name());
-
-    m_modelWorlds.addModelBeginPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-
-    m_modelWorlds.addWorldAddOrder(modelWorldPosition, m_modelWorlds.currentMainWorld().name());
-
-    importModel(importPath);
-    ModelData modelData;
-
-
-    m_modelModuleModels.pushBack(ModelModuleModel{
-     modelID,
-     modelName
-                                                 }
-    );
-
-    m_modelOrderCount++;
-
-
-    m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-
-    m_modelAddCollection.push_back(
-     ModelAddCollection{
-      m_modelWorlds.currentWorld().name(),
-      modelID,
-      modelName,
-      objectName,
-      vertexShader,
-      fragmentShader,
-      modelData,
-      uniformList,
-      m_modelModuleModels[m_modelModuleModels.size() - 1].m_model
-       }
-                              );
-
-    // [ Set the current world end position rather
-    //   than copying the new world ]
-    ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(modelWorldPosition);
-    m_modelWorlds.setCurrentWorld(worldAfterAddModel);
-    if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
-    {
-    m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
-    }
-
-    m_modelWorlds.setPreviousWorld(worldAfterAddModel);
-
-    return; 
-    }
-
-    m_modelModuleModels.pushBack(ModelModuleModel{
-     modelID,
-     modelName
-                                                 }
-    );
-
-    m_modelOrderCount++;
-
-    importModel(importPath);
-    ModelData modelData;
-
-    m_modelAddCollection[m_modelAddCollection.size() - 1].addModel(
-       modelID,
-       modelName,
-       objectName,
-       vertexShader,
-       fragmentShader,
-       modelData,
-       uniformList,
-       m_modelModuleModels[m_modelModuleModels.size() - 1].m_model 
-      );
-
-    m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-
-    // update current world
-    ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(m_modelWorlds.currentWorld().orderInList());
-    m_modelWorlds.setCurrentWorld(worldAfterAddModel);
-    if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
-    {
-    m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
-    }
-
-    }
-
-    // virtual void addCube(ModelID& modelID,
-    //                      const char* modelName,
-    //                      UniformList uniformList) override
+    // for(const ModelObject& object : m_objects)
     // {
-    // ModelWorld queryWorld = m_modelWorlds.currentWorld();
+    // if(strcmp(objectName, object.name()) == 0)
+    // {
+    // m_modelsNotSet.push_back(ModelNotSet{RenderObjData{},
+    //                                      "",
+    //                                      "",
+    //                                      model,
+    //                                      idLocation,
+    //                                      uniformList,
+    //                                      objectName
+    //                                     }
+    //                          );
     //
-    // for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
-    // {
-    // for(u32_t j = queryWorld.start(); j < queryWorld.end(); j++)
-    // {
-    // if(modelID == m_modelModuleModels[j].m_modelID)
-    // {
-    // ELLIPSE_ENGINE_LOG_INFO("Adding already model");
+    // m_models.pushBack(Model{model,
+    //                         idLocation,
+    //                         uniformList,
+    //                         nullptr,
+    //                         nullptr
+    //                        }
+    //                   );
+    //
     // return;
     // }
-    //
-    // }
-    // queryWorld.updateNextSubWorld();
-    // }
-    //
-    // modelID.m_ID = m_randomRemoveLast.chooseRandomVal();
-    //
-    // if(m_modelAddCollection.empty() || strcmp(m_modelWorlds.previousWorld().name(), m_modelWorlds.currentWorld().name()) != 0)
-    // {
-    //
-    // u32_t modelWorldPosition = 0;
-    //
-    //
-    // // [ Check if main world is same as default world
-    // //   and delete all the check here in this ]
-    //
-    // // Comparing to where the world is in the list as well as
-    // // checking if the world actually exists
-    // bool modelWorldFound = false;
-    // MainWorld queryMainWorld = m_modelWorlds.mainWorld(m_modelWorlds.currentMainWorld().name());
-    //
-    // if(strcmp(queryMainWorld.mainWorld().name(), m_modelWorlds.currentWorld().name()) == 0)
-    // {
-    // modelWorldPosition = queryMainWorld.mainWorld().orderInList();
-    // modelWorldFound = true;
-    // }
-    //
-    // if(!modelWorldFound)
-    // {
-    // auto subWorldIt = queryMainWorld.subWorlds().begin();
-    // for(; subWorldIt != queryMainWorld.subWorlds().end(); subWorldIt++)
-    // {
-    // if(strcmp(m_modelWorlds.currentWorld().name(), subWorldIt->name()) == 0)
-    // {
-    // modelWorldPosition = subWorldIt->orderInList();
-    // modelWorldFound = true;
-    // break;
-    // }
-    // }
-    //
-    // // The user has not specified the world to add the model to
-    // if(!modelWorldFound)
-    // {
-    // return;
-    // }
-    //
-    // }
-    //
-    // // UniformList cubeUniformList = retriveObject("cube").uniformList();
-    // // if(!isSameUniformDefinition(cubeUniformList, uniformList))
-    // // {
-    // //
-    // // }
-    // //
-    // //
-    // // uniformList uniform0: Type Mat4 Name a0 Value {1,1,0,1}
-    // // uniformList uniform1: Type Vec3 Name a1 Value {0,1,1,0}
-    // // uniformList uniform2: Type Vec3 Name a2 Value {1,1,1,1}
-    // //
-    // // cubeUniformList uniform0: Type Mat4 Name a0 Value {0,0,0,0}
-    // // cubeUniformList uniform1: Type Vec3 Name a1 Value {0,0,0,0}
-    // // cubeUniformList uniform2: Type Vec3 Name a2 Value {0,0,0,0}
-    // //
-    // // if(cubeUniformList != uniformList)
-    // // {
-    // // return;
-    // // }
-    //
-    //
-    // m_userWorlds.addDrawOrder(modelWorldPosition,
-    //                           m_modelWorlds.currentMainWorld().name(),
-    //                           m_modelWorlds.currentWorld().name());
-    //
-    // m_modelWorlds.addModelBeginPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-    //
-    // m_modelWorlds.addWorldAddOrder(modelWorldPosition, m_modelWorlds.currentMainWorld().name());
-    //
-    // ObjectID objectID;
-    // // ObjectID objectID = findObject("Cube");
-    //
-    //
-    // m_modelModuleModels.pushBack(ModelModuleModel{
-    //  modelID,
-    //  modelName
-    //                                              }
-    // );
-    //
-    // m_modelOrderCount++;
-    //
-    //
-    // m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-    //
-    // m_modelAddCollection.push_back(
-    //  ModelAddCollection{
-    //   m_modelWorlds.currentWorld().name(),
-    //   modelID,
-    //   modelName,
-    //   objectID,
-    //   "Cube",
-    //   uniformList,
-    //   m_modelModuleModels[m_modelModuleModels.size() - 1].m_model
-    //    }
-    //                           );
-    //
-    // // [ Set the current world end position rather
-    // //   than copying the new world ]
-    // ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(modelWorldPosition);
-    // m_modelWorlds.setCurrentWorld(worldAfterAddModel);
-    // if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
-    // {
-    // m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
-    // }
-    //
-    // m_modelWorlds.setPreviousWorld(worldAfterAddModel);
-    //
-    // return; 
-    // }
-    //
-    // m_modelModuleModels.pushBack(ModelModuleModel{
-    //  modelID,
-    //  modelName
-    //                                              }
-    // );
-    //
-    // m_modelOrderCount++;
-    //
-    // ObjectID objectID;
-    //
-    // // ObjectID objectID = findObject("Cube");
-    //
-    // m_modelAddCollection[m_modelAddCollection.size() - 1].addModel(
-    //    modelID,
-    //    modelName,
-    //    objectID,
-    //    uniformList,
-    //    m_modelModuleModels[m_modelModuleModels.size() - 1].m_model 
-    //   );
-    //
-    // m_modelWorlds.addModelEndPosition(m_modelOrderCount, m_modelWorlds.currentWorld().name());
-    //
-    // // update current world
-    // ModelWorld worldAfterAddModel = m_modelWorlds.modelWorld(m_modelWorlds.currentWorld().orderInList());
-    // m_modelWorlds.setCurrentWorld(worldAfterAddModel);
-    // if(strcmp(m_modelWorlds.currentWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
-    // {
-    // m_modelWorlds.setCurrentMainWorld(worldAfterAddModel);
-    // }
-    // 
     // }
 
-    // virtual void addModelObjectID(ModelID& modelID,
-    //                               const char* modelName, 
-    //                               // ObjectID objectID
-    //                              ) override
-    // {
-    //
-    // 
-    // }
-
-    virtual void translateModel(ModelID modelID, Vec3 translationAmount) override
-    {
-    // // [ Change the nam ]
+    // importModel(importPath);
+    RenderObjData renderObjectData;
       
-    ModelWorld queryWorld = m_modelWorlds.currentWorld();
+    m_modelsNotSet.push_back(ModelNotSet{renderObjectData,
+                                         vertexShader,
+                                         fragmentShader,
+                                         model,
+                                         idLocation,
+                                         uniformList,
+                                         objectName
+                                        }
+                            );
+     
+    m_models.pushBack(Model{model,
+                            idLocation,
+                            uniformList,
+                            nullptr,
+                            nullptr
+                           }
+       
+                     );
 
-
-    for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
-    {
-    for(u64_t j = queryWorld.start(); j < queryWorld.end(); j++)
-    {
-    if(modelID == m_modelModuleModels[j].m_modelID)
-    {
-    m_modelModuleModels[j].setTranslationAmount(translationAmount);
-    m_modelModuleModels[j].setIsModified(true);
-    i = queryWorld.modelPositionCount();
-    break;
-    }
-    }
-    queryWorld.updateNextSubWorld();
-    }
-
-    }
- 
-    virtual void rotateModel(ModelID modelID, float radians, Vec3 rotationAxis) override
-    {
-    ModelWorld queryWorld = m_modelWorlds.currentWorld();
-
-
-    for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
-    {
-    for(u64_t j = queryWorld.start(); j < queryWorld.end(); j++)
-    {
-    if(modelID == m_modelModuleModels[j].m_modelID)
-    {
-    m_modelModuleModels[j].setRotationAmount(radians, rotationAxis);
-    m_modelModuleModels[j].setIsModified(true);
-    i = queryWorld.modelPositionCount();
-    break;
-    }
-    }
-    queryWorld.updateNextSubWorld();
-    }
-
-    }
-
-    virtual void scaleModel(ModelID modelID, Vec3 scalarAmount) override
-    {
-    ModelWorld queryWorld = m_modelWorlds.currentWorld();
-
-
-    for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
-    {
-    for(u64_t j = queryWorld.start(); j < queryWorld.end(); j++)
-    {
-    if(modelID == m_modelModuleModels[j].m_modelID)
-    {
-    m_modelModuleModels[j].setScalarAmount(scalarAmount);
-    m_modelModuleModels[j].setIsModified(true);
-    i = queryWorld.modelPositionCount();
-    break;
-    }
-    }
-    queryWorld.updateNextSubWorld();
-    }
-
-    }
-
-    // Worlds with the same name cannot be added
-    // Worlds are drawn independent of what order
-    virtual void addWorld(const char* name) override
-    {
-
-    // // [ Use current main world to find where the world is and if a
-    //      copy already exists ]
-    // for(auto& world : m_modelWorlds.modelWorlds())
-    // {
-    // if(strcmp(name, world.name()) == 0)
-    // {
-    // return;
-    // }
-    // }
-
-    m_modelWorlds.addWorld(name, m_modelWorldCount);
-    m_modelWorldCount++;
-    }
-
-    // [ Check if adding sub world of the same name ]
-    virtual void addSubWorld(const char* subWorldName, const char* mainWorldName) override
-    {
-    for(MainWorld& mainWorld : m_modelWorlds.mainWorlds())
-    {
-    if(strcmp(mainWorldName, mainWorld.mainWorld().name()))
-    {
-    for(ModelWorld& world : mainWorld.subWorlds())
-    {
-    if(strcmp(subWorldName, world.name()) == 0)
-    {
-    return;
-    }
-    }
-    }
-    }
-
-    m_modelWorlds.addSubWorld(subWorldName, m_modelWorldCount, mainWorldName);
-    m_modelWorldCount++;
-    }
-
-    // [ Check if adding user world of the same name ]
-    virtual void addUserWorld(const char* userWorldName, const char* mainWorldName) override
-    {
-    m_userWorlds.addMainWorld(userWorldName, mainWorldName, m_modelWorlds);
-    }
-
-    virtual void addUserSubWorld(const char* subWorldName, const char* userWorldName) override
-    {
-    m_userWorlds.addUserSubWorld(subWorldName, userWorldName);
-    }
-
-    virtual void startWorld(const char* name) override
-    {
-    for(u32_t i=0;i<m_modelWorlds.mainWorlds().size();i++)
-    {
-    if(strcmp(name, m_modelWorlds.mainWorlds()[i].mainWorld().name()) == 0)
-    {
-    m_modelWorlds.setCurrentMainWorld(m_modelWorlds.mainWorlds()[i].mainWorld());
-    m_modelWorlds.setCurrentWorld(m_modelWorlds.mainWorlds()[i].mainWorld());
-    }
-    }
-   
-    }
-
-    // [ Use a default world ]
-    virtual void endWorld() override
-    {
-    m_modelWorlds.setCurrentMainWorld(m_defaultWorld);
-    m_modelWorlds.setCurrentWorld(m_defaultWorld);
-    }
-
-    virtual void startSubWorld(const char* name) override
-    {
-    for(u32_t i = 0; i < m_modelWorlds.mainWorlds().size(); i++)
-    {
-    if(strcmp(m_modelWorlds.mainWorlds()[i].mainWorld().name(),
-              m_modelWorlds.currentMainWorld().name()) == 0)
-    {
-    for(u32_t j = 0;
-         j < m_modelWorlds.mainWorlds()[i].subWorlds().size();
-         j++)
-    {
-    if(strcmp(name,
-              m_modelWorlds.mainWorlds()[i].subWorlds()[j].name()) == 0)
-    {
-    m_modelWorlds.setCurrentWorld(m_modelWorlds.mainWorlds()[i].subWorlds()[j]);
-    }
-    }
-    }
-    }
-
-    }
-    virtual void endSubWorld() override
-    {
-    m_modelWorlds.setCurrentWorld(m_modelWorlds.currentMainWorld());
+    m_objects.push_back(ModelObject{objectName,
+                                    nullptr,
+                                    nullptr
+                                   }
+                       );
+    
     }
 
     // [ Remove model is broken and sometimes removed models
@@ -776,223 +448,36 @@ class ModelManagerModuleImpl : public ModelManagerModule
     //   new world and won't show on queryUserWorld ]
     virtual void removeModel(ModelID modelID) override
     {
-    ModelWorld queryWorld = m_modelWorlds.currentWorld();
-    Pair<u64_t, ModelWorld> modelWorldRemovedPosition;
-
-    for(u64_t i = 0; i < queryWorld.modelPositionCount(); i++)
-    {
-    for(u32_t j = queryWorld.start(); j < queryWorld.end(); j++)
-    {
-    if(modelID == m_modelModuleModels[j].m_modelID)
-    {
-    m_modelModuleModels.erase(m_modelModuleModels.begin() + j);
-    m_modelsToBeRemovedIndicies.push_back(j);
-    m_modelOrderCount--;
-    modelWorldRemovedPosition.first = i;
-    modelWorldRemovedPosition.second = queryWorld;
-
-
-    removeWorldLastPositions();
-
-    for(u64_t k = 0; k < m_modelWorlds.addWorldAddOrder().size(); k++)
-    {
-    u32_t addWorldPosition = m_modelWorlds.addWorldAddOrder()[k].position();
-    ModelWorldQuery modelWorldQuery = modelWorldFind(addWorldPosition, m_modelWorlds.addWorldAddOrder()[k].mainWorldName());
-
-    worldLastPositionAddWorld(addWorldPosition);
-
-    if(modelWorldQuery.isInList())
-    {
-    if(j < modelWorldIndex(modelWorldQuery).modelPosition(worldLastPosition(addWorldPosition)).second)
-    {
-    modelWorldIndex(modelWorldQuery).decrementEnd(worldLastPosition(addWorldPosition));
-    m_modelWorlds.setCurrentWorld(modelWorldIndex(modelWorldQuery));
-    if(strcmp(m_modelWorlds.currentMainWorld().name(), m_modelWorlds.currentWorld().name()) == 0)
-    {
-    m_modelWorlds.setCurrentMainWorld(modelWorldIndex(modelWorldQuery));
-    }
-    worldLastPositionUpdate(addWorldPosition);
-
-    for(u64_t worldIteration = k + 1; worldIteration < m_modelWorlds.addWorldAddOrder().size(); worldIteration++)
-    {
-    addWorldPosition = m_modelWorlds.addWorldAddOrder()[worldIteration].position();
-    modelWorldQuery = modelWorldFind(addWorldPosition, m_modelWorlds.addWorldAddOrder()[worldIteration].mainWorldName());
-    modelWorldIndex(modelWorldQuery).decrementStart(worldLastPosition(addWorldPosition));
-    modelWorldIndex(modelWorldQuery).decrementEnd(worldLastPosition(addWorldPosition));
-
-    worldLastPositionUpdate(addWorldPosition);
-    }
-    break;
-
-    }
+    m_removeModels.push_back(modelID);
     }
 
-    worldLastPositionUpdate(addWorldPosition);
-
-    }
-    break;
-            
-    }
-    }
-    queryWorld.updateNextSubWorld();
-    }
-
-
-    // Removing worlds that don't have models inside
-    // [ Found the removed model so check the list ]
-    for(u64_t i = 0; i < m_modelWorlds.mainWorlds().size(); i++)
+    void removeModelId(ModelID id)
     {
-    if(strcmp(m_modelWorlds.mainWorlds()[i].mainWorld().name(), m_modelWorlds.currentMainWorld().name()) == 0)
+    for(u64_t i=0;i<m_models.size();i++)
     {
-    for(u64_t j = 0; j < m_modelWorlds.mainWorlds()[i].mainWorld().modelPositions().size(); j++)
+    if(id == m_models[i].id())
     {
-    if(m_modelWorlds.mainWorlds()[i].mainWorld().modelPositions()[j].first == m_modelWorlds.mainWorlds()[i].mainWorld().modelPositions()[j].second)
-    {
-    m_modelWorlds.mainWorlds()[i].mainWorld().erasePosition(j);
-    m_modelWorlds.eraseAddWorld(modelWorldRemovedPosition.first, modelWorldRemovedPosition.second.orderInList());
-    m_userWorlds.eraseWorldOrder(j, m_modelWorlds.mainWorlds()[i].mainWorld().orderInList());
-    m_modelWorlds.setPreviousWorld(m_defaultWorld);
-    break;
-    }
-    }
-
-
-    for(u64_t j = 0; j < m_modelWorlds.mainWorlds()[i].subWorlds().size(); j++)
-    {
-    for(u64_t k = 0; k < m_modelWorlds.mainWorlds()[i].subWorlds()[j].modelPositions().size(); k++)
-    {
-    if(m_modelWorlds.mainWorlds()[i].subWorlds()[j].modelPositions()[k].first 
-       == m_modelWorlds.mainWorlds()[i].subWorlds()[j].modelPositions()[k].second)
-    {
-    m_modelWorlds.mainWorlds()[i].subWorlds()[j].erasePosition(k);
-    m_modelWorlds.eraseAddWorld(modelWorldRemovedPosition.first, modelWorldRemovedPosition.second.orderInList());
-    m_userWorlds.eraseWorldOrder(k, m_modelWorlds.mainWorlds()[i].subWorlds()[j].orderInList());
-    m_modelWorlds.setPreviousWorld(m_defaultWorld);
-    break;
-    }
-    }
-    }
-    }
-    }
-
-
-
-
- 
-    }
-
-    virtual void setWireframeMode(ModelID modelID, const char* userWorld) override
-    {
-    for(UserWorld& world : m_userWorlds.userWorlds())
-    {
-    if(strcmp(world.name(), userWorld) == 0)
-    {
-    for(u32_t i = 0; i < world.userWorldDraw().size(); i ++)
-    {
-    for(u64_t j = m_modelWorlds.modelWorld(world.userWorldDraw()[i]).start();
-     j < m_modelWorlds.modelWorld(world.userWorldDraw()[i]).end();
-     j++)
-    {
-    if(m_modelModuleModels[j].m_modelID == modelID)
-    {
-    // Finding model and setting wireframe
-    WireFrame wireframe{true};
-    world.setEditModel(j, wireframe, m_modelModuleModels[j]);
-    }
-    }
-
-    break;
-    }
-    }
+    m_models.erase(m_models.begin() + i);
+    m_modelLastAddedCount--;
     }
 
     }
 
-    virtual void removeWorldLastPositions() override
-    {
-    m_userWorlds.removeWorldLastPositions();
     }
 
-    virtual void worldLastPositionAddWorld(u32_t worldPosition) override
+    virtual u64_t findModelIndex(ModelID modelID) const override 
     {
-    m_userWorlds.worldLastPositionAddWorld(worldPosition);
-
+    for(u64_t i=0;i<m_models.size();i++)
+    {
+    if(m_models[i].id() == modelID)
+    {
+    return i;
+    }
     }
 
-    virtual void worldLastPositionUpdate(u32_t worldPosition) override
-    {
-    m_userWorlds.worldLastPositionUpdate(worldPosition);
-
-    }
-
-    virtual u32_t worldLastPosition(u32_t worldPosition) override
-    {
-    return m_userWorlds.worldLastPosition(worldPosition);
-
-    }
-
-
-    virtual void addUserCamera(const char* userWorldName,
-                               const char* cameraName) override
-    {
-    m_cameraManager.addCamera(cameraName);
-    m_userWorlds.addCameraToUserWorld(userWorldName, cameraName);
-    }
-
-    virtual void registerMouseUpdate(Pair<float, float> mouseOffsets) override
-    {
-    m_cameraManager.registerMouseUpdate(mouseOffsets);
-    }
-
-    virtual void translateCameraForward(const char* cameraName) override
-    {
-    m_cameraManager.translateForward(m_cameraManager.findCameraIndex(cameraName));
-    }
-    virtual void translateCameraBackward(const char* cameraName) override
-    {
-    m_cameraManager.translateBackward(m_cameraManager.findCameraIndex(cameraName));
-    }
-    virtual void translateCameraLeft(const char* cameraName) override
-    {
-    m_cameraManager.translateLeft(m_cameraManager.findCameraIndex(cameraName));
-    }
-    virtual void translateCameraRight(const char* cameraName) override
-    {
-    m_cameraManager.translateRight(m_cameraManager.findCameraIndex(cameraName));
-    }
-
-    virtual void setCameraPosition(const char* cameraName,
-                                   Vec3 position) override
-    {
-    m_cameraManager.setCameraPosition(m_cameraManager.findCameraIndex(cameraName), position);
-    }
-
-    virtual Camera retrieveCamera(const char* cameraName) override
-    {
-    // u32 index = m_cameraManager.findCamera(cameraName);
-    // if(index == m_cameraManager.cameras().size())
-    // {
-    // ELLIPSE_ENGINE_LOG_INFO("Did not retrieve camera");
-    // return;
-    // }
-
-
-    return m_cameraManager.findCamera(cameraName);
-    }
-
-    virtual u64_t findCameraIndex(const char* cameraName) override
-    {
-    return m_cameraManager.findCameraIndex(cameraName);
-    }
-
-    virtual Camera& cameraIndex(u64_t index) override
-    {
-    return m_cameraManager.cameraIndex(index);
-    }
-
-    virtual void setViewspace(Viewspace viewspace) override
-    {
-    m_currentViewspace = viewspace;
+    std::cout << "Could not find model, returning index\n";
+   
+    return 0;
     }
 
     virtual void setDifferentInViewspace(float viewspaceWidth,
@@ -1000,1101 +485,121 @@ class ModelManagerModuleImpl : public ModelManagerModule
                                          float originalWindowWidth,
                                          float originalWindowHeight) override;
 
-    virtual ModelWorldQuery modelWorldFind(u32_t worldPosition, const char* mainWorldName) override
+    virtual VectorSharedIteratorHeap<Model>& models() override
     {
-    return m_modelWorlds.modelWorldFind(worldPosition, mainWorldName);
-    }
-    virtual ModelWorldQuery modelWorldFindPrevious(u32_t worldPosition, const char* mainWorldName) override
-    {
-    return m_modelWorlds.modelWorldFindPrevious(worldPosition, mainWorldName);
-    }
-
-    virtual void clearModelAddCollection() override
-    {
-    m_modelAddCollection.clear();
-    }
-
-    virtual void clearModelsToBeRemoved() override
-    {
-    m_modelsToBeRemovedIndicies.clear();
-    }
-
-    virtual void queryUserWorlds() override
-    {
-    for(u64_t i = 0; i < userWorlds().size(); i++)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("{}", userWorlds()[i].name());
-
-    removeWorldLastPositions();
-
-    for(u64_t j = 0; j < userWorlds()[i].userWorldDraw().size(); j++)
-    {
-    u32_t worldPositionIndex = userWorlds()[i].userWorldDraw()[j];
-
-    ELLIPSE_ENGINE_LOG_INFO("{} :", modelWorld(worldPositionIndex, userWorlds()[i].mainWorldName()).name());
-    ELLIPSE_ENGINE_LOG_INFO("Start: {} End: {}",
-                            modelWorld(worldPositionIndex, userWorlds()[i].mainWorldName()).modelPosition(worldLastPosition(worldPositionIndex)).first,
-                            modelWorld(worldPositionIndex, userWorlds()[i].mainWorldName()).modelPosition(worldLastPosition(worldPositionIndex)).second);
-
-    worldLastPositionUpdate(userWorlds()[i].userWorldDraw()[j]);
-    }
-    }
-
-    }
-
-    virtual void queryMainWorlds() override
-    {
-    for(u64_t i = 0; i < mainWorlds().size(); i++)
-    {
-    for(u64_t j = 0; j < mainWorlds()[i].mainWorld().modelPositions().size(); j++)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("{}", mainWorlds()[i].mainWorld().name());
-    ELLIPSE_ENGINE_LOG_INFO("Start: {} End: {}", mainWorlds()[i].mainWorld().modelPositions()[j].first, mainWorlds()[i].mainWorld().modelPositions()[j].second);
-    }
-    }
-
-    }
-
-    virtual void queryUserWorld(const char*
-                                userWorldName) override
-    {
-    for(u64_t i = 0; i < userWorlds().size(); i++)
-    {
-    if(strcmp(userWorlds()[i].name(), userWorldName) == 0)
-    {
-
-    removeWorldLastPositions();
-
-    ELLIPSE_ENGINE_LOG_INFO("{}", userWorldName);
-
-
-    ELLIPSE_ENGINE_LOG_INFO("All world names: ");
-    ELLIPSE_ENGINE_LOG_INFO("Main world: {}", userWorlds()[i].mainWorldName());
-    for(const char* subWorldName : userWorlds()[i].subWorldNames())
-    {
-    ELLIPSE_ENGINE_LOG_INFO("{}", subWorldName);
-    }
-
-    for(u64_t j = 0; j < userWorlds()[i].userWorldDraw().size(); j++)
-    {
-
-    u32_t worldPositionIndex = userWorlds()[i].userWorldDraw()[j];
-    ModelWorldQuery modelWorldQuery = modelWorldFind(worldPositionIndex, userWorlds()[i].mainWorldName());
-
-    ELLIPSE_ENGINE_LOG_INFO("{}", modelWorldIndex(modelWorldQuery).name());
-    ELLIPSE_ENGINE_LOG_INFO("Start: {} End: {}",
-                            modelWorldIndex(modelWorldQuery).modelPosition(worldLastPosition(worldPositionIndex)).first,
-                            modelWorldIndex(modelWorldQuery).modelPosition(worldLastPosition(worldPositionIndex)).second);
-
-
-    worldLastPositionUpdate(userWorlds()[i].userWorldDraw()[j]);
-    }
-    }
-    }
-
-    }
-
-    virtual void queryMainWorld(const char* mainWorldName) override
-    {
-    for(u64_t i = 0; i < mainWorlds().size(); i++)
-    {
-    if(strcmp(mainWorlds()[i].mainWorld().name(), mainWorldName) == 0)
-    {
-    for(u64_t j = 0; j < mainWorlds()[i].mainWorld().modelPositions().size(); j++)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("{}", mainWorlds()[i].mainWorld().name());
-    ELLIPSE_ENGINE_LOG_INFO("Start: {} End: {}",
-                            mainWorlds()[i].mainWorld().modelPositions()[j].first,
-                            mainWorlds()[i].mainWorld().modelPositions()[j].second);
-    }
-    }
-    }
-
-    }
-
-    CREATE_FUNC_CALLBACK(addModel, void(ModelID& modelID,
-                                        const char* modelName,
-                                        const char* objectName,
-                                        String vertexShader,
-                                        String fragmentShader,
-                                        String importPath,
-                                        UniformList uniformList))
-    CREATE_FUNC_CALLBACK(removeModel, void(ModelID modelID))
-    CREATE_FUNC_CALLBACK(translateModel, void(ModelID modelID, Vec3 translationAmount))
-    CREATE_FUNC_CALLBACK(rotateModel, void(ModelID modelID, float radians, Vec3 rotationAxis))
-    CREATE_FUNC_CALLBACK(scaleModel, void(ModelID modelID, Vec3 scalarAmount))
-    CREATE_FUNC_CALLBACK(startWorld, void(const char* name))
-    CREATE_FUNC_CALLBACK(endWorld, void())
-    CREATE_FUNC_CALLBACK(startSubWorld, void(const char* name))
-    CREATE_FUNC_CALLBACK(endSubWorld, void())
-
-    virtual bool isHiddenModel(u64_t modelPosition) const override
-    {
-    return m_modelModuleModels[modelPosition].isHidden();
-    }
-
-    virtual bool isInWireframeModel(u64_t modelPosition) const override
-    {
-    return m_modelModuleModels[modelPosition].isInWireframeMode();
-    }
-
-    virtual Vector<ModelAddCollection> modelAddCollection() const override
-    {
-    return m_modelAddCollection;
-    }
-    virtual Vector<ModelAddCollection>& modelAddCollection() override
-    {
-    return m_modelAddCollection;
-    }
-
-    virtual CameraManager& cameraManager() override
-    {
-    return m_cameraManager;
-    }
-
-    virtual Vector<MainWorld> mainWorlds() const override
-    {
-    return m_modelWorlds.mainWorlds();
-    }
-
-    virtual Vector<MainWorld> mainWorldsPrevious() const override
-    {
-    return m_modelWorlds.mainWorldsPrevious();
-    }
-
-    // [ Make the mainWorlds("World") be a
-    //   modelManager only ]
-    virtual MainWorld mainWorld(const char* name) const override
-    {
-    return m_modelWorlds.mainWorld(name);
-    }
-    virtual ModelWorld modelWorld(u32_t modelWorldPosition) const override
-    {
-    return m_modelWorlds.modelWorld(modelWorldPosition);
-    }
-    virtual ModelWorld modelWorld(u32_t modelWorldPosition, const char* worldName) const override
-    {
-    return m_modelWorlds.modelWorld(modelWorldPosition, worldName);
-    }
-    virtual ModelWorld& modelWorld(u32_t modelWorldPosition, const char* worldName) override
-    {
-    return m_modelWorlds.modelWorld(modelWorldPosition, worldName);
-    }
-    virtual ModelWorld& modelWorldPrevious(u32_t modelWorldPosition, const char* worldName) override
-    {
-    return m_modelWorlds.modelWorldPrevious(modelWorldPosition, worldName);
-    }
-    virtual ModelWorld& modelWorldIndex(ModelWorldQuery modelWorldQuery) override
-    {
-    return m_modelWorlds.modelWorldIndex(modelWorldQuery);
-    }
-    virtual ModelWorld& modelWorldIndexPrevious(ModelWorldQuery modelWorldQuery) override
-    {
-    return m_modelWorlds.modelWorldIndexPrevious(modelWorldQuery);
-    }
-
-    virtual Vector<UserWorld> userWorlds() const override
-    {
-    return m_userWorlds.userWorlds();
-    }
-
-    virtual Vector<UserWorld> userWorldsPrevious() const override
-    {
-    return m_userWorlds.userWorldsPrevious();
-    }
-
-    virtual const VectorSharedIteratorHeap<ModelModuleModel>& modelModuleModels() const override
-    {
-    return m_modelModuleModels;
-    }
-
-    virtual Vector<u32_t> modelsToBeRemovedIndicies() const override
-    {
-    return m_modelsToBeRemovedIndicies;
-    }
-
-
-    virtual ModelWorldDrawOrder modelWorldDrawOrder() const override
-    {
-    return m_modelWorldDrawOrder;
+    return m_models;
     }
 
     SharedPtr<ModelManagerModule> createModelManagerModule();
 
    private:
-    virtual void onUpdateModelMatrices() override
-    {
-    for(u64_t i = 0; i < m_modelModuleModels.size(); i++)
-    {
-    if(m_modelModuleModels[i].isModified())
-    {
-    m_modelModuleModels[i].resetModelMatrix();
-          
-    translateModelInModelList(m_modelModuleModels[i].model(), m_modelModuleModels[i].translationAmount());
-    rotateModelInModelList(m_modelModuleModels[i].model(), m_modelModuleModels[i].rotationAmount().m_radians, m_modelModuleModels[i].rotationAmount().m_rotationAxis);
-    scaleModelInModelList(m_modelModuleModels[i].model(), m_modelModuleModels[i].scalarAmount());
-
-    // Math::printMat(m_modelModuleModels[i].model());
-
-
-    m_modelModuleModels[i].setIsModified(false);
-    }
-    }
-    
-    }
-
-    virtual void translateModelInModelList(Mat4& model, Vec3 translationAmount) override
-    {
-    model = EllipseMath::translate(model, translationAmount);
-    }
-    virtual void rotateModelInModelList(Mat4& model, float radians, Vec3 rotationAxis) override
-    {
-    model = EllipseMath::rotate(model, radians, rotationAxis);
-    }
-    virtual void scaleModelInModelList(Mat4& model, Vec3 scalarAmount) override
-    {
-    model = EllipseMath::scale(model, scalarAmount);
-    }
-
-    void concatnateWorlds()
-    {
-    for(u64_t i = 0; i < userWorlds().size(); i++)
-    {
-    removeWorldLastPositions();
-
-    for(i64_t j = 0; j < static_cast<i64_t>(userWorlds()[i].userWorldDraw().size()) - 1; j++)
-    {
-    u32_t worldPositionIndex = userWorlds()[i].userWorldDraw()[static_cast<u64_t>(j)];
-    u32_t worldPositionNextIndex = userWorlds()[i].userWorldDraw()[static_cast<u64_t>(j + 1)];
-    ModelWorldQuery modelWorldQuery = modelWorldFind(worldPositionIndex, userWorlds()[i].mainWorldName());
-    ModelWorldQuery modelWorldQueryNext = modelWorldFind(worldPositionNextIndex, userWorlds()[i].mainWorldName());
-
-    worldLastPositionAddWorld(worldPositionIndex);
-
-
-    if(worldPositionIndex == worldPositionNextIndex &&
-       (modelWorldIndex(modelWorldQuery).modelPosition(worldLastPosition(worldPositionIndex)).second == modelWorldIndex(modelWorldQueryNext).modelPosition(worldLastPosition(worldPositionIndex) + 1).first))
-    {
-    modelWorldIndex(modelWorldQuery).setModelEndPosition(worldLastPosition(worldPositionIndex), modelWorldIndex(modelWorldQuery).modelPosition(worldLastPosition(worldPositionIndex) + 1).second);
-    modelWorldIndex(modelWorldQuery).erasePosition(worldLastPosition(worldPositionIndex) + 1);
-    m_userWorlds.eraseWorldOrder(static_cast<u64_t>(j), worldPositionIndex);
-    }
-
-    worldLastPositionUpdate(worldPositionIndex);
-    }
-    }
-
-    }
+    // virtual void onUpdateModelMatrices() override
+    // {
+    // // for(u64_t i = 0; i < m_modelModuleModels.size(); i++)
+    // // {
+    // // if(m_modelModuleModels[i].isModified())
+    // // {
+    // // m_modelModuleModels[i].resetModelMatrix();
+    // //       
+    // // translateModelInModelList(m_modelModuleModels[i].model(), m_modelModuleModels[i].translationAmount());
+    // // rotateModelInModelList(m_modelModuleModels[i].model(), m_modelModuleModels[i].rotationAmount().m_radians, m_modelModuleModels[i].rotationAmount().m_rotationAxis);
+    // // scaleModelInModelList(m_modelModuleModels[i].model(), m_modelModuleModels[i].scalarAmount());
+    // //
+    // // // Math::printMat(m_modelModuleModels[i].model());
+    // //
+    // //
+    // // m_modelModuleModels[i].setIsModified(false);
+    // // }
+    // // }
+    // // 
+    // }
 
    private: 
-    struct LayerTracker
-    {
-       public:
-        LayerTracker()
-        : m_layerSize{0},
-          m_currentLayer{0},
-          m_previousLayer{0}
-        {
+    Engine& m_engine;
 
-        }
+    Vector<ModelNotSet> m_modelsNotSet;
 
-        void initLayer()
-        {
-        m_layerSize++;
-        }
-       
-        void updateLayer()
-        {
-        m_currentLayer++;
-        m_previousLayer = m_currentLayer - 1;
-        if(m_currentLayer == m_layerSize)
-        {
-        m_currentLayer = 0;
-        }
+    VectorSharedIteratorHeap<Model> m_models;
+    Vector<ModelObject> m_objects;
 
+    u64_t m_modelLastAddedCount;
 
-        }
-
-        u32_t currentLayer() const
-        {
-        return m_currentLayer;
-        }
-       
-        u32_t previousLayer() const
-        {
-        return m_previousLayer;
-        }
-        
-       public:
-        u32_t m_layerSize;
-        u32_t m_currentLayer;
-        u32_t m_previousLayer;
-    };
-
-    struct ManagerModuleModelWorlds
-    {
-       public:
-        ManagerModuleModelWorlds()
-        : m_currentLayer{0},
-          m_previousLayer{0},
-          m_currentMainWorld{ModelWorld{"ModelManagerDefaultWorld",
-                                        0,
-                                        0
-                                      }
-                            },
-          m_currentWorld{ModelWorld{"ModelManagerDefaultWorld",
-                                    0,
-                                    0
-                                   }
-                        },
-          m_previousWorld{ModelWorld{"ModelManagerDefaultWorld",
-                                     0,
-                                     0
-                                    }
-                         }
-        {
-
-        }
-
-        ~ManagerModuleModelWorlds()
-        {
-
-        }
-
-        class AddedWorldQuery
-        {
-           public:
-            AddedWorldQuery()
-            : m_mainWorldName{nullptr},
-              m_position{0}
-            {
-
-            }
-            AddedWorldQuery(const char* mainWorldName, u32_t position)
-            : m_mainWorldName{mainWorldName},
-              m_position{position}
-            {
-
-            }
-            ~AddedWorldQuery()
-            {
-
-            }
-
-            const char* mainWorldName() const
-            {
-            return m_mainWorldName;
-            }
-
-            u32_t position() const
-            {
-            return m_position;
-            }
-
-           private:
-            const char* m_mainWorldName;
-            u32_t m_position;
-        };
-
-        class LayerModelWorlds
-        {
-           public:
-            LayerModelWorlds()
-            : m_mainWorlds{Vector<MainWorld>{}},
-              m_addModelWorldOrder{Vector<AddedWorldQuery>{}}
-            {
-
-            }
-            ~LayerModelWorlds()
-            {
-
-            }
-
-            void addMainWorld(ModelWorld modelWorld)
-            {
-            m_mainWorlds.push_back(MainWorld{modelWorld});
-
-            }
-            void addSubWorld(ModelWorld modelWorld, const char* mainWorldName)
-            {
-            for(MainWorld& mainWorld : m_mainWorlds)
-            {
-            if(strcmp(mainWorld.mainWorld().name(), mainWorldName) == 0)
-            {
-            mainWorld.addSubWorld(modelWorld);
-            }
-            }
-
-            }
-
-            void addWorldAddOrder(u32_t modelWorldPosition, const char* name)
-            {
-            m_addModelWorldOrder.push_back(AddedWorldQuery{name, modelWorldPosition});
-            }
-
-            void eraseAddWorld(u64_t updateCount, u64_t worldPosition)
-            {
-            u64_t occuranceWorld = 0;
-            for(u64_t i = 0; i < m_addModelWorldOrder.size(); i++)
-            {
-            if(m_addModelWorldOrder[i].position() == worldPosition)
-            {
-            if(occuranceWorld == updateCount)
-            {
-            m_addModelWorldOrder.erase(m_addModelWorldOrder.begin() + static_cast<i64_t>(i));
-            }
-            occuranceWorld++;
-            }
-            }
-            }
-
-            Vector<MainWorld> mainWorlds() const
-            {
-            return m_mainWorlds;
-            }
-
-            Vector<MainWorld>& mainWorlds()
-            {
-            return m_mainWorlds;
-            }
-
-            Vector<AddedWorldQuery> addModelWorldOrder() const
-            {
-            return m_addModelWorldOrder;
-            }
-
-           public:
-            Vector<MainWorld> m_mainWorlds;
-
-            Vector<AddedWorldQuery> m_addModelWorldOrder;
-        };
-
-        void initLayer()
-        {
-        m_modelWorlds.push_back(LayerModelWorlds{});
-        }
-
-        void updateLayer(LayerTracker layerTracker)
-        {
-        m_currentLayer = layerTracker.currentLayer();
-        m_previousLayer = layerTracker.previousLayer();
-        }
-
-        void addWorld(const char* name,
-                      u32_t orderInList)
-        {
-        m_modelWorlds[m_currentLayer].addMainWorld(ModelWorld{name, orderInList});
-
-        }
-
-        void addSubWorld(const char* name,
-                         u32_t orderInList,
-                         const char* mainWorldName)
-        {
-        m_modelWorlds[m_currentLayer].addSubWorld(ModelWorld{name, orderInList}, mainWorldName);
-        }
-      
-        // [ Use world position to check so don't
-        //   search through whole char ]
-        void addModelBeginPosition(u32_t indexInModelList,
-                                   const char* worldName)
-        {
-        for(MainWorld& mainWorld : m_modelWorlds[m_currentLayer].mainWorlds())
-        {
-        if(strcmp(mainWorld.mainWorld().name(), worldName) == 0)
-        {
-        mainWorld.mainWorld().addModelBeginPosition(indexInModelList);
-        return;
-        }
-        for(ModelWorld& modelWorld : mainWorld.subWorlds())
-        {
-        if(strcmp(modelWorld.name(), worldName) == 0)
-        {
-        modelWorld.addModelBeginPosition(indexInModelList);
-        return;
-        }
-        }
-        }
-
-        }
-
-        void addModelEndPosition(u32_t indexInModelList,
-                                 const char* worldName)
-        {
-        for(MainWorld& mainWorld : m_modelWorlds[m_currentLayer].mainWorlds())
-        {
-        if(strcmp(mainWorld.mainWorld().name(), worldName) == 0)
-        {
-        mainWorld.mainWorld().addModelEndPosition(indexInModelList);
-        return;
-        }
-
-        for(ModelWorld& modelWorld : mainWorld.subWorlds())
-        {
-        if(strcmp(modelWorld.name(), worldName) == 0)
-        {
-        modelWorld.addModelEndPosition(indexInModelList);
-        return;
-        }
-        }
-
-        }
-        
-        }
-
-        void addWorldAddOrder(u32_t modelWorldPosition, const char* name)
-        {
-        m_modelWorlds[m_currentLayer].addWorldAddOrder(modelWorldPosition, name);
-        }
-
-        void eraseAddWorld(u64_t updateCount, u64_t worldPosition)
-        {
-        m_modelWorlds[m_currentLayer].eraseAddWorld(updateCount, worldPosition);
-        }
-
-        void setCurrentMainWorld(ModelWorld world)
-        {
-        m_currentMainWorld = world;
-        }
-
-        void setCurrentWorld(ModelWorld world)
-        {
-        m_currentWorld = world;
-        }
-
-        void setPreviousWorld(ModelWorld world)
-        {
-        m_previousWorld = world;
-        }
-
-        ModelWorld modelWorld(u32_t modelWorldPosition) const
-        {
-        ModelWorld world;
-        for(u32_t i = 0; i < m_modelWorlds[m_currentLayer].mainWorlds().size(); i++)
-        {
-        if(strcmp(m_currentMainWorld.name(), m_modelWorlds[m_currentLayer].mainWorlds()[i].mainWorld().name()) == 0)
-        {
-        if(modelWorldPosition == m_modelWorlds[m_currentLayer].mainWorlds()[i].mainWorld().orderInList())
-        {
-        world = m_modelWorlds[m_currentLayer].mainWorlds()[i].mainWorld();
-        break;
-        }
-        for(u32_t j = 0; j < m_modelWorlds[m_currentLayer].mainWorlds()[i].subWorlds().size(); j++)
-        {
-        if(modelWorldPosition == m_modelWorlds[m_currentLayer].mainWorlds()[i].subWorlds()[j].orderInList())
-        {
-        world = m_modelWorlds[m_currentLayer].mainWorlds()[i].subWorlds()[j];
-        break;
-        }
-        }
-        }
-
-        }
-
-        return world;
-        }
-
-        ModelWorld modelWorld(u32_t worldPosition,
-                              const char* mainWorldName) const 
-        {
-        ModelWorld world;
-        for(u32_t i = 0; i < m_modelWorlds[m_currentLayer].mainWorlds().size(); i++)
-        {
-        if(strcmp(mainWorldName, m_modelWorlds[m_currentLayer].mainWorlds()[i].mainWorld().name()) == 0)
-        {
-        if(worldPosition == m_modelWorlds[m_currentLayer].mainWorlds()[i].mainWorld().orderInList())
-        {
-        world = m_modelWorlds[m_currentLayer].mainWorlds()[i].mainWorld();
-        break;
-        }
-        for(u32_t j = 0; j < m_modelWorlds[m_currentLayer].mainWorlds()[i].subWorlds().size(); j++)
-        {
-        if(worldPosition == m_modelWorlds[m_currentLayer].mainWorlds()[i].subWorlds()[j].orderInList())
-        {
-        world = m_modelWorlds[m_currentLayer].mainWorlds()[i].subWorlds()[j];
-        break;
-        }
-        }
-        break;
-        }
-
-        }
-
-        // [ DEBUG ]
-        if(world.name() == nullptr)
-        {
-        std::cout << "Returning invalid world\n";
-        }
-
-        return world;
-        }
-
-        // [ Accesses out of bounds and crashes if cannot find
-        //   the modelWorld ]
-        ModelWorld& modelWorld(u32_t worldPosition,
-                               const char* mainWorldName)
-        {
-        for(u32_t i = 0; i < m_modelWorlds[m_currentLayer].mainWorlds().size(); i++)
-        {
-
-        if(strcmp(mainWorldName, m_modelWorlds[m_currentLayer].mainWorlds()[i].mainWorld().name()) == 0)
-        {
-        if(worldPosition == m_modelWorlds[m_currentLayer].mainWorlds()[i].mainWorld().orderInList())
-        {
-        return m_modelWorlds[m_currentLayer].mainWorlds()[i].mainWorld();
-        }
-        for(u32_t j = 0; j < m_modelWorlds[m_currentLayer].mainWorlds()[i].subWorlds().size(); j++)
-        {
-        if(worldPosition == m_modelWorlds[m_currentLayer].mainWorlds()[i].subWorlds()[j].orderInList())
-        {
-        return m_modelWorlds[m_currentLayer].mainWorlds()[i].subWorlds()[j];
-        }
-        }
-        }
-        }
-
-        // [ DEBUG ]
-        // [ Returning invalid
-        //   world ]
-
-        return m_modelWorlds[m_currentLayer].mainWorlds()[
-        m_modelWorlds[m_currentLayer].mainWorlds().size() - 1
-        ].subWorlds()[m_modelWorlds[m_currentLayer].mainWorlds()[
-        m_modelWorlds[m_currentLayer].mainWorlds().size() - 1
-        ].subWorlds().size()];
-   
-        }
-
-        ModelWorldQuery modelWorldFind(u32_t worldPosition,
-                                       const char* mainWorldName)
-        {
-        for(u32_t i = 0; i < m_modelWorlds[m_currentLayer].mainWorlds().size(); i++)
-        {
-        if(strcmp(mainWorldName, m_modelWorlds[m_currentLayer].mainWorlds()[i].mainWorld().name()) == 0)
-        {
-        if(worldPosition == m_modelWorlds[m_currentLayer].mainWorlds()[i].mainWorld().orderInList())
-        { 
-        return ModelWorldQuery{true, i, 0};
-        }
-        for(u32_t j = 0; j < m_modelWorlds[m_currentLayer].mainWorlds()[i].subWorlds().size(); j++)
-        {
-        if(worldPosition == m_modelWorlds[m_currentLayer].mainWorlds()[i].subWorlds()[j].orderInList())
-        {
-        return ModelWorldQuery{true, i, j + 1};
-        }
-        }
-        }
-        }
-
-        return ModelWorldQuery{false, 0, 0};
-        }
-        ModelWorldQuery modelWorldFindPrevious(u32_t worldPosition,
-                                               const char* mainWorldName)
-        {
-        for(u32_t i = 0; i < m_modelWorlds[m_previousLayer].mainWorlds().size(); i++)
-        {
-        if(strcmp(mainWorldName, m_modelWorlds[m_previousLayer].mainWorlds()[i].mainWorld().name()) == 0)
-        {
-        if(worldPosition == m_modelWorlds[m_previousLayer].mainWorlds()[i].mainWorld().orderInList())
-        { 
-        return ModelWorldQuery{true, i, 0};
-        }
-        for(u32_t j = 0; j < m_modelWorlds[m_previousLayer].mainWorlds()[i].subWorlds().size(); j++)
-        {
-        if(worldPosition == m_modelWorlds[m_previousLayer].mainWorlds()[i].subWorlds()[j].orderInList())
-        {
-        return ModelWorldQuery{true, i, j + 1};
-        }
-        }
-        }
-        }
-
-        return ModelWorldQuery{false, 0, 0};
-        }
-
-        ModelWorld& modelWorldPrevious(u32_t worldPosition,
-                                       const char* mainWorldName)
-        {
-        for(u32_t i = 0; i < m_modelWorlds[m_currentLayer].mainWorlds().size(); i++)
-        {
-
-        if(strcmp(mainWorldName, m_modelWorlds[m_previousLayer].mainWorlds()[i].mainWorld().name()) == 0)
-        {
-        if(worldPosition == m_modelWorlds[m_previousLayer].mainWorlds()[i].mainWorld().orderInList())
-        {
-        return m_modelWorlds[m_previousLayer].mainWorlds()[i].mainWorld();
-        }
-        for(u32_t j = 0; j < m_modelWorlds[m_previousLayer].mainWorlds()[i].subWorlds().size(); j++)
-        {
-        if(worldPosition == m_modelWorlds[m_previousLayer].mainWorlds()[i].subWorlds()[j].orderInList())
-        {
-        return m_modelWorlds[m_previousLayer].mainWorlds()[i].subWorlds()[j];
-        }
-        }
-        }
-        }
-        return m_modelWorlds[m_previousLayer].mainWorlds()[
-        m_modelWorlds[m_previousLayer].mainWorlds().size() - 1
-        ].subWorlds()[m_modelWorlds[m_previousLayer].mainWorlds()[
-        m_modelWorlds[m_previousLayer].mainWorlds().size() - 1
-        ].subWorlds().size()];
-   
-        }
-
-        ModelWorld& modelWorldIndex(ModelWorldQuery modelWorldQuery)
-        {
-        if(modelWorldQuery.index() == 0)
-        {
-        return m_modelWorlds[m_currentLayer].mainWorlds()[modelWorldQuery.mainWorldIndex()].mainWorld();
-        }
-        return m_modelWorlds[m_currentLayer].mainWorlds()[modelWorldQuery.mainWorldIndex()].subWorlds()[modelWorldQuery.index() - 1];
-
-        }
-        ModelWorld& modelWorldIndexPrevious(ModelWorldQuery modelWorldQuery)
-        {
-        if(modelWorldQuery.index() == 0)
-        {
-        return m_modelWorlds[m_previousLayer].mainWorlds()[modelWorldQuery.mainWorldIndex()].mainWorld();
-        }
-        return m_modelWorlds[m_previousLayer].mainWorlds()[modelWorldQuery.mainWorldIndex()].subWorlds()[modelWorldQuery.index() - 1];
-
-        }
-
-        MainWorld mainWorld(const char* mainWorldName) const
-        {
-        for(MainWorld& mainWorld : m_modelWorlds[m_currentLayer].mainWorlds())
-        {
-        if(strcmp(mainWorld.mainWorld().name(), mainWorldName) == 0)
-        {
-        return mainWorld;
-        }
-        }
-
-        return MainWorld{ModelWorld{}, Vector<ModelWorld>{}};
-        }
-
-        ModelWorld currentWorld() const
-        {
-        return m_currentWorld;
-        }
-
-        ModelWorld currentMainWorld() const
-        { 
-        return m_currentMainWorld;
-        }
-
-        ModelWorld previousWorld() const
-        {
-        return m_previousWorld;
-        }
-
-        Vector<MainWorld> mainWorlds() const
-        {
-        return m_modelWorlds[m_currentLayer].mainWorlds();
-        }
-
-        Vector<MainWorld>& mainWorlds()
-        {
-        return m_modelWorlds[m_currentLayer].mainWorlds();
-        }
-
-        Vector<MainWorld> mainWorldsPrevious() const
-        {
-        return m_modelWorlds[m_previousLayer].mainWorlds();
-        }
-
-        Vector<MainWorld>& mainWorldsPrevious()
-        {
-        return m_modelWorlds[m_previousLayer].mainWorlds();
-        }
-
-        Vector<AddedWorldQuery> addWorldAddOrder() const
-        {
-        return m_modelWorlds[m_currentLayer].addModelWorldOrder();
-        }
-        Vector<AddedWorldQuery> addWorldAddOrder(u64_t currentLayer) const
-        {
-        return m_modelWorlds[currentLayer].addModelWorldOrder();
-        }
-        // Vector<u32_t> addWorldAddOrderPositions() const
-        // {
-        // return m_modelWorlds[m_currentLayer].addWorldAddOrderPositions();
-        // }
-        // Vector<const char*> addWorldAddOrderNames() const
-        // {
-        // return m_modelWorlds[m_currentLayer].addWorldAddOrderNames();
-        // }
-      
-        // Vector<u32_t> addWorlds()
-        // {
-        // return m_addModelWorlds;
-        // }
-
-       private:
-        u32_t m_currentLayer;
-        u32_t m_previousLayer;
-        Vector<LayerModelWorlds> m_modelWorlds;
-        // Vector<u32_t> m_addModelWorlds;
-        ModelWorld m_currentMainWorld;
-        ModelWorld m_currentWorld;
-        ModelWorld m_previousWorld;
-    };
-
-    // [ Should not have worldLastPosition 
-    //   in user world ]
-    struct ManagerModuleUserWorlds
-    {
-       public:
-        ManagerModuleUserWorlds()
-        : m_currentLayer{0},
-          m_previousLayer{0}
-        {
-
-        }
-      
-        ~ManagerModuleUserWorlds()
-        {
-
-        }
-
-        void initLayer()
-        {
-        m_managerModuleUserWorlds.push_back(Vector<UserWorld>{});
-        }
-
-        void updateLayer(LayerTracker layerTracker)
-        {
-        m_currentLayer = layerTracker.currentLayer();
-        m_previousLayer = layerTracker.previousLayer();
-        }
-
-        void addMainWorld(const char* mainWorldName,
-                          const char* userWorldName,
-                          ManagerModuleModelWorlds modelWorlds)
-        {
-        userWorlds().push_back(UserWorld{mainWorldName, 
-                                         userWorldName
-                                        }
-                                     );
-
-        }
-
-        void addUserSubWorld(const char* subWorldName,
-                             const char* userWorldName)
-        {
-        for(UserWorld& world : userWorlds())
-        {
-        if(strcmp(userWorldName, world.name()) == 0)
-        {
-        world.addUserSubWorld(subWorldName);
-        }
-        }
-        }
-
-        void addDrawOrder(u32_t modelWorldPosition, 
-                          const char* mainWorldName,
-                          const char* worldName)
-        {
-        // [ Will add draw order twice when a main world and
-        //   sub world have the same name ]
-        for(UserWorld& world : userWorlds())
-        {
-        if((strcmp(world.mainWorldName(), mainWorldName) == 0) 
-            && (strcmp(mainWorldName, worldName) == 0))
-        {
-        world.addUserWorldDrawOrder(modelWorldPosition);
-        }
-        if(!(strcmp(worldName, mainWorldName) == 0))
-        {
-        for(const char* subWorldName : world.subWorldNames())
-        {
-        if(strcmp(subWorldName, worldName) == 0)
-        {
-        // std::cout << world.name() << " add sub world draw order ";
-        world.addUserWorldDrawOrder(modelWorldPosition);
-        }
-        }
-        }
-        }
-
-        }
-
-        void eraseWorldOrder(u64_t positionIndex, u64_t orderInList)
-        {
-        for(u64_t i = 0; i < userWorlds().size(); i++)
-        {
-        userWorlds()[i].eraseWorld(positionIndex, orderInList);
-        }
-
-        }
-
-        void addCameraToUserWorld(const char* userWorldName,
-                                  const char* cameraName)
-        {
-        for(u32_t i = 0; i < userWorlds().size(); i++)
-        {
-        if(strcmp(userWorldName, userWorlds()[i].name()) == 0)
-        {
-        // [ Add camera ]
-        userWorlds()[i].setCamera(cameraName);
-        return;
-        }
-        }
-
-        ELLIPSE_ENGINE_LOG_WARN("Couldn't find user world, did not add");
-
-        }
-
-        void removeWorldLastPositions()
-        {
-        m_worldLastPositions.clear();
-        }
-
-        void worldLastPositionAddWorld(u32_t worldPosition)
-        {
-        if(m_worldLastPositions.find(worldPosition) == m_worldLastPositions.end())
-        {
-        m_worldLastPositions[worldPosition] = 0;
-        }
-        }
-
-        void worldLastPositionUpdate(u32_t worldPosition)
-        {
-        m_worldLastPositions[worldPosition]++;
-        }
-
-        u32_t worldLastPosition(u32_t worldPosition)
-        {
-        return m_worldLastPositions[worldPosition];
-        }
-
-        Vector<UserWorld> userWorlds() const
-        {
-        return m_managerModuleUserWorlds[m_currentLayer];
-        }
-
-        Vector<UserWorld>& userWorlds()
-        {
-        return m_managerModuleUserWorlds[m_currentLayer];
-        }
-
-        Vector<UserWorld> userWorldsPrevious() const
-        {
-        return m_managerModuleUserWorlds[m_previousLayer];
-        }
-
-        Vector<UserWorld>& userWorldsPrevious()
-        {
-        return m_managerModuleUserWorlds[m_previousLayer];
-        }
-
-       private:
-        u32_t m_currentLayer;
-        u32_t m_previousLayer;
-        Vector<Vector<UserWorld>> m_managerModuleUserWorlds;
-        Map<u32_t, u32_t> m_worldLastPositions;
-    };
-
-    Vector<ModelAddCollection> m_modelAddCollection;
-    
-    VectorSharedIteratorHeap<ModelModuleModel> m_modelModuleModels;
-    Vector<u32_t> m_modelsToBeRemovedIndicies;
-
-    LayerTracker m_layerTracker;
-
-    // Shared between user worlds
-    ManagerModuleModelWorlds m_modelWorlds;
-
-    ManagerModuleUserWorlds m_userWorlds;
-    Vector<u32_t> m_addedWorlds;
-
-    ModelWorld m_defaultWorld;
     Viewspace m_currentViewspace;
 
-    // [ Layers that are higher or added last have higher priority 
-    //   renderering than layers added earilier ]
-    
-    // [ Layers cannot access worlds in other layers and are therefore
-    //   separate when drawing the layers to the engine ]
+    Vector<ModelID> m_removeModels;
 
-    // [ Rename to m_uniqueIDGenerator ]
     EllipseMath::RandomRemoveLast m_randomRemoveLast;
-
-    u32_t m_modelOrderCount;
-    u32_t m_modelWorldCount;
-
-    // [ Unused, delete this when possible ]
-    ModelWorldDrawOrder m_modelWorldDrawOrder;
-
-    CameraManager m_cameraManager;
+    // CameraManager m_cameraManager;
 };
 
 void ModelManagerModuleImpl::setDifferentInViewspace(float viewspaceWidth,
-      float viewspaceHeight,
-      float originalWindowWidth,
-      float originalWindowHeight)
+                                                     float viewspaceHeight,
+                                                     float originalWindowWidth,
+                                                     float originalWindowHeight)
 {
-    m_currentViewspace.m_width += (static_cast<float>(m_currentViewspace.m_width) / static_cast<float>(originalWindowWidth) ) * static_cast<float>(viewspaceWidth);
-
-    m_currentViewspace.m_height += (static_cast<float>(m_currentViewspace.m_height) / static_cast<float>(originalWindowHeight)) * static_cast<float>(viewspaceHeight);
-
-    m_currentViewspace.m_posX += (static_cast<float>(m_currentViewspace.m_posX) / static_cast<float>(originalWindowHeight)) * static_cast<float>(viewspaceWidth);
-
-    m_currentViewspace.m_posY += (static_cast<float>(m_currentViewspace.m_posY) / static_cast<float>(originalWindowHeight)) * static_cast<float>(viewspaceHeight);
-
-
-    // for(ModelLayer& modelLayer : m_modelLayers)
-    // {
-    // for(ModelViewspace& modelViewspace : modelLayer.m_modelViewspaces)
-    // {
-    // float viewspaceWindowWidthRatio = 
-    // static_cast<float>(modelViewspace.m_viewspace.m_width)
-    // / 
-    // static_cast<float>(originalWindowWidth);
+    // m_currentViewspace.m_width += (static_cast<float>(m_currentViewspace.m_width) / static_cast<float>(originalWindowWidth) ) * static_cast<float>(viewspaceWidth);
     //
-    // float viewspaceWindowHeightRatio = 
-    // static_cast<float>(modelViewspace.m_viewspace.m_height)
-    // / 
-    // static_cast<float>(originalWindowHeight);
+    // m_currentViewspace.m_height += (static_cast<float>(m_currentViewspace.m_height) / static_cast<float>(originalWindowHeight)) * static_cast<float>(viewspaceHeight);
     //
-    // float viewspaceWindowPosXRatio = 
-    // static_cast<float>(modelViewspace.m_viewspace.m_posX)
-    // / 
-    // static_cast<float>(originalWindowWidth);
+    // m_currentViewspace.m_posX += (static_cast<float>(m_currentViewspace.m_posX) / static_cast<float>(originalWindowHeight)) * static_cast<float>(viewspaceWidth);
     //
-    // float viewspaceWindowPosYRatio = 
-    // static_cast<float>(modelViewspace.m_viewspace.m_posY)
-    // / 
-    // static_cast<float>(originalWindowHeight);
+    // m_currentViewspace.m_posY += (static_cast<float>(m_currentViewspace.m_posY) / static_cast<float>(originalWindowHeight)) * static_cast<float>(viewspaceHeight);
     //
-    // // [ This ratio solution is heavily hackish, need to find
-    // //   a better solution for resolving multiple viewspaces 
-    // //   adjust to the new window size ]
     //
-    // float viewspaceRatioWidth = static_cast<float>(viewspaceWidth) * viewspaceWindowWidthRatio;
-    // float viewspaceRatioHeight = static_cast<float>(viewspaceHeight) * viewspaceWindowHeightRatio;
-    // float viewspaceRatioPosX = static_cast<float>(viewspaceWidth) * viewspaceWindowPosXRatio;
-    // float viewspaceRatioPosY = static_cast<float>(viewspaceHeight) * viewspaceWindowPosYRatio;
-    //
-    // // std::cout << "Window difference " <<  viewspaceWidth << '\n';
-    // // std::cout << "Window ratio " << viewspaceWindowWidthRatio << '\n';
-    //
-    // if(modelViewspace.m_viewspace.m_posX != 0 
-    //    || modelViewspace.m_viewspace.m_posY != 0)
-    // {
-    // modelViewspace.m_viewspace.m_posX += viewspaceRatioPosX;
-    // modelViewspace.m_viewspace.m_posY += viewspaceRatioPosY;
-    // }
-    //
-    // modelViewspace.m_viewspace.m_width += viewspaceRatioWidth;
-    // modelViewspace.m_viewspace.m_height += viewspaceRatioHeight;
-    // }
-    // }
+    // // for(ModelLayer& modelLayer : m_modelLayers)
+    // // {
+    // // for(ModelViewspace& modelViewspace : modelLayer.m_modelViewspaces)
+    // // {
+    // // float viewspaceWindowWidthRatio = 
+    // // static_cast<float>(modelViewspace.m_viewspace.m_width)
+    // // / 
+    // // static_cast<float>(originalWindowWidth);
+    // //
+    // // float viewspaceWindowHeightRatio = 
+    // // static_cast<float>(modelViewspace.m_viewspace.m_height)
+    // // / 
+    // // static_cast<float>(originalWindowHeight);
+    // //
+    // // float viewspaceWindowPosXRatio = 
+    // // static_cast<float>(modelViewspace.m_viewspace.m_posX)
+    // // / 
+    // // static_cast<float>(originalWindowWidth);
+    // //
+    // // float viewspaceWindowPosYRatio = 
+    // // static_cast<float>(modelViewspace.m_viewspace.m_posY)
+    // // / 
+    // // static_cast<float>(originalWindowHeight);
+    // //
+    // // // [ This ratio solution is heavily hackish, need to find
+    // // //   a better solution for resolving multiple viewspaces 
+    // // //   adjust to the new window size ]
+    // //
+    // // float viewspaceRatioWidth = static_cast<float>(viewspaceWidth) * viewspaceWindowWidthRatio;
+    // // float viewspaceRatioHeight = static_cast<float>(viewspaceHeight) * viewspaceWindowHeightRatio;
+    // // float viewspaceRatioPosX = static_cast<float>(viewspaceWidth) * viewspaceWindowPosXRatio;
+    // // float viewspaceRatioPosY = static_cast<float>(viewspaceHeight) * viewspaceWindowPosYRatio;
+    // //
+    // // // std::cout << "Window difference " <<  viewspaceWidth << '\n';
+    // // // std::cout << "Window ratio " << viewspaceWindowWidthRatio << '\n';
+    // //
+    // // if(modelViewspace.m_viewspace.m_posX != 0 
+    // //    || modelViewspace.m_viewspace.m_posY != 0)
+    // // {
+    // // modelViewspace.m_viewspace.m_posX += viewspaceRatioPosX;
+    // // modelViewspace.m_viewspace.m_posY += viewspaceRatioPosY;
+    // // }
+    // //
+    // // modelViewspace.m_viewspace.m_width += viewspaceRatioWidth;
+    // // modelViewspace.m_viewspace.m_height += viewspaceRatioHeight;
+    // // }
+    // // }
 }
 
-SharedPtr<ModelManagerModule> ModelManagerModule::createModelManagerModule()
+
+SharedPtr<ModelManagerModule> ModelManagerModule::createModelManagerModule(Engine& engine)
 {
-    return createShared<ModelManagerModuleImpl>();
+    return createShared<ModelManagerModuleImpl>(engine);
 }
 
 }   // namespace Ellipse
+
