@@ -16,5 +16,6 @@
 #include <cstdint>
 #include <sstream>
 #include <forward_list>
+#include <string.h>
 
 #include <random>

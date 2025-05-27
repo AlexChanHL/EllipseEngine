@@ -76,6 +76,7 @@ class OpenGLMesh : public RenderMesh
 
     stbi_image_free(textureData);
 
+
     m_indicies = Vector<u32_t>
     {
     0, 2, 3,
@@ -453,7 +454,7 @@ class OpenGLShaderObj : public RenderShaderObj
     const char* typeToCString(GLenum type);
 
    private:
-    Map<const char*, GLenum> m_typeMap;
+    Map<String, GLenum> m_typeMap;
     // ForwardList<UniformLoc> m_uniformLoc;
     // UniformList m_uniforms;
 };

@@ -37,4 +37,3 @@
 
 #include "EllipsePCH.hpp"
 
-
