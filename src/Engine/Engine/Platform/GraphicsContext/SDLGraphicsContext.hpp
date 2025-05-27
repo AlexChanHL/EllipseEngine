@@ -29,7 +29,7 @@ class SDLOpenGLGraphicsContext final : public GraphicsContext
 
      virtual void deleteContext() override
      {
-     SDL_GL_DeleteContext(m_glContext);
+     SDL_GL_DestroyContext(m_glContext);
      }
 
      virtual GraphicsLib getGraphicsLib() override

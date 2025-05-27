@@ -14,7 +14,7 @@ void makeSDLCurrentContext(SDL_Window* window, GraphicsContext* context)
     switch(context->getGraphicsLib())
     {
     case GraphicsLib::OpenGL:
-    SDL_GL_MakeCurrent(window, context->getContext());
+    SDL_GL_MakeCurrent(window, (SDL_GLContext)context->getContext());
     break;
     case GraphicsLib::Vulkan:
     // [ Make vulkan current context ]

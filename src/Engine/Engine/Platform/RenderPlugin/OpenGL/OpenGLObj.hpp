@@ -60,8 +60,6 @@ class OpenGLMesh : public RenderMesh
     }
 
 
-    stbi_image_free(textureData);
-
     glGenTextures(1, &m_textures[0].id());
 
     glActiveTexture(GL_TEXTURE0);
@@ -75,6 +73,8 @@ class OpenGLMesh : public RenderMesh
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
     glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(textureData);
 
     m_indicies = Vector<u32_t>
     {
