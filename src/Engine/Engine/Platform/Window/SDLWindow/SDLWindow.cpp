@@ -13,7 +13,7 @@ namespace Ellipse
 SDLWindow::SDLWindow(const WindowSettings& settings)
 {
     const unsigned int initFlags{SDL_INIT_EVENTS | SDL_INIT_VIDEO};
-    if(SDL_Init(initFlags) != 0)
+    if(SDL_Init(initFlags) != true)
     {
     ELLIPSE_ENGINE_LOG_ERROR("Failed to init sdl!");
     }
@@ -71,7 +71,7 @@ void SDLWindow::updateWindow()
 
 void SDLWindow::lockCursorToWindow()
 {
-    SDL_SetRelativeMouseMode(SDL_TRUE);
+    SDL_SetWindowRelativeMouseMode(m_window, true);
 
 
     // [ SDL_GetRelativeMouseState() will return the offset
@@ -84,12 +84,12 @@ void SDLWindow::lockCursorToWindow()
 
 void SDLWindow::unlockCursorToWindow()
 {
-    SDL_SetRelativeMouseMode(SDL_FALSE);
+    SDL_SetWindowRelativeMouseMode(m_window, false);
 }
 
 void SDLWindow::disableReportEvents()
 {
-    SDL_DelEventWatch(SDLWindow::eventCallBackFn, &m_windowData);
+    SDL_RemoveEventWatch(SDLWindow::eventCallBackFn, &m_windowData);
 }
 
 void SDLWindow::pollEvents()

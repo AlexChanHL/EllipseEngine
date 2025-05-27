@@ -54,14 +54,11 @@ class OpenGLMesh : public RenderMesh
 
     stbi_set_flip_vertically_on_load(true);
     unsigned char* textureData = stbi_load("Assets/Images/GreenColor.png", &textureWidth, &textureHeight, &textureClrChannels, 0);
-    // unsigned char* textureData = stbi_load("../build/debug/Debug/bin/Assets/Images/GreenColor.png", &textureWidth, &textureHeight, &textureClrChannels, 0);
     if(!textureData)
     {
     ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");
     }
 
-
-    stbi_image_free(textureData);
 
     glGenTextures(1, &m_textures[0].id());
 
@@ -76,6 +73,9 @@ class OpenGLMesh : public RenderMesh
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
     glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(textureData);
+
 
     m_indicies = Vector<u32_t>
     {
@@ -454,7 +454,7 @@ class OpenGLShaderObj : public RenderShaderObj
     const char* typeToCString(GLenum type);
 
    private:
-    Map<const char*, GLenum> m_typeMap;
+    Map<String, GLenum> m_typeMap;
     // ForwardList<UniformLoc> m_uniformLoc;
     // UniformList m_uniforms;
 };

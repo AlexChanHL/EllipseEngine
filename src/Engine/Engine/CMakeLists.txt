@@ -79,3 +79,4 @@ set(CMAKE_PCH_INSTANIATE_TEMPLATES ON)
 endif()
   
 target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+

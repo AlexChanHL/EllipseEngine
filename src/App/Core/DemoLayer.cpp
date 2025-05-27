@@ -90,7 +90,7 @@ void DemoLayer::initUserLayer()
    //
    // m_cubeMadeCube.linearFunc([](Pixel& pixel){ pixel.setPosition(Vec3{1.0f, 2.0f, 1.0f}); });
 
-   Ellipse::Application::get().getWindow().lockCursorToWindow();
+   // Ellipse::Application::get().getWindow().lockCursorToWindow();
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e)

@@ -97,7 +97,7 @@ class SDLWindow : public Window
 
 
   private:
-   static int eventCallBackFn(void* userData, SDL_Event* e)
+   static bool eventCallBackFn(void* userData, SDL_Event* e)
    {
    WindowData* data = static_cast<WindowData*>(userData);
 
@@ -125,7 +125,7 @@ class SDLWindow : public Window
    }
    case SDL_EVENT_KEY_DOWN:
    {
-   KeyboardPressedEvent event(static_cast<u32_t>(e->key.keysym.sym));
+   KeyboardPressedEvent event(static_cast<u32_t>(e->key.key));
    data->m_eventCallBackFn(event);
    return 0;
    }
@@ -164,8 +164,8 @@ class SDLWindow : public Window
    {
    MouseWheelEvent event(e->wheel.x,
                          e->wheel.y,
-                         e->wheel.mouseX,
-                         e->wheel.mouseY
+                         e->wheel.mouse_x,
+                         e->wheel.mouse_y
                    );
    data->m_eventCallBackFn(event);
    return 0;

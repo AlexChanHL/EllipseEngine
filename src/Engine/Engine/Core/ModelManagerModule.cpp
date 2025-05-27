@@ -268,7 +268,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
     u64_t index = m_modelLastAddedCount + i;
     ModelNotSet model = m_modelsNotSet[i];
 
-    std::cout << "index: " << index << '\n';
+    // ELLIPSE_ENGINE_LOG_INFO("index: {}", index);
 
     for(u64_t j=0;j<m_objects.size();j++)
     {
@@ -300,7 +300,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     if(m_models[index].renderObject() != nullptr)
     {
-    std::cout << index << '\n';
+    // ELLIPSE_ENGINE_LOG_INFO("{}", index);
     // std::cout << m_models[index].renderObject().use_count() << '\n';
     // std::cout << m_models[index].renderObject() << '\n';
     }

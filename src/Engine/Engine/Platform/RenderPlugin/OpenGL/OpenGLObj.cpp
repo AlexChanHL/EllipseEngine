@@ -113,8 +113,7 @@ void OpenGLShaderObj::compileShader(const char* fname)
      FStreamIn ifs{fname};
      if(!ifs)
      {
-     // ELLIPSE_ENGINE_LOG_WARN("{}", fname);
-     ELLIPSE_ENGINE_LOG_WARN("Could open file!" );
+     ELLIPSE_ENGINE_LOG_WARN("Could not open {}", fname);
      }
 
      GLenum type = queryType(fname);
@@ -330,79 +329,52 @@ void OpenGLShaderObj::checkLinkStatus()
 
 GLenum OpenGLShaderObj::queryType(const char* fname)
 {
-    UniquePtr<char[]> newStr = createUnique<char[]>(strlen(fname) + 1);
-    strcpy(newStr.get(), fname);
+    String dest;
+    String fileData = fname;
 
-    u64_t extSize = 0;
-    u64_t  numExtentions = 0;
+    String shader;
+    String glsl;
 
-    for(auto i = newStr.get(); *i != '\0'; i++)
+    Pair<bool, bool> isShaderGlsl{false, false};
+    for(u64_t i=0;i<fileData.size();i++)
     {
-    if(*i == '.')
+    if(fileData[i] == '.')
     {
-    numExtentions++;
+    if(isShaderGlsl.first && isShaderGlsl.second)
+    {
+    ELLIPSE_ENGINE_LOG_INFO("Not a valid file type");   
+    return m_typeMap["none"];
     }
+    if(isShaderGlsl.first && (!isShaderGlsl.second))
+    {
+    isShaderGlsl.second = true;
+    }
+    if(!isShaderGlsl.first)
+    {
+    isShaderGlsl.first = true;
     }
 
-    auto extensionAmount = createUnique<unsigned long[]>(numExtentions);
-    auto extensionLoc = createUnique<unsigned long[]>(numExtentions);
-
-    unsigned long extAmountIdx = 0;
-    const char* ext = newStr.get();
-
-    unsigned long idx = 0; 
-
-    for(auto i = newStr.get(); *i != '\0'; i++)
-    {
-    if(*i == '.')
-    {
-    ext += idx + 1;
-    for(; *ext != '.'; ext++)
-    {
-    if(*ext == '\0')
+    i++;
+    if(i == fileData.size())
     {
     break;
     }
-
-    extSize++;
     }
 
-    ext = newStr.get();
-
-    extensionLoc[extAmountIdx] = idx;
-
-    extensionAmount[extAmountIdx] = extSize;
-    extAmountIdx++;
-    extSize = 0;
-    }
-    idx++;
-    }
-
-    auto extension = createUnique<char[]>(extensionAmount[0]);
-    auto glsl = createUnique<char[]>(extensionAmount[1]);
-
-    for(unsigned long i = 0; i < extensionAmount[0]; i++)
+    if(isShaderGlsl.first && (!isShaderGlsl.second))
     {
-    extension[i] = newStr[i + extensionLoc[0] + 1];
+    shader.push_back(fileData[i]);
     }
 
-    for(unsigned long i = 0; i < extensionAmount[1]; i++)
+    if(isShaderGlsl.first && isShaderGlsl.second)
     {
-    glsl[i] = newStr[i + extensionLoc[1] + 1];
+    glsl.push_back(fileData[i]);
     }
 
-    for(const auto& [key, val] : m_typeMap)
-    {
-    if(strcmp(extension.get(), key) == 0)
-    {
-    return val;
-    // return convertGLType()
-    }
     }
 
-    return m_typeMap["none"];
+    return m_typeMap[shader];
 }
-
 const char* OpenGLShaderObj::typeToCString(GLenum type)
 {
     switch (type) 
