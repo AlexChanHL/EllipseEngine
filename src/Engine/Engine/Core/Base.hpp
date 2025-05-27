@@ -50,12 +50,12 @@ using SharedPtr = std::shared_ptr<T>;
 // [ Temporarily use this ]
 using EntityRef = uLong_t;
 
+// template<typename T>
+// std::function<T> std::function<
 
-// #if USE_GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-//
 using Vec2 = glm::vec2;
 using Vec3 = glm::vec3;
 using Vec4 = glm::vec4;
@@ -65,7 +65,6 @@ using Mat3 = glm::mat3;
 using Mat4 = glm::mat4;
 
 using Radians = float;
-
 
 namespace Ellipse
 {
@@ -144,9 +143,6 @@ inline Vec3 cross(Vec3 vec1, Vec3 vec2)
 // #endif
 
 }     // namespace Ellipse
-
-// template<typename T>
-// std::function<T> std::function<
 
 template<typename T, typename D, typename Func>
 void erase_if(Map<T, D>& map, Func func)

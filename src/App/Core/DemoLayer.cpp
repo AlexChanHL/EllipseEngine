@@ -3,6 +3,7 @@
 
 #include "DemoLayer.hpp"
 
+
 DemoLayer::DemoLayer(Ellipse::Engine& engine)
  : Layer{engine},
    m_engine{engine},

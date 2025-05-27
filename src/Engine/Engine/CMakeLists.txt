@@ -1,3 +1,4 @@
+
 set(NAME "EllipseEngine")
 
 file(GLOB CURRENT_DIR
@@ -55,8 +56,8 @@ file(GLOB_RECURSE LOG
       )
 
 add_library(${NAME} STATIC
-           ${CURRENT_DIR} ${CORE} ${ENGINE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_GRAPHICS_CONTEXT} ${PLATFORM_WINDOW} ${PLATFORM_RENDER} ${MATH}
-             )
+            ${CURRENT_DIR} ${CORE} ${ENGINE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_GRAPHICS_CONTEXT} ${PLATFORM_WINDOW} ${PLATFORM_RENDER} ${MATH}
+           )
 
 add_custom_target(CopyAssets ALL
            COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different 
@@ -67,9 +68,8 @@ add_custom_target(CopyAssets ALL
 
 add_dependencies(${NAME} CopyAssets)
 
-# target_link_libraries(${NAME} PUBLIC EngineVendor ProjectWarnings)
-
-target_link_libraries(${NAME} PUBLIC EngineVendor)
+target_link_libraries(${NAME} PUBLIC glm)
+target_link_libraries(${NAME} PRIVATE EngineVendor)
 
 target_link_libraries(${NAME} PRIVATE ProjectWarnings)
 

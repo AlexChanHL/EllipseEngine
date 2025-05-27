@@ -39,5 +39,5 @@ FetchContent_MakeAvailable(fmtLib)
 
 add_library(uLogger INTERFACE)
 
-target_link_libraries(EngineVendor INTERFACE uLogger glad glm stb_image SDL3::SDL3 fmt)
+target_link_libraries(EngineVendor INTERFACE uLogger glad stb_image SDL3::SDL3 fmt)
 
