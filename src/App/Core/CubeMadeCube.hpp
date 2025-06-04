@@ -107,7 +107,7 @@ class CubeMadeCube
 
     for(u64_t i=0;i<m_modelVertex.size();i++)
     {
-    m_modelList.addModel(m_modelVertex[i].name().c_str());
+    m_modelList.addModel(m_modelVertex[i].name().c_str(), "Cube");
     m_modelList.model(m_modelVertex[i].name().c_str()).setTranslateAmount(m_modelVertex[i].position());
     m_modelList.model(m_modelVertex[i].name().c_str()).setScaleAmount(Vec3{m_cubeScale});
     }
@@ -134,7 +134,7 @@ class CubeMadeCube
     {
     m_vertexBetweenVertex.push_back(Pixel{Ellipse::format("Pixel{}", m_vertexBetweenVertex.size()).c_str(), verticies[j]});
 
-    m_modelList.addModel(m_vertexBetweenVertex[m_vertexBetweenVertex.size() - 1].name().c_str());
+    m_modelList.addModel(m_vertexBetweenVertex[m_vertexBetweenVertex.size() - 1].name().c_str(), "Cube");
     m_modelList.model(m_vertexBetweenVertex[m_vertexBetweenVertex.size() - 1].name().c_str()).setTranslateAmount(verticies[j]);
     m_modelList.model(m_vertexBetweenVertex[m_vertexBetweenVertex.size() - 1].name().c_str()).setScaleAmount(Vec3{m_cubeScale});
     }

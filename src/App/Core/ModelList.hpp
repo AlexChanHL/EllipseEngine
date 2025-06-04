@@ -9,7 +9,7 @@ class ModelList
 {
    public:
     ModelList(Ellipse::Engine& engine)
-    : m_modelModule{static_cast<Ellipse::ModelManagerModule&>(engine.getLayerModule("ModelManagerLayerModule"))}
+    : m_modelModule{static_cast<Ellipse::ModelManagerModule&>(engine.getModule("ModelModule"))}
     {
 
     }
@@ -32,7 +32,7 @@ class ModelList
     {
     Ellipse::ModelID id;
     m_modelModule.addModel(id,
-                           "Cube",
+                           name,
                            Mat4{1.0f},
                            "Assets/Shader/Triangle.vert.glsl",
                            "Assets/Shader/Triangle.frag.glsl",
@@ -51,7 +51,7 @@ class ModelList
     {
     Ellipse::ModelID id;
     m_modelModule.addModel(id,
-                           "LightCube",
+                           name,
                            Mat4{1.0f},
                            vertex,
                            frag,
@@ -63,11 +63,11 @@ class ModelList
     m_models[id] = ModelVal{};
     }
 
-    void addModelDefinition(const char* name, Ellipse::Camera& camera, Light& light)
+    void addModelDefinition(const char* name, const char* objectName, Ellipse::Camera& camera, Light& light)
     {
     Ellipse::ModelID id;
     m_modelModule.addModel(id,
-                           "Cube",
+                           objectName,
                            Mat4{1.0f},
                            "Assets/Shader/Triangle.vert.glsl",
                            "Assets/Shader/Triangle.frag.glsl",
@@ -85,45 +85,30 @@ class ModelList
     addLight(modelModuleVal(name).uniformList(), light);
     }
 
-    void addModel()
-    {
-    String name = Ellipse::format("{}", m_models.size());
-    Ellipse::ModelID id;
-    m_modelModule.addModel(id,
-                           "Cube",
-                           Mat4{1.0f},
-                           Ellipse::UniformList{}
-                          );
+    // void addModel(String name, const char* objectName, Ellipse::Camera& camera, Light& light)
+    // {
+    // Ellipse::ModelID id;
+    // m_modelModule.addModel(id,
+    //                        objectName,
+    //                        Mat4{1.0f},
+    //                        Ellipse::UniformList{}
+    //                       );
+    //
+    // m_nameIds[name] = id;
+    // m_models[id] = ModelVal{};
+    //
+    // addCamera(modelModuleVal(name.c_str()).uniformList(), camera);
+    //
+    // addMaterials(modelModuleVal(name.c_str()).uniformList(), model(name.c_str()));
+    //
+    // addLight(modelModuleVal(name.c_str()).uniformList(), light);
+    // }
 
-    m_nameIds[name] = id;
-    m_models[id] = ModelVal{};
-    }
-
-    void addModel(Ellipse::Camera& camera, Light& light)
-    {
-    String name = Ellipse::format("{}", m_models.size());
-    Ellipse::ModelID id;
-    m_modelModule.addModel(id,
-                           "Cube",
-                           Mat4{1.0f},
-                           Ellipse::UniformList{}
-                          );
-
-    m_nameIds[name] = id;
-    m_models[id] = ModelVal{};
-
-    addCamera(modelModuleVal(name.c_str()).uniformList(), camera);
-
-    addMaterials(modelModuleVal(name.c_str()).uniformList(), model(name.c_str()));
-
-    addLight(modelModuleVal(name.c_str()).uniformList(), light);
-    }
-
-    void addModel(const char* name)
+    void addModel(const char* name, const char* objectName)
     {
     Ellipse::ModelID id;
     m_modelModule.addModel(id,
-                           "Cube",
+                           objectName,
                            Mat4{1.0f},
                            Ellipse::UniformList{}
                           );
@@ -160,7 +145,7 @@ class ModelList
     {
     if(!m_nameIds.contains(name))
     {
-    std::cout << "name does not contain id model\n";
+    ELLIPSE_APP_LOG_WARN("name does not contain id model");
     }
 
     return m_modelModule.models()[m_modelModule.findModelIndex(m_nameIds[name])];
@@ -170,7 +155,7 @@ class ModelList
     {
     if(!m_nameIds.contains(name))
     {
-    std::cout << "name does not contain id\n";
+    ELLIPSE_APP_LOG_WARN("name does not contain id, name: {}", name);
     }
 
     return m_models[m_nameIds[name]];

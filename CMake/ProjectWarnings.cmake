@@ -1,5 +1,5 @@
 
-function(set_project_warnings project_name)
+function(createWarningsLibrary name)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
    set(CLANG_WARNINGS
@@ -29,7 +29,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   endif()
 
   message("Compiler warning set as clang")
-  target_compile_options(${project_name} INTERFACE ${CLANG_WARNINGS})
+  target_compile_options(${name} INTERFACE ${CLANG_WARNINGS})
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -53,11 +53,11 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
      )
 
   if(WARNING_AS_ERRORS)
-      set(GNU_WARNINGS ${GNU_WARNINGS} -Werror)
+   set(GNU_WARNINGS ${GNU_WARNINGS} -Werror)
   endif()
 
-  # set(${COMPILER_WARNING_SET} TRUE)
   message("Compiler warning set as gnu")
+	target_compile_options(${name} ${GNU_WARNINGS})
 endif()
 
 endfunction()

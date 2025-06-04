@@ -8,8 +8,8 @@ DemoLayer::DemoLayer(Ellipse::Engine& engine)
  : Layer{engine},
    m_engine{engine},
    m_timeModule{static_cast<Ellipse::TimeModule&>(engine.getModule("TimeModule"))},
-   m_modelManagerLayerModule{static_cast<Ellipse::ModelManagerModule&>(engine.getLayerModule("ModelManagerLayerModule"))},
-   m_renderModule{static_cast<Ellipse::RenderModule&>(engine.getLayerModule("RenderModule"))},
+   m_modelManagerLayerModule{static_cast<Ellipse::ModelManagerModule&>(engine.getModule("ModelModule"))},
+   m_renderModule{static_cast<Ellipse::RenderModule&>(engine.getModule("RenderModule"))},
    m_modelIncrement{0},
    m_rotatedDegrees{0.0f},
    m_modelList{engine},
@@ -26,10 +26,7 @@ void DemoLayer::initUserLayer()
 
 
    // [ Adding models will create models with the same name ]
-  
-   // Ellipse::RenderModule& renderModule = static_cast<Ellipse::RenderModule&>(m_engine.getLayerModule("RenderModule"));
-  
-   Ellipse::RenderModule& renderer = static_cast<Ellipse::RenderModule&>(m_engine.getLayerModule("RenderModule"));
+   Ellipse::RenderModule& renderer = static_cast<Ellipse::RenderModule&>(m_engine.getModule("RenderModule"));
    Pair<i32_t, i32_t> size = Ellipse::Application::get().getWindow().getWindowSize();
    renderer.setViewport(Ellipse::Viewspace{0,
                                            0,
@@ -38,60 +35,25 @@ void DemoLayer::initUserLayer()
                                           }
                        );
 
-   // m_modelList.addModelDefinition("1");
+   m_modelList.addModelDefinition("Cube");
    m_light.init(m_modelList, "LightCube", "Assets/Shader/Light.vert.glsl", "Assets/Shader/Light.frag.glsl");
-  
+
    m_light.setPosition(m_modelList, Vec3{1.0f, 2.0f, 1.0f});
 
-   m_modelList.addModelDefinition("1", m_renderModule.camera(), m_light.light());
-
-   
+   m_modelList.addModelDefinition("1", "Cube", m_renderModule.camera(), m_light.light());
    m_modelList.model("1").setTranslateAmount(Vec3{0.0f, 0.0f, 0.0f});
+
    // m_modelList.model("1").setRotateAmount(Ellipse::EllipseMath::Radian{90.0f}.radians(), Vec3{1.0f, 1.0f, 0.0f});
 
    m_cubeMadeCube.init();
 
-   // m_cubeMadeCube.linearFunc([](Pixel& pixel){ pixel.setPosition(pixel.worldPosition() + Vec3{1.0f, 8.0f, -10.0f}); });
-   // m_cubeMadeCube.linearFunc([](Pixel& pixel)
-   // {
-   // Vec3 position = pixel.position();
-   //
-   // float degreesRotated = Radian{45.0f}.radians();
-   //
-   // Mat3 xAxisMatrix{1.0f};
-   //
-   // xAxisMatrix[1][1] = cos(degreesRotated);
-   // xAxisMatrix[1][2] = sin(degreesRotated);
-   // xAxisMatrix[2][1] = -sin(degreesRotated);
-   // xAxisMatrix[2][2] = cos(degreesRotated);
-   //
-   // position = position * xAxisMatrix;
-   //
-   // Mat3 yAxisMatrix{1.0f};
-   //
-   // xAxisMatrix[0][0] = cos(degreesRotated);
-   // xAxisMatrix[0][2] = sin(degreesRotated);
-   // xAxisMatrix[2][0] = -sin(degreesRotated);
-   // xAxisMatrix[2][2] = cos(degreesRotated);
-   //
-   // position = position * yAxisMatrix;
-   //
-   // Mat3 zAxisMatrix{1.0f};
-   //
-   // xAxisMatrix[0][0] = cos(degreesRotated);
-   // xAxisMatrix[0][1] = sin(degreesRotated);
-   // xAxisMatrix[0][1] = -sin(degreesRotated);
-   // xAxisMatrix[1][1] = cos(degreesRotated);
-   //
-   // position = position * zAxisMatrix;
-   //
-   // pixel.setPosition(position); 
-   // }
-   //                          );
-   //
-   // m_cubeMadeCube.linearFunc([](Pixel& pixel){ pixel.setPosition(Vec3{1.0f, 2.0f, 1.0f}); });
 
-   // Ellipse::Application::get().getWindow().lockCursorToWindow();
+   // m_modelList.addModelDefinition("Quad",
+   //                                "Triangle.vert.glsl",
+   //                                "Triangle.frag.glsl"
+   //                               );
+   //
+   // m_modelList.addModel("Quad");
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e)

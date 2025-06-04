@@ -4,10 +4,7 @@
 
 int main()
 {
-    // [ Maybe a better way of initalizing values ]
-    Ellipse::ApplicationStackValue::createStackValues();
-
-    auto specs = Ellipse::createAppSpecs();
+  	auto specs = Ellipse::ApplicationConfig();
   
     Ellipse::Application* app = new Ellipse::Application;
 

@@ -3,40 +3,37 @@
 
 #include "Ellipse.hpp"
 
-ForwardList<SharedPtr<Ellipse::Layer>> pushUserLayers()
+
+ForwardList<SharedPtr<Ellipse::Layer>> Ellipse::Application::createUserProcesses()
 {
    ForwardList<SharedPtr<Ellipse::Layer>> layers;
 
    SharedPtr<DemoLayer> demoLayer = createShared<DemoLayer>(Ellipse::Application::get().getEngine());
-   // SharedPtr<DemoLayer> UILayer = createShared<DemoLayer>(Ellipse::Application::get().getEngine());
-   // SharedPtr<DemoLayer> DebugLayer = createShared<DemoLayer>(Ellipse::Application::get().getEngine());
 
    demoLayer->setName("demoLayer");
-   // UILayer->setName("UILayer");
-   // DebugLayer->setName("DebugLayer");
 
    layers.push_front(std::move(demoLayer));
-   // layers.push_front(std::move(UILayer));
-   // layers.push_front(std::move(DebugLayer));
 
-   // [ Use own layer list type ]
    layers.reverse();
 
    return layers;
 }
 
-Ellipse::ApplicationSpecifications Ellipse::createAppSpecs()
+Ellipse::ApplicationConfig::ApplicationConfig()
 {
-   Ellipse::ApplicationSpecifications specs;
+   m_windowSettings.m_media = WindowLibrary::SDLWindow;
+   m_windowSettings.m_graphics = GraphicsLibrary::OpenGL;
 
-   specs.m_windowSettings.m_lib = WindowLibrary::SDLWindow;
-   // [ Specifying opengl twice ]
-   specs.m_windowSettings.m_gLib = GraphicsLib::OpenGL;
-   specs.m_graphicSpec = GraphicsSpec::OpenGL;
+   m_windowSettings.m_width = 1280;
+   m_windowSettings.m_height = 640;
 
-   // specs.m_defaultClearColor = Vec4{1.0f, 1.0f, 0.0f, 1.0f};
+   m_graphicsSpec = GraphicsSpec::OpenGL;
 
-   specs.m_userFunc = pushUserLayers;
-
-   return specs;
+   m_systems.push_back(Pair<String, bool>{"Logger", true});
+   m_systems.push_back(Pair<String, bool>{"Time", true});
+   m_systems.push_back(Pair<String, bool>{"Window", true});
+   m_systems.push_back(Pair<String, bool>{"Render", true});
+   m_systems.push_back(Pair<String, bool>{"Model", true});
+   m_systems.push_back(Pair<String, bool>{"RenderModule", true});
 }
+
