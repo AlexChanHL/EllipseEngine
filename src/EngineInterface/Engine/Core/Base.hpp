@@ -53,6 +53,14 @@ using EntityRef = uLong_t;
 // template<typename T>
 // std::function<T> std::function<
 
+
+namespace Ellipse
+{
+
+using ModelID = i64_t;
+
+};     // namespace Ellipse
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 

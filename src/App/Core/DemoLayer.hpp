@@ -20,7 +20,7 @@ class LightModel
 
     }
 
-    void init(ModelList& modelList, const char* name, String vert, String frag)
+    void init(ModelList& modelList, const char* name, String vert, String frag, Ellipse::RenderObjData data)
     {
     m_name = name;
 
@@ -28,8 +28,10 @@ class LightModel
 
     
     modelList.addModelDefinition(name,
+                                 "LightCube",
                                  vert,
-                                 frag
+                                 frag,
+                                 data
                                 );
 
     }
@@ -86,4 +88,6 @@ class DemoLayer : public Ellipse::Layer
     LightModel m_light;
     Weapon m_weapon;
     CubeMadeCube m_cubeMadeCube;
+    Map<String, Ellipse::RenderObjData> m_objectsData;
 };
+

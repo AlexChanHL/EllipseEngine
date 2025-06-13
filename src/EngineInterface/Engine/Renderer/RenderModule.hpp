@@ -33,6 +33,8 @@ class RenderModule : public IModule
 
     virtual void init() override = 0;
     virtual void onUpdate() override = 0;
+
+    virtual void render(RenderObj* renderObj, RenderShaderObj* shaderObj, const UniformList& uniformList) = 0;
     
     virtual void setViewCamera(Camera camera) = 0;
 

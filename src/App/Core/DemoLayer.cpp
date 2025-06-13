@@ -13,19 +13,160 @@ DemoLayer::DemoLayer(Ellipse::Engine& engine)
    m_modelIncrement{0},
    m_rotatedDegrees{0.0f},
    m_modelList{engine},
-   m_weapon{m_modelList, engine},
-   m_cubeMadeCube{m_modelList}
+   m_weapon{m_modelList, engine, m_light.light()},
+   m_cubeMadeCube{m_modelList, engine, m_light.light()}
 {
    m_name = "Placeholder";
    m_throughLayer = false;
+
+   Ellipse::RenderObjData cubeData;
+   cubeData.setIndicies(Vector<u32_t>{0, 2, 3,
+                                      0, 1, 3,
+
+                                      4, 5, 7,
+                                      4, 6, 7,
+
+                                      8, 9, 11,
+                                      8, 10, 11,
+
+                                      12, 13, 15,
+                                      12, 14, 15,
+
+                                      16, 17, 19,
+                                      16, 18, 19,
+
+                                      20, 21, 23,
+                                      20, 22, 23
+                                      }
+                                     );
+   cubeData.setPositions(Vector<float>{-0.5f,  0.5f,  0.5f,  
+                                       0.5f,  0.5f,  0.5f,  
+                                      -0.5f, -0.5f,  0.5f,  
+                                       0.5f, -0.5f,  0.5f,  
+
+                                       0.5f,  0.5f,  0.5f,  
+                                       0.5f,  0.5f, -0.5f,  
+                                       0.5f, -0.5f,  0.5f,  
+                                       0.5f, -0.5f, -0.5f,  
+
+                                      -0.5f,  0.5f, -0.5f,  
+                                       0.5f,  0.5f, -0.5f,  
+                                      -0.5f, -0.5f, -0.5f,  
+                                       0.5f, -0.5f, -0.5f,  
+
+                                      -0.5f,  0.5f,  0.5f,  
+                                      -0.5f,  0.5f, -0.5f,  
+                                      -0.5f, -0.5f,  0.5f,  
+                                      -0.5f, -0.5f, -0.5f,  
+
+                                      -0.5f,  0.5f, -0.5f,  
+                                       0.5f,  0.5f, -0.5f,  
+                                      -0.5f,  0.5f,  0.5f,  
+                                       0.5f,  0.5f,  0.5f,  
+
+                                      -0.5f, -0.5f,  0.5f,  
+                                       0.5f, -0.5f,  0.5f,  
+                                      -0.5f, -0.5f, -0.5f,
+                                       0.5f, -0.5f, -0.5f
+                                      }
+                                     );
+   cubeData.setNormals(std::vector<float>{0,  0,  1,
+                                          0,  0,  1,
+                                          0,  0,  1,
+                                          0,  0,  1,
+
+                                          1,  0,  0,
+                                          1,  0,  0,
+                                          1,  0,  0,
+                                          1,  0,  0,
+
+                                          0,  0, -1,
+                                          0,  0, -1,
+                                          0,  0, -1,
+                                          0,  0, -1,
+
+                                         -1,  0,  0,
+                                         -1,  0,  0,
+                                         -1,  0,  0,
+                                         -1,  0,  0,
+
+                                          0,  1,  0,
+                                          0,  1,  0,
+                                          0,  1,  0,
+                                          0,  1,  0,
+
+                                          0, -1,  0,
+                                          0, -1,  0,
+                                          0, -1,  0,
+                                          0, -1,  0
+                                        }
+                                       );
+   cubeData.setTexCoords(Vector<float>{0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+                                      }
+                                     );
+
+
+   Ellipse::RenderObjData quadData;
+
+   quadData.setIndicies(Vector<u32_t>{0, 1, 2,
+                                      1, 2, 3 
+                                      }
+                        );
+   quadData.setPositions(Vector<float>{-0.5f, 0.5f, 0.0f,
+                                        0.5f, 0.5f, 0.0f,
+                                       -0.5f, -0.5f, 0.0f,
+                                        0.5f, -0.5f, 0.0f
+                                      }
+                        );
+   quadData.setNormals(Vector<float>{0.0f, 0.0f, 1.0f,
+                                     0.0f, 0.0f, 1.0f,
+                                     0.0f, 0.0f, 1.0f,
+                                     0.0f, 0.0f, 1.0f
+                                    }
+                      );
+   quadData.setTexCoords(Vector<float>{0.0f, 1.0f,
+                                       1.0f, 1.0f,
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f
+                                      }
+                        );
+
+   m_objectsData["Cube"] = cubeData;
+   m_objectsData["Quad"] = quadData;
 }
 
 void DemoLayer::initUserLayer()
 {
    // [ Layer should not set the clear color manually ]
 
-
-   // [ Adding models will create models with the same name ]
    Ellipse::RenderModule& renderer = static_cast<Ellipse::RenderModule&>(m_engine.getModule("RenderModule"));
    Pair<i32_t, i32_t> size = Ellipse::Application::get().getWindow().getWindowSize();
    renderer.setViewport(Ellipse::Viewspace{0,
@@ -35,24 +176,38 @@ void DemoLayer::initUserLayer()
                                           }
                        );
 
-   m_modelList.addModelDefinition("Cube");
-   m_light.init(m_modelList, "LightCube", "Assets/Shader/Light.vert.glsl", "Assets/Shader/Light.frag.glsl");
+
+   Ellipse::RenderObjData cube = m_objectsData["Cube"];
+
+   m_light.init(m_modelList, "LightCube", "Assets/Shader/Light.vert.glsl", "Assets/Shader/Light.frag.glsl", cube);
 
    m_light.setPosition(m_modelList, Vec3{1.0f, 2.0f, 1.0f});
 
-   m_modelList.addModelDefinition("1", "Cube", m_renderModule.camera(), m_light.light());
-   m_modelList.model("1").setTranslateAmount(Vec3{0.0f, 0.0f, 0.0f});
+   m_modelList.addModelDefinition("Cube1",
+                                  "Cube",
+                                  "Assets/Shader/Triangle.vert.glsl",
+                                  "Assets/Shader/Triangle.frag.glsl",
+                                  m_renderModule.camera(),
+                                  m_light.light(),
+                                  cube
+                                 );
+
+   // m_modelList.addModelDefinition("1", "Cube", "Assets/Shader/Triangle.vert.glsl", "Assets/Shader/Triangle.frag.glsl", m_renderModule.camera(), m_light.light());
 
    // m_modelList.model("1").setRotateAmount(Ellipse::EllipseMath::Radian{90.0f}.radians(), Vec3{1.0f, 1.0f, 0.0f});
 
    m_cubeMadeCube.init();
 
 
-   // m_modelList.addModelDefinition("Quad",
-   //                                "Triangle.vert.glsl",
-   //                                "Triangle.frag.glsl"
-   //                               );
-   //
+   Ellipse::RenderObjData quad = m_objectsData["Quad"];
+   m_modelList.addModelDefinition("Quad1",
+                                  "Quad",
+                                  "Assets/Shader/Quad.vert.glsl",
+                                  "Assets/Shader/Quad.frag.glsl",
+                                  quad
+                                  );
+    m_modelList.model("Cube1").setTranslateAmount(Vec3{-1.0f, 0.0f, 0.0f});
+
    // m_modelList.addModel("Quad");
 }
 
@@ -80,11 +235,11 @@ void DemoLayer::onEvent(Ellipse::Event& e)
 void DemoLayer::onUpdateUserLayer(float dt)
 {
     // ELLIPSE_APP_LOG_INFO("{}", m_timeModule.secAndNSec())
-    m_modelList.model("1").setRotateAmount(Ellipse::EllipseMath::Radian{static_cast<float>(m_timeModule.secAndNSec() * 16)}.radians(),
+    m_modelList.model("Cube1").setRotateAmount(Ellipse::EllipseMath::Radian{static_cast<float>(m_timeModule.secAndNSec() * 16)}.radians(),
                                            Vec3{1.0f, 0.0f, 0.0f}
                                           );
 
-    m_modelList.addAmounts();
+    m_modelList.onUpdate();
 
     if((m_weapon.weaponType() == WeaponType::AssaultRifle) && Ellipse::Input::isMousePressed(ELLIPSE_MOUSE_BUTTON_LEFT))
     {

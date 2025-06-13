@@ -18,6 +18,8 @@ class RenderModule3D : public RenderModule
      virtual void init() override;
      virtual void onUpdate() override;
      
+     void render(RenderObj* renderObj, RenderShaderObj* shaderObj, const UniformList& uniformList) override;
+
      virtual void setViewCamera(Ellipse::Camera camera) override;
 
      virtual void setCameraFront(float amount) override;
@@ -48,14 +50,8 @@ class RenderModule3D : public RenderModule
      }
 
     private:
-     void renderModels();
-     void renderModel(RenderObj* renderObj, RenderShaderObj* shaderObj, const UniformList& uniformList);
-
-    private:
-     ModelManagerModule& m_modelManager;
      Renderer& m_renderer;
 
-     // [ Model manager will be NoModule if ModelManager is initalized after RenderModule's onInit() ]
      EllipseMath::RandomRemoveLast m_objectIDGenerator;
     
      // Vector<Camera> m_cameras;

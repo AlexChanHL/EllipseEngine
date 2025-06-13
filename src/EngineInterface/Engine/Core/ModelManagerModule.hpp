@@ -96,117 +96,12 @@ struct RotateAmount
     Vec3 m_rotationAxis;
 };
 
-// [ -1 is a invalid state for id ]
-struct ModelID
-{
-   public:
-    ModelID()
-    : m_ID{-1}
-    {
-
-    }
-    ModelID(i32_t modelID)
-    : m_ID{modelID}
-    {
-
-    }
-    ~ModelID()
-    {
-
-    }
-
-    i32_t id() const
-    {
-    return m_ID;
-    }
-
-    bool operator<(ModelID modelID)
-    {
-    return m_ID < modelID.m_ID;
-    }
-
-    bool operator<(ModelID modelID) const
-    {
-    return m_ID < modelID.m_ID;
-    }
-    
-    bool operator==(ModelID modelID)
-    {
-    return m_ID == modelID.m_ID;
-    }
-
-   public:
-    i32_t m_ID;
-};
-
-
-class ObjectID
-{
-   public:
-    ObjectID()
-    : m_ID{0}
-    {
-
-    }
-    ObjectID(u32_t ID)
-    : m_ID{ID}
-    {
-
-    }
-    ~ObjectID()
-    {
-
-    }
-
-    bool operator==(ObjectID objectID)
-    {
-    return m_ID == objectID.id();
-    }
-    bool operator!=(ObjectID objectID)
-    {
-    return m_ID != objectID.id();
-    }
-
-    u32_t id() const
-    {
-    return m_ID;
-    }
-
-   private:
-    u32_t m_ID;
-};
-
-// [ There should be main worlds and sub worlds , the
-//   sub worlds reside inside main worlds and only one 
-//   main world in each layer ]
-//
-// [ Worlds and subworlds should be different and have
-//   different implementations ]
-//
-// [ Segments of world are added ]
-//
-// +-------+------------+----------------+
-// | World | User world |                |
-// +-------+------------+----------------+
-// |       |            |                |
-// +-------+------------+----------------+
-// |       |            |                |
-// |       |            |                |
-// |       |            |                |
-// |       |            |                |
-// |       |            |                |
-// +-------+------------+----------------+
-//
-//                 +------------+
-//                 | User world |
-//                 +------------+
-
 class Model
 {
    public:
     Model()
     : m_model{Mat4{1.0f}},
-      m_modelID{ModelID{}},
+      m_id{-1},
       m_uniformList{UniformList{}},
       m_renderObject{nullptr},
       m_shaderObject{nullptr}
@@ -220,7 +115,7 @@ class Model
           RenderShaderObj* shaderObject
          )
     : m_model{model},
-      m_modelID{modelID},
+      m_id{modelID},
       m_uniformList{uniformList},
       m_renderObject{renderObject},
       m_shaderObject{shaderObject}
@@ -233,6 +128,16 @@ class Model
 
     }
 
+    void setModel(Mat4 model)
+    {
+    m_model = model;
+    }
+
+    void setId(ModelID id)
+    {
+    m_id = id;
+    }
+
     void setRenderObj(RenderObj* renderObj)
     {
     m_renderObject = renderObj;
@@ -243,6 +148,11 @@ class Model
     m_shaderObject = shaderObj;
     }
 
+    void setUniformList(const UniformList& uniformList)
+    {
+    m_uniformList = uniformList;
+    }
+
     Mat4& model()
     {
     return m_model;
@@ -250,7 +160,7 @@ class Model
 
     ModelID id() const
     {
-    return m_modelID;
+    return m_id;
     }
 
     UniformList& uniformList()
@@ -285,7 +195,7 @@ class Model
 
    private:
     Mat4 m_model;
-    ModelID m_modelID;
+    ModelID m_id;
     UniformList m_uniformList;
     RenderObj* m_renderObject;
     RenderShaderObj* m_shaderObject;
@@ -592,14 +502,31 @@ class ModelManagerModule : public IModule
                           UniformList uniformList
                           ) = 0;
 
-    virtual void addModel(ModelID& modelID,
-                          const char* objectName,
-                          Mat4 model,
-                          String vertexShader,
-                          String fragmentShader,
-                          String importPath,
-                          UniformList uniformList
-                          ) = 0;
+    // virtual void addModelDefinition(const char* objectName,
+    //                                 Mat4 model,
+    //                                 String vertexShader,
+    //                                 String fragmentShader,
+    //                                 String importPath,
+    //                                 UniformList uniformList
+    //                                 ) = 0;
+
+    virtual void addModelDefinition(ModelID& modelID,
+                                    const char* objectName,
+                                    Mat4 model,
+                                    String vertexShader,
+                                    String fragmentShader,
+                                    String importPath,
+                                    UniformList uniformList
+                                    ) = 0;
+
+    virtual void addModelDefinition(ModelID& modelID,
+                                    const char* objectName,
+                                    Mat4 model,
+                                    String vertexShader,
+                                    String fragmentShader,
+                                    UniformList uniformList,
+                                    RenderObjData renderObjectData
+                                    ) = 0;
 
     virtual void removeModel(ModelID modelID) = 0;
 

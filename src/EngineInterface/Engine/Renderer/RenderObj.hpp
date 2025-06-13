@@ -62,8 +62,59 @@ class RenderMesh
 class RenderObjData
 {
    public:
+    RenderObjData()
+    {
+
+    }
+    RenderObjData(Vector<u32_t> indicies, Vector<float> positions, Vector<float> normals, Vector<float> textureCoords)
+    : m_indicies{indicies},
+      m_positions{positions},
+      m_normals{normals},
+      m_textureCoords{textureCoords}
+    {
+
+    }
+    ~RenderObjData()
+    {
+
+    }
+
+    void setIndicies(Vector<u32_t> indicies)
+    {
+    m_indicies = indicies;
+    }
+    void setPositions(Vector<float> positions)
+    {
+    m_positions = positions;
+    }
+    void setNormals(Vector<float> normals)
+    {
+    m_normals = normals;
+    }
+    void setTexCoords(Vector<float> textureCoords)
+    {
+    m_textureCoords = textureCoords;
+    }
+
+    Vector<u32_t> indicies()
+    {
+    return m_indicies;
+    }
+    Vector<float> positions()
+    {
+    return m_positions;
+    }
+    Vector<float> normals()
+    {
+    return m_normals;
+    }
+    Vector<float> textureCoords()
+    {
+    return m_textureCoords;
+    }
 
    private:
+    Vector<u32_t> m_indicies;
     Vector<float> m_positions;
     Vector<float> m_normals;
     Vector<float> m_textureCoords;

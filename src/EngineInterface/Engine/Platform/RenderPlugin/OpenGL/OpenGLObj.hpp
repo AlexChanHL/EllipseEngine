@@ -40,10 +40,10 @@ class OpenGLMesh : public RenderMesh
 
     }
 
-    void initializeMesh()
-    // void initializeMesh(Vector<float> positions,
-    //                     Vector<float> normals,
-    //                     Vector<float> textureCoords)
+    void initializeMesh(Vector<u32_t> indicies,
+                        Vector<float> positions,
+                        Vector<float> normals,
+                        Vector<float> textureCoords)
     {
     m_textures.push_back(Texture{});
     glGenTextures(1, &m_textures[0].id());
@@ -77,165 +77,16 @@ class OpenGLMesh : public RenderMesh
     stbi_image_free(textureData);
 
 
-    m_indicies = Vector<u32_t>
-    {
-    0, 2, 3,
-    0, 1, 3,
-
-    4, 5, 7,
-    4, 6, 7,
-
-    8, 9, 11,
-    8, 10, 11,
-
-    12, 13, 15,
-    12, 14, 15,
-
-    16, 17, 19,
-    16, 18, 19,
-
-    20, 21, 23,
-    20, 22, 23
-    };
-
-    m_positions = Vector<float>
-    {
-    -0.5f,  0.5f,  0.5f,  
-     0.5f,  0.5f,  0.5f,  
-    -0.5f, -0.5f,  0.5f,  
-     0.5f, -0.5f,  0.5f,  
-
-     0.5f,  0.5f,  0.5f,  
-     0.5f,  0.5f, -0.5f,  
-     0.5f, -0.5f,  0.5f,  
-     0.5f, -0.5f, -0.5f,  
-
-    -0.5f,  0.5f, -0.5f,  
-     0.5f,  0.5f, -0.5f,  
-    -0.5f, -0.5f, -0.5f,  
-     0.5f, -0.5f, -0.5f,  
-
-    -0.5f,  0.5f,  0.5f,  
-    -0.5f,  0.5f, -0.5f,  
-    -0.5f, -0.5f,  0.5f,  
-    -0.5f, -0.5f, -0.5f,  
-
-    -0.5f,  0.5f, -0.5f,  
-     0.5f,  0.5f, -0.5f,  
-    -0.5f,  0.5f,  0.5f,  
-     0.5f,  0.5f,  0.5f,  
-
-    -0.5f, -0.5f,  0.5f,  
-     0.5f, -0.5f,  0.5f,  
-    -0.5f, -0.5f, -0.5f,
-     0.5f, -0.5f, -0.5f
-    };
-
-    // Vector<Vec3> cubeNormals;  
-    //
-    // Vector<Vec3> point;
-    // Vector<float> storeFloats;
-    //
-    // for(uint32_t i = 0; i < m_positions.size(); i++)
-    // {
-    // storeFloats.push_back(m_positions[i]);
-    // if(((i + 1) % 3) == 0)
-    // {
-    // point.push_back(Vec3(storeFloats[0], storeFloats[1], storeFloats[2]));
-    // storeFloats.clear();
-    // }
-    //
-    // if(((i + 1) % 12) == 0)
-    // {
-    // cubeNormals.push_back(EllipseMath::cross((point[0] - point[1]), (point[0] - point[2])));
-    // point.clear();
-    // }
-    //
-    // }
-    //
-    // for(uint32_t i = 0; i < cubeNormals.size(); i++)
-    // {
-    // for(uint32_t j = 0; j < 4; j++)
-    // {
-    // m_normals.push_back(cubeNormals[i].x);
-    // m_normals.push_back(cubeNormals[i].y);
-    // m_normals.push_back(cubeNormals[i].z);
-    // }
-    //
-    // }
-
-    m_normals = std::vector<float>
-    {
-     0,  0,  1,
-     0,  0,  1,
-     0,  0,  1,
-     0,  0,  1,
-
-     1,  0,  0,
-     1,  0,  0,
-     1,  0,  0,
-     1,  0,  0,
-
-     0,  0, -1,
-     0,  0, -1,
-     0,  0, -1,
-     0,  0, -1,
-
-    -1,  0,  0,
-    -1,  0,  0,
-    -1,  0,  0,
-    -1,  0,  0,
-
-     0,  1,  0,
-     0,  1,  0,
-     0,  1,  0,
-     0,  1,  0,
-
-     0, -1,  0,
-     0, -1,  0,
-     0, -1,  0,
-     0, -1,  0
-    };
-
-    m_textureCoords = Vector<float>
-    {
-     0.0f, 0.0f,
-     1.0f, 0.0f,
-     0.0f, 1.0f,
-     1.0f, 1.0f,
-
-     0.0f, 0.0f,
-     1.0f, 0.0f,
-     0.0f, 1.0f,
-     1.0f, 1.0f,
-
-     0.0f, 0.0f,
-     1.0f, 0.0f,
-     0.0f, 1.0f,
-     1.0f, 1.0f,
-
-     0.0f, 0.0f,
-     1.0f, 0.0f,
-     0.0f, 1.0f,
-     1.0f, 1.0f,
-
-     0.0f, 0.0f,
-     1.0f, 0.0f,
-     0.0f, 1.0f,
-     1.0f, 1.0f,
-
-     0.0f, 0.0f,
-     1.0f, 0.0f,
-     0.0f, 1.0f,
-     1.0f, 1.0f,
-    };
+    m_indicies = indicies;
+    m_positions = positions;
+    m_normals = normals;
+    m_textureCoords = textureCoords;
 
 
     u32_t positionsBuffer = 0;
     u32_t normalsBuffer = 0;
     u32_t textureCoordsBuffer = 0;
     u32_t indiciesBuffer = 0;
-
 
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);  
@@ -362,7 +213,11 @@ struct OpenGLRenderObj : public RenderObj
     virtual void initializeFromResources(RenderObjData& data) override
     {
     OpenGLMesh openGLMesh;
-    openGLMesh.initializeMesh();
+    openGLMesh.initializeMesh(data.indicies(),
+                              data.positions(),
+                              data.normals(),
+                              data.textureCoords()
+                             );
 
     m_meshes.push_back(openGLMesh);
     }

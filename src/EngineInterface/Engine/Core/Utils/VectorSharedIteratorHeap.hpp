@@ -168,7 +168,7 @@ class VectorSharedIteratorHeap
 
     return *iterator; }
 
-    void pushBack(T val)
+    void push_back(T val)
     {
     if(m_begin->m_elem == nullptr)
     {
@@ -262,7 +262,7 @@ class VectorSharedIteratorHeap
     
     while(iterator != m_begin)
     {
-    nums.pushBack(**(endIterator.m_prev));
+    nums.push_back(**(endIterator.m_prev));
     endIterator--;
     iterator = iterator->m_prev;
     }

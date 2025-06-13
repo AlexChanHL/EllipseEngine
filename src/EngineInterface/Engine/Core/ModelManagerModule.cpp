@@ -7,92 +7,36 @@
 namespace Ellipse
 {
 
-    // Render
-    // +=======+==================+=============+
-    // | 1     | 2                | 1           |
-    // +===+===+===+===+===+===+==+===+===+===+=+
-    // | 0 | 1 | 2 | 3 | 4 | 5 |  | 6 | 7 | 8 | |
-    // +===+===+===+===+===+===+==+===+===+===+=+
-    // 
-    // Render remove World 2, first model
-    // +=======+==================+=============+
-    // | 1     | 2                | 1           |
-    // +===+===+===+===+===+===+==+===+===+===+=+
-    // | 0 | 1 | 2 | 3 | 4 | 5 |  | 6 | 7 | 8 | |
-    // +===+===+===+===+===+===+==+===+===+===+=+
-    //
-    //                    |
-    //                   \|/
-    //
-    // +=======+==================+=============+
-    // | 1     | 2                | 1           |
-    // +===+===+===+===+===+===+==+===+===+===+=+
-    // | 0 | 1 | 2 | 3 | 4 |   |  | 5 | 6 | 7 | |
-    // +===+===+===+===+===+===+==+===+===+===+=+
-      
-
-
-    // User world 1
-    // +===+===+===+
-    // | 1 | 3 |   |
-    // +===+===+===+
-      
-    // User world 2
-    // +===+===+===+
-    // | 1 | 2 | 3 |
-    // +===+===+===+
-      
-    // 1
-    // +===+===+===+
-    // | 1 | 3 |   |
-    // +===+===+===+
-    // | 0 | 1 |   |
-    // +===+===+===+
-      
-    // 2
-    // +===+===+===+
-    // | 1 | 3 | 2 |
-    // +===+===+===+
-    // | 0 | 1 | 2 |
-    // +===+===+===+
-
 class ModelObject
 {
    public:
-    // ModelObject()
-    // : m_objectName{nullptr},
-    //   m_renderObject{nullptr},
-    //   m_shaderObject{nullptr}
-    // {
-    //
-    // }
-    //
-    ModelObject(const char* objectName,
-                UniquePtr<RenderObj> renderObject,
-                UniquePtr<RenderShaderObj> shaderObject
-               )
-    : m_objectName{objectName},
+    ModelObject()
+    : m_name{nullptr},
       m_isInList{false},
-      // m_renderObject{std::move(renderObject)},
-      // m_shaderObject{std::move(shaderObject)}
       m_renderObject{nullptr},
       m_shaderObject{nullptr}
     {
 
     }
+    ModelObject(const char* name,
+                SharedPtr<RenderObj> renderObject,
+                SharedPtr<RenderShaderObj> shaderObject
+               )
+    : m_name{name},
+      m_isInList{false},
+      m_renderObject{std::move(renderObject)},
+      m_shaderObject{std::move(shaderObject)}
+    {
 
+    }
     ~ModelObject()
     {
 
     }
 
-    ModelObject(const ModelObject& rhs)
-    : m_objectName{rhs.name()},
-      m_isInList{false},
-      m_renderObject{nullptr},
-      m_shaderObject{nullptr}
+    void setName(const char* name)
     {
-
+    m_name = name;
     }
 
     void setIsInList(bool isInList)
@@ -100,29 +44,19 @@ class ModelObject
     m_isInList = isInList;
     }
 
-    // void setRenderObj(UniquePtr<RenderObj> renderObj)
-    // {
-    // m_renderObject = std::move(renderObj);
-    // }
-    //
-    // void setShaderObj(UniquePtr<RenderShaderObj> shaderObj)
-    // {
-    // m_shaderObject = std::move(shaderObj);
-    // }
-
-    void setRenderObj(UniquePtr<RenderObj> renderObj)
+    void setRenderObj(SharedPtr<RenderObj> renderObj)
     {
     m_renderObject = std::move(renderObj);
     }
 
-    void setShaderObj(UniquePtr<RenderShaderObj> shaderObj)
+    void setShaderObj(SharedPtr<RenderShaderObj> shaderObj)
     {
     m_shaderObject = std::move(shaderObj);
     }
 
     const char* name() const
     {
-    return m_objectName;
+    return m_name;
     }
 
     bool isInList() const
@@ -130,31 +64,21 @@ class ModelObject
     return m_isInList;
     }
 
-    UniquePtr<RenderObj>& renderObject()
+    SharedPtr<RenderObj>& renderObject()
     {
     return m_renderObject;
     }
 
-    // UniquePtr<RenderObj> renderObject() const
-    // {
-    // return m_renderObject;
-    // }
-
-    UniquePtr<RenderShaderObj>& shaderObject()
+    SharedPtr<RenderShaderObj>& shaderObject()
     {
     return m_shaderObject;
     }
 
-    // UniquePtr<RenderShaderObj> shaderObject() const
-    // {
-    // return m_shaderObject;
-    // }
-
    private:
-    const char* m_objectName;
+    const char* m_name;
     bool m_isInList;
-    UniquePtr<RenderObj> m_renderObject;
-    UniquePtr<RenderShaderObj> m_shaderObject;
+    SharedPtr<RenderObj> m_renderObject;
+    SharedPtr<RenderShaderObj> m_shaderObject;
 };
 
 class ModelManagerModuleImpl : public ModelManagerModule
@@ -253,70 +177,8 @@ class ModelManagerModuleImpl : public ModelManagerModule
     }
 
 
-    // [ Updating the next layer is using after
-    //   update call ]
-
     virtual void onUpdate() override
     {
-    // m_cameraManager.setFronts();
-    //
-    Renderer& renderer = static_cast<Renderer&>(m_engine.getSystem("Renderer"));
-
-
-    for(u64_t i=0;i<m_modelsNotSet.size();i++)
-    {
-    u64_t index = m_modelLastAddedCount + i;
-    ModelNotSet model = m_modelsNotSet[i];
-
-    // ELLIPSE_ENGINE_LOG_INFO("index: {}", index);
-
-    for(u64_t j=0;j<m_objects.size();j++)
-    {
-    ModelObject& object = m_objects[j];
-    if(strcmp(model.objectName(), object.name()) == 0)
-    {
-    if(object.isInList())
-    {
-    m_models[index].setRenderObj(m_objects[j].renderObject().get());
-    m_models[index].setShaderObj(m_objects[j].shaderObject().get());
-    }
-    if(!object.isInList())
-    {
-    auto renderObj = renderer.createRenderObj(model.renderObjData());
-    auto shaderObj = renderer.createShaderObj(model.vertex(), model.fragment());
-
-    m_objects[j].setIsInList(true);
-    m_objects[j].setRenderObj(std::move(renderObj));
-    m_objects[j].setShaderObj(std::move(shaderObj));
-
-    m_models[index].setRenderObj(m_objects[j].renderObject().get());
-    m_models[index].setShaderObj(m_objects[j].shaderObject().get());
-    }
-
-    }
-
-    }
-
-
-    if(m_models[index].renderObject() != nullptr)
-    {
-    // ELLIPSE_ENGINE_LOG_INFO("{}", index);
-    }
-        
-    m_models[index].uniformList().addUniform(UniformVarible<Mat4>{"model", &m_models[index].model()});
-
-    RenderModule& renderModule = static_cast<RenderModule&>(m_engine.getModule("RenderModule"));
-    m_models[index].uniformList().addUniform(UniformVarible<Mat4>{"proj", &renderModule.proj()});
-    m_models[index].uniformList().addUniform(UniformVarible<Mat4>{"view", &renderModule.view()});
-
-    // m_models[index].uniformList().setUniformLocations(shaderObj->findUniformLocationList(m_models[index].uniformList()));
-    m_models[index].uniformList().setUniformLocations(m_models[index].shaderObject()->findUniformLocationList(m_models[index].uniformList()));
-    }
-
-    m_modelLastAddedCount = m_modelLastAddedCount + m_modelsNotSet.size();
-    m_modelsNotSet.clear();
-
-
     for(u64_t i=0;i<m_removeModels.size();i++)
     {
     removeModelId(m_removeModels[i]);
@@ -335,7 +197,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     virtual void addModel(ModelID& modelID,
                           const char* objectName,
-                          Mat4 model,
+                          Mat4 modelMat,
                           UniformList uniformList
                           ) override
     {
@@ -347,23 +209,21 @@ class ModelManagerModuleImpl : public ModelManagerModule
     {
     if(strcmp(objectName, object.name()) == 0)
     {
-    m_modelsNotSet.push_back(ModelNotSet{RenderObjData{},
-                                         "",
-                                         "",
-                                         model,
-                                         idLocation,
-                                         uniformList,
-                                         objectName
-                                        }
-                             );
+    Model model = prepareModel(objectName);
+    model.setId(modelID);
+    model.setModel(modelMat);
+    model.setUniformList(uniformList);
 
-    m_models.pushBack(Model{model,
-                            idLocation,
-                            uniformList,
-                            nullptr,
-                            nullptr
-                           }
-                      );
+
+    m_models.push_back(model);
+   
+    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"model", &m_models[m_models.size() - 1].model()});
+
+    RenderModule& renderModule = static_cast<RenderModule&>(m_engine.getModule("RenderModule"));
+    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"proj", &renderModule.proj()});
+    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"view", &renderModule.view()});
+
+    m_models[m_models.size() - 1].uniformList().setUniformLocations(m_models[m_models.size() - 1].shaderObject()->findUniformLocationList(m_models[m_models.size() - 1].uniformList()));
 
     return;
     }
@@ -372,78 +232,83 @@ class ModelManagerModuleImpl : public ModelManagerModule
     ELLIPSE_ENGINE_LOG_ERROR("Object not list");
     }
 
-    virtual void addModel(ModelID& modelID,
-                          const char* objectName,
-                          Mat4 model,
-                          String vertexShader,
-                          String fragmentShader,
-                          String importPath,
-                          UniformList uniformList
-                          ) override
+    virtual void addModelDefinition(ModelID& modelID,
+                                    const char* objectName,
+                                    Mat4 modelMat,
+                                    String vertexShader,
+                                    String fragmentShader,
+                                    String importPath,
+                                    UniformList uniformList
+                                   ) override
     {
     ModelID idLocation{m_randomRemoveLast.chooseRandomVal()};
     
     modelID = idLocation;
 
-    // for(const ModelObject& object : m_objects)
-    // {
-    // if(strcmp(objectName, object.name()) == 0)
-    // {
-    // m_modelsNotSet.push_back(ModelNotSet{RenderObjData{},
-    //                                      "",
-    //                                      "",
-    //                                      model,
-    //                                      idLocation,
-    //                                      uniformList,
-    //                                      objectName
-    //                                     }
-    //                          );
-    //
-    // m_models.pushBack(Model{model,
-    //                         idLocation,
-    //                         uniformList,
-    //                         nullptr,
-    //                         nullptr
-    //                        }
-    //                   );
-    //
-    // return;
-    // }
-    // }
-
     // importModel(importPath);
-    RenderObjData renderObjectData;
-      
-    m_modelsNotSet.push_back(ModelNotSet{renderObjectData,
-                                         vertexShader,
-                                         fragmentShader,
-                                         model,
-                                         idLocation,
-                                         uniformList,
-                                         objectName
-                                        }
-                            );
-     
-    m_models.pushBack(Model{model,
-                            idLocation,
-                            uniformList,
-                            nullptr,
-                            nullptr
-                           }
-       
-                     );
+    RenderObjData renderObjData;
 
-    m_objects.push_back(ModelObject{objectName,
-                                    nullptr,
-                                    nullptr
-                                   }
-                       );
-    
+    ModelObject object = prepareObject(objectName, 
+                                       renderObjData,
+                                       vertexShader,
+                                       fragmentShader
+                                      );
+    m_objects.push_back(object);
+
+    Model model = prepareModel(objectName);
+    model.setId(modelID);
+    model.setModel(modelMat);
+    model.setUniformList(uniformList);
+
+    m_models.push_back(model);
+
+    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"model", &m_models[m_models.size() - 1].model()});
+
+    RenderModule& renderModule = static_cast<RenderModule&>(m_engine.getModule("RenderModule"));
+    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"proj", &renderModule.proj()});
+    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"view", &renderModule.view()});
+
+    m_models[m_models.size() - 1].uniformList().setUniformLocations(m_models[m_models.size() - 1].shaderObject()->findUniformLocationList(m_models[m_models.size() - 1].uniformList()));
     }
 
-    // [ Remove model is broken and sometimes removed models
-    //   function but the user worlds does not update the 
-    //   new world and won't show on queryUserWorld ]
+    virtual void addModelDefinition(ModelID& modelID,
+                                    const char* objectName,
+                                    Mat4 modelMat,
+                                    String vertexShader,
+                                    String fragmentShader,
+                                    UniformList uniformList,
+                                    RenderObjData renderObjData
+                                   ) override
+    {
+    ModelID idLocation{m_randomRemoveLast.chooseRandomVal()};
+    
+    modelID = idLocation;
+
+    // importModel(importPath);
+    ModelObject object = prepareObject(objectName, 
+                                       renderObjData,
+                                       vertexShader,
+                                       fragmentShader
+                                      );
+    m_objects.push_back(object);
+
+    Model model = prepareModel(objectName);
+
+    model.setId(modelID);
+    model.setModel(modelMat);
+    model.setUniformList(uniformList);
+
+    m_models.push_back(model);
+
+    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"model", &m_models[m_models.size() - 1].model()});
+
+    RenderModule& renderModule = static_cast<RenderModule&>(m_engine.getModule("RenderModule"));
+    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"proj", &renderModule.proj()});
+    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"view", &renderModule.view()});
+
+    m_models[m_models.size() - 1].uniformList().setUniformLocations(m_models[m_models.size() - 1].shaderObject()->findUniformLocationList(m_models[m_models.size() - 1].uniformList()));
+    }
+
     virtual void removeModel(ModelID modelID) override
     {
     m_removeModels.push_back(modelID);
@@ -473,7 +338,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
     }
     }
 
-    ELLIPSE_ENGINE_LOG_ERROR("Could not find model, returning index");
+    ELLIPSE_ENGINE_LOG_ERROR("Could not find model, returning zero index");
    
     return 0;
     }
@@ -491,26 +356,45 @@ class ModelManagerModuleImpl : public ModelManagerModule
     SharedPtr<ModelManagerModule> createModelManagerModule();
 
    private:
-    // virtual void onUpdateModelMatrices() override
-    // {
-    // // for(u64_t i = 0; i < m_modelModuleModels.size(); i++)
-    // // {
-    // // if(m_modelModuleModels[i].isModified())
-    // // {
-    // // m_modelModuleModels[i].resetModelMatrix();
-    // //       
-    // // translateModelInModelList(m_modelModuleModels[i].model(), m_modelModuleModels[i].translationAmount());
-    // // rotateModelInModelList(m_modelModuleModels[i].model(), m_modelModuleModels[i].rotationAmount().m_radians, m_modelModuleModels[i].rotationAmount().m_rotationAxis);
-    // // scaleModelInModelList(m_modelModuleModels[i].model(), m_modelModuleModels[i].scalarAmount());
-    // //
-    // // // Math::printMat(m_modelModuleModels[i].model());
-    // //
-    // //
-    // // m_modelModuleModels[i].setIsModified(false);
-    // // }
-    // // }
-    // // 
-    // }
+    ModelObject prepareObject(const char* name, RenderObjData data, String vertexShader, String fragShader)
+    {
+    Renderer& renderer = static_cast<Renderer&>(m_engine.getSystem("Renderer"));
+
+    ModelObject object;
+
+    auto renderObj = renderer.createRenderObj(data);
+    auto shaderObj = renderer.createShaderObj(vertexShader, fragShader);
+
+    object.setName(name);
+    object.setIsInList(true);
+    object.setRenderObj(std::move(renderObj));
+    object.setShaderObj(std::move(shaderObj));
+
+    return object;
+    }
+
+    Model prepareModel(const char* objectName)
+    {
+    Model model;
+
+    for(u64_t j=0;j<m_objects.size();j++)
+    {
+    ModelObject& object = m_objects[j];
+    if(strcmp(objectName, object.name()) == 0)
+    {
+    model.setRenderObj(m_objects[j].renderObject().get());
+    model.setShaderObj(m_objects[j].shaderObject().get());
+
+    if(m_objects[j].renderObject() == nullptr)
+    {
+    ELLIPSE_ENGINE_LOG_INFO("null object");
+    }
+
+    }
+    }
+   
+    return model;
+    }
 
    private: 
     Engine& m_engine;

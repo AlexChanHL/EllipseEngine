@@ -88,10 +88,11 @@ enum class WeaponType
 class Weapon
 {
    public:
-    Weapon(ModelList& modelList, Ellipse::Engine& engine)
+    Weapon(ModelList& modelList, Ellipse::Engine& engine, Light& light)
     : m_modelList{modelList},
       m_timeModule{static_cast<Ellipse::TimeModule&>(engine.getModule("TimeModule"))},
       m_camera{static_cast<Ellipse::RenderModule&>(engine.getModule("RenderModule")).camera()},
+      m_light{light},
       m_addCount{0},
       m_weaponType{WeaponType::Pistol},
       m_shotgunBulletCount{16}
@@ -131,7 +132,7 @@ class Weapon
     m_bullets.push_back(Bullet{m_addCount, m_camera.position(), Ellipse::EllipseMath::normalize(m_camera.front()), static_cast<float>(m_timeModule.secAndNSec()), 3.0f});
     m_addCount++;
 
-    m_modelList.addModel(m_bullets[m_bullets.size() - 1].name().c_str(), "Cube");
+    m_modelList.addModel(m_bullets[m_bullets.size() - 1].name().c_str(), "Cube", m_camera, m_light);
     m_modelList.model(m_bullets[m_bullets.size() - 1].name().c_str()).setTranslateAmount(m_bullets[m_bullets.size() - 1].position());
     break;
     case WeaponType::Shotgun:
@@ -153,7 +154,7 @@ class Weapon
     m_bullets.push_back(Bullet{m_addCount, m_camera.position(), shotgunBulletDirection, static_cast<float>(m_timeModule.secAndNSec()), 3.0f});
     m_addCount++;
 
-    m_modelList.addModel(m_bullets[m_bullets.size() - 1].name().c_str(), "Cube");
+    m_modelList.addModel(m_bullets[m_bullets.size() - 1].name().c_str(), "Cube", m_camera, m_light);
     m_modelList.model(m_bullets[m_bullets.size() - 1].name().c_str()).setTranslateAmount(m_bullets[m_bullets.size() - 1].position());
     }
 
@@ -163,7 +164,7 @@ class Weapon
     m_bullets.push_back(Bullet{m_addCount, m_camera.position(), Ellipse::EllipseMath::normalize(m_camera.front()), static_cast<float>(m_timeModule.secAndNSec()), 3.0f});
     m_addCount++;
 
-    m_modelList.addModel(m_bullets[m_bullets.size() - 1].name().c_str(), "Cube");
+    m_modelList.addModel(m_bullets[m_bullets.size() - 1].name().c_str(), "Cube", m_camera, m_light);
     m_modelList.model(m_bullets[m_bullets.size() - 1].name().c_str()).setTranslateAmount(m_bullets[m_bullets.size() - 1].position());
     break;
     default:
@@ -187,6 +188,7 @@ class Weapon
     Ellipse::TimeModule& m_timeModule;
     Vector<Bullet> m_bullets;
     Ellipse::Camera& m_camera;
+    Light& m_light;
     u64_t m_addCount;
     WeaponType m_weaponType;
     u64_t m_shotgunBulletCount;

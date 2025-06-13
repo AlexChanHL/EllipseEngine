@@ -89,10 +89,11 @@ inline Vector<Vec3> findVerticies(Vec3 point0, Vec3 point1, float amountValue)
 class CubeMadeCube
 {
    public:
-    CubeMadeCube(ModelList& modelList)
+    CubeMadeCube(ModelList& modelList, Ellipse::Engine& engine, Light& light)
     : m_cubeScale{0.5f},
-      m_modelList{modelList}
-      
+      m_modelList{modelList},
+      m_camera{static_cast<Ellipse::RenderModule&>(engine.getModule("RenderModule")).camera()},
+      m_light{light}
     {
 
     }
@@ -107,7 +108,7 @@ class CubeMadeCube
 
     for(u64_t i=0;i<m_modelVertex.size();i++)
     {
-    m_modelList.addModel(m_modelVertex[i].name().c_str(), "Cube");
+    m_modelList.addModel(m_modelVertex[i].name().c_str(), "Cube", m_camera, m_light);
     m_modelList.model(m_modelVertex[i].name().c_str()).setTranslateAmount(m_modelVertex[i].position());
     m_modelList.model(m_modelVertex[i].name().c_str()).setScaleAmount(Vec3{m_cubeScale});
     }
@@ -134,7 +135,7 @@ class CubeMadeCube
     {
     m_vertexBetweenVertex.push_back(Pixel{Ellipse::format("Pixel{}", m_vertexBetweenVertex.size()).c_str(), verticies[j]});
 
-    m_modelList.addModel(m_vertexBetweenVertex[m_vertexBetweenVertex.size() - 1].name().c_str(), "Cube");
+    m_modelList.addModel(m_vertexBetweenVertex[m_vertexBetweenVertex.size() - 1].name().c_str(), "Cube", m_camera, m_light);
     m_modelList.model(m_vertexBetweenVertex[m_vertexBetweenVertex.size() - 1].name().c_str()).setTranslateAmount(verticies[j]);
     m_modelList.model(m_vertexBetweenVertex[m_vertexBetweenVertex.size() - 1].name().c_str()).setScaleAmount(Vec3{m_cubeScale});
     }
@@ -165,5 +166,8 @@ class CubeMadeCube
     float m_cubeScale;
 
     ModelList& m_modelList;
+
+		Ellipse::Camera m_camera;
+    Light& m_light;
 };
 

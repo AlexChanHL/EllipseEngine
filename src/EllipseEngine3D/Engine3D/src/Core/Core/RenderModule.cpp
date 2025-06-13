@@ -9,8 +9,7 @@ namespace Ellipse
 {
 
 RenderModule3D::RenderModule3D(Engine& engine)
-: m_modelManager{static_cast<ModelManagerModule&>(engine.getModule("ModelModule"))},
-  m_renderer{static_cast<Renderer&>(engine.getSystem("Renderer"))},
+: m_renderer{static_cast<Renderer&>(engine.getSystem("Renderer"))},
   m_objectIDGenerator{i32_t(pow(10,3))}
 {
    setName("RenderModule");
@@ -66,15 +65,7 @@ void RenderModule3D::onUpdate()
                                  m_camera.front() + m_camera.position(),
                                  m_camera.upDirection()
                                 );
-
-    renderModels();
 }
-
-// void RenderModule3D::renderModel() 
-// {
-    // m_renderer.render(*model.renderObj(), *model.shaderObj(), modelQuery.uniformList());
-    // modelQuery.uniformList().printMat4UniformList();
-// }
 
 void RenderModule3D::setViewCamera(Camera camera)
 {
@@ -88,7 +79,6 @@ void RenderModule3D::setViewCamera(Camera camera)
     //                                       camera.front(),
     //                                       camera.upDirection()
     //                        );
-
 }
 
 void RenderModule3D::setCameraFront(float amount)
@@ -108,14 +98,6 @@ void RenderModule3D::setCameraLeft(float amount)
     m_camera.setPosition(m_camera.position() + EllipseMath::normalize(EllipseMath::cross(m_camera.upDirection(), m_camera.front())) * amount);
 }
 
-// void RenderModule3D::translateModel(Model& model, Vec3 pos)
-// {
-//    Mat4 modelTarget = Mat4(1.0f);
-//    Mat4 modelTranslated = glm::translate(modelTarget, pos);   
-//    Mat4* modelPtr =  model.getPtrUniformPtr("model");
-//    *modelPtr = modelTranslated;
-// }
-
 void RenderModule3D::setClearColor(Vec4 col)
 {
    m_renderer.setClearColor(col);
@@ -132,23 +114,23 @@ void RenderModule3D::setViewport(Viewspace viewspace)
                          );
 }
 
-void RenderModule3D::renderModels()
-{
-    for(u64_t i=0;i<m_modelManager.models().size();i++)
-    {
-    const Model& renderModelModel = m_modelManager.models()[i];
-    if(renderModelModel.renderObject() != nullptr)
-    {
-    renderModel(renderModelModel.renderObject(), renderModelModel.shaderObject(), renderModelModel.uniformList());
-    }
+// void RenderModule3D::renderModels()
+// {
+//     for(u64_t i=0;i<m_modelManager.models().size();i++)
+//     {
+//     const Model& renderModelModel = m_modelManager.models()[i];
+//     if(renderModelModel.renderObject() != nullptr)
+//     {
+//     renderModel(renderModelModel.renderObject(), renderModelModel.shaderObject(), renderModelModel.uniformList());
+//     }
+//
+//     }
+//
+// }
 
-    }
-
-}
-
-void RenderModule3D::renderModel(RenderObj* renderObj,
-                                   RenderShaderObj* shaderObj,
-                                   const UniformList& uniformList)
+void RenderModule3D::render(RenderObj* renderObj,
+                            RenderShaderObj* shaderObj,
+                            const UniformList& uniformList)
 {
     m_renderer.render(*renderObj, *shaderObj, uniformList);
 }
