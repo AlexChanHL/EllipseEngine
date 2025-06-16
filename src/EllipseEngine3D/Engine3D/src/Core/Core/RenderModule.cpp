@@ -1,7 +1,6 @@
 
 #include "RenderModule.hpp"
 
-
 // namespace Ellipse3D
 // {
 
@@ -133,6 +132,8 @@ void RenderModule3D::render(RenderObj* renderObj,
                             const UniformList& uniformList)
 {
     m_renderer.render(*renderObj, *shaderObj, uniformList);
+    // UniformList a = uniformList; 
+    // a.getMat4UniformFromListByName("model").printUniforms(); 
 }
 
 }       // namespace Ellipse

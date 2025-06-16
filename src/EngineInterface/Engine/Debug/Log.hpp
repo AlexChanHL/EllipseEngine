@@ -17,10 +17,10 @@ class Log
 
      static void init();
 
- 		 static SharedPtr<sglLogger::Logger> logger(String name);
+     static SharedPtr<sglLogger::Logger> logger(String name);
 
     private:
-  	 static Map<String, SharedPtr<sglLogger::Logger>> m_loggers;
+     static Map<String, SharedPtr<sglLogger::Logger>> m_loggers;
 };
 
 std::ostream& operator<<(std::ostream& os, Mat4 mat);

@@ -1,21 +1,24 @@
 
 message("=======================")
 
+message("==Ellipse Cmake Setting=")
+
 option(DEACTIVATE_LOGGING "Disable logging" OFF)
  if(DEACTIVATE_LOGGING)
   message(STATUS "Deactivating logging")
-add_compile_definitions(DEACTIVATE_LOGGING)
-  endif()
+  add_compile_definitions(DEACTIVATE_LOGGING)
+ endif()
 
 option(DEBUG "Enable debug mode" ON)
  if(DEBUG)
-   message(STATUS "Enabling debug mode")
-    add_compile_definitions(DEBUG)
+  message(STATUS "Enabling debug mode")
+  add_compile_definitions(DEBUG)
  endif()
 
 option(BUILD_ENGINE_2D "Building engine 2D" ON)
  if(BUILD_ENGINE_2D)
   message(STATUS "Building engine 2D")
+  set()
  endif()
 
 option(BUILD_ENGINE_3D "Building engine 3D" OFF)
@@ -35,10 +38,10 @@ option(WARNING_AS_ERRORS "Treat warnings as errors" ON)
 
 option(BUILD_ENGINE_WITH_PRECOMPILED_HEADERS "Build engine with precompiled headers" ON)
  if(!CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
-    message(STATUS "Version higher needed to use precompiled headers feature with cmake")
-   endif()
-  if(BUILD_ENGINE_WITH_PRECOMPILED_HEADERS)
+  message(STATUS "Version higher needed to use precompiled headers feature with cmake")
+ endif()
+ if(BUILD_ENGINE_WITH_PRECOMPILED_HEADERS)
   message(STATUS "Building engine with precompiled headers")
-   endif()
+ endif()
 
 message("=======================")

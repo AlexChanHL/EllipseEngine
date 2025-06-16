@@ -15,7 +15,6 @@ file(GLOB_RECURSE ENGINE
     Engine/*.cpp
     Engine/*.hpp
       )
-
 file(GLOB_RECURSE RENDER
     Renderer/*.cpp
     Renderer/*.hpp
@@ -80,8 +79,8 @@ createWarningsLibrary(EngineInterfaceWarnings)
 target_link_libraries(${NAME} PRIVATE EngineInterfaceWarnings)
 
 if(BUILD_ENGINE_WITH_PRECOMPILED_HEADERS)
-target_precompile_headers(${NAME} PUBLIC EllipsePCH.hpp)
-set(CMAKE_PCH_INSTANIATE_TEMPLATES ON)
+ target_precompile_headers(${NAME} PUBLIC EllipsePCH.hpp)
+ set(CMAKE_PCH_INSTANIATE_TEMPLATES ON)
 endif()
   
 target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

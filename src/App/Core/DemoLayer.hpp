@@ -20,19 +20,16 @@ class LightModel
 
     }
 
-    void init(ModelList& modelList, const char* name, String vert, String frag, Ellipse::RenderObjData data)
+    void init(ModelList& modelList, const char* name)
     {
     m_name = name;
 
     m_light.setLightPosition(Vec3{0.0f, 0.0f, 0.0f});
 
     
-    modelList.addModelDefinition(name,
-                                 "LightCube",
-                                 vert,
-                                 frag,
-                                 data
-                                );
+    modelList.addModel(name,
+                       "LightCube"
+                      );
 
     }
 

@@ -49,7 +49,9 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
      )
 
   set(GNU_WARNINGS ${GNU_WARNINGS}  
-      
+      -Wno-error=unused
+      -Wno-error=unused-parameter
+      -Wno-error=unused-variable
      )
 
   if(WARNING_AS_ERRORS)
@@ -57,7 +59,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   endif()
 
   message("Compiler warning set as gnu")
-	target_compile_options(${name} ${GNU_WARNINGS})
+  target_compile_options(${name} INTERFACE ${GNU_WARNINGS})
 endif()
 
 endfunction()

@@ -292,9 +292,9 @@ class Camera
     float yawRadians = EllipseMath::Radian{m_yaw}.radians();
     float pitchRadians = EllipseMath::Radian{m_pitch}.radians();
 
-    cameraDirection.x = sin(yawRadians) * cos(pitchRadians);
-    cameraDirection.y = sin(pitchRadians);
-    cameraDirection.z = -cos(yawRadians) * cos(pitchRadians);
+    cameraDirection.x = static_cast<float>(sin(yawRadians) * cos(pitchRadians));
+    cameraDirection.y = static_cast<float>(sin(pitchRadians));
+    cameraDirection.z = static_cast<float>(-cos(yawRadians) * cos(pitchRadians));
 
 
     m_front = EllipseMath::normalize(cameraDirection);
@@ -502,30 +502,10 @@ class ModelManagerModule : public IModule
                           UniformList uniformList
                           ) = 0;
 
-    // virtual void addModelDefinition(const char* objectName,
-    //                                 Mat4 model,
-    //                                 String vertexShader,
-    //                                 String fragmentShader,
-    //                                 String importPath,
-    //                                 UniformList uniformList
-    //                                 ) = 0;
-
-    virtual void addModelDefinition(ModelID& modelID,
-                                    const char* objectName,
-                                    Mat4 model,
+    virtual void addModelDefinition(const char* objectName,
                                     String vertexShader,
                                     String fragmentShader,
-                                    String importPath,
-                                    UniformList uniformList
-                                    ) = 0;
-
-    virtual void addModelDefinition(ModelID& modelID,
-                                    const char* objectName,
-                                    Mat4 model,
-                                    String vertexShader,
-                                    String fragmentShader,
-                                    UniformList uniformList,
-                                    RenderObjData renderObjectData
+                                    RenderObjData renderObjData
                                     ) = 0;
 
     virtual void removeModel(ModelID modelID) = 0;

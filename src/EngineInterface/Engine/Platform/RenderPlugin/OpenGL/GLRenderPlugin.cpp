@@ -55,18 +55,18 @@ void OpenGLRenderPlugin::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t 
     glViewport(posX, posY, width, height);
 }
 
-UniquePtr<RenderObj> OpenGLRenderPlugin::createRenderObj(RenderObjData modelData)
+RenderObj* OpenGLRenderPlugin::createRenderObj(RenderObjData modelData)
 {
-    auto rObj = createUnique<OpenGLRenderObj>();
+    auto rObj = new OpenGLRenderObj();
     
     rObj->initializeFromResources(modelData);
 
     return rObj;
 }
 
-UniquePtr<RenderShaderObj> OpenGLRenderPlugin::createShaderObj(String vShader, String fShader)
+RenderShaderObj* OpenGLRenderPlugin::createShaderObj(String vShader, String fShader)
 {
-    auto sObj = createUnique<OpenGLShaderObj>();
+    auto sObj = new OpenGLShaderObj();
 
     sObj->compileShader(vShader.c_str());
     sObj->compileShader(fShader.c_str());
@@ -202,7 +202,6 @@ void OpenGLRenderPlugin::setUniforms(UniformList uniforms)
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    glUniformMatrix4fv(loc, 1, GL_FALSE, &(uniform.uniformAt(0)[0][0]));
    // std::cout << loc << '\n';
-   // Ellipse::EllipseMath::printMat(uniform.uniformAt(0));
    }
 
    for(UniformVarible<bool>& uniform : uniforms.getBoolUniforms())

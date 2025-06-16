@@ -7,7 +7,7 @@ namespace Ellipse
 
 RenderModule2D::RenderModule2D(Engine& engine)
 : m_renderer{static_cast<Renderer&>(engine.getSystem("Renderer"))},
-	m_modelManager{static_cast<ModelManagerModule&>(engine.getModule("ModelModule"))}
+  m_modelManager{static_cast<ModelManagerModule&>(engine.getModule("ModelModule"))}
 {
   	m_name = "RenderModule";
 }
@@ -45,10 +45,10 @@ void RenderModule2D::onUpdate()
   //   }
 }
 
-void RenderModule2D::renderModel(RenderObj* renderObj,
-                                 RenderShaderObj* shaderObj,
-                                 const UniformList& uniformList
-                                ) 
+void RenderModule2D::render(RenderObj* renderObj,
+                            RenderShaderObj* shaderObj,
+                            const UniformList& uniformList
+                           ) 
 {
     m_renderer.render(*renderObj, *shaderObj, uniformList);
 }

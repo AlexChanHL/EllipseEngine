@@ -17,8 +17,7 @@ target_sources(${TEST_APP_NAME} PUBLIC
                ${SOURCES} ${HEADERS}
               )
 
-target_link_libraries(${TEST_APP_NAME} PRIVATE
-											EllipseEngineInterface EllipseEngine
+target_link_libraries(${TEST_APP_NAME} PRIVATE EllipseEngineInterface EllipseEngine
                      )
 
 include("${CMAKE_SOURCE_DIR}/CMake/ProjectWarnings.cmake")

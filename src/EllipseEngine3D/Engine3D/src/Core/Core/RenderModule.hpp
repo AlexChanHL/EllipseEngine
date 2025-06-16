@@ -12,8 +12,7 @@ namespace Ellipse
 class RenderModule3D : public RenderModule
 {
     public:
-     RenderModule3D(Engine& engine);
-     ~RenderModule3D();
+     RenderModule3D(Engine& engine); ~RenderModule3D();
 
      virtual void init() override;
      virtual void onUpdate() override;

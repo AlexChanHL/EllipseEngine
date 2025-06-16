@@ -255,63 +255,31 @@ class OpenGLShaderObj : public RenderShaderObj
     virtual void linkShaders() override;
     virtual void use() const override;
 
+    virtual void getShaderSource() override;
+
     virtual i32_t findUniformLocation(const char* name) override;
     virtual Map<const char*, i32_t> findUniformLocationList(UniformList uniformList) override;
 
-    // virtual void addUniform(UniformVarible<i32_t> uniform) override;
-    // virtual void addUniform(UniformVarible<float> uniform) override;
-    // virtual void addUniform(UniformVarible<u32_t> uniform) override;
-    // virtual void addUniform(UniformVarible<Vec2> uniform) override;
-    // virtual void addUniform(UniformVarible<Vec3> uniform) override;
-    // virtual void addUniform(UniformVarible<Vec4> uniform) override;
-    // virtual void addUniform(UniformVarible<Mat2> uniform) override;
-    // virtual void addUniform(UniformVarible<Mat3> uniform) override;
-    // virtual void addUniform(UniformVarible<Mat4> uniform) override;
-    //
-    // virtual void setUniformPtr(const UniformVarible<i32_t>& uniform) override;
-    // virtual void setUniformPtr(const UniformVarible<float>& uniform) override;
-    // virtual void setUniformPtr(const UniformVarible<u32_t>& uniform) override;
-    // virtual void setUniformPtr(const UniformVarible<Mat4>& uniform) override;
-    // 
-    // void setUniformList(UniformList& uniforms);
-    
     void compileShader(const char* fname);
     void linkGLShaders();
 
     void deleteAttachedShaders(GLuint vert, GLuint frag);
 
-    // virtual void addUniformsToLocList(UniformList uniforms) override;
-    // virtual UniformList getUniforms() const override
-    // {
-    // return m_uniforms;
-    // }
-    // virtual ForwardList<UniformLoc> getUniformLocs() const override
-    // {
-    // return m_uniformLoc;
-    // }
-    // 
-    // void printUniformLocations() override;
-
    public:
     GLuint m_shaderProgram;
 
    private:
-    // void addUniformToList(const char* name);
     GLenum queryType(const char* fname);
 
     void checkCompileStatus(GLuint shader);
     void checkLinkStatus();
 
     void deleteAttachedShaders();
-
-    // void addUniform(const char* name, int& loc);
-
     const char* typeToCString(GLenum type);
 
    private:
     Map<String, GLenum> m_typeMap;
-    // ForwardList<UniformLoc> m_uniformLoc;
-    // UniformList m_uniforms;
 };
 
 }    // namespace Ellipse
+

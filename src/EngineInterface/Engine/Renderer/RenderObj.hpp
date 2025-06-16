@@ -168,31 +168,10 @@ class RenderShaderObj
      virtual void linkShaders() = 0;
      virtual void use() const = 0;
 
+     virtual void getShaderSource() = 0;
+
      virtual i32_t findUniformLocation(const char* name) = 0;
      virtual Map<const char*, i32_t> findUniformLocationList(UniformList uniformList) = 0;
-
-     // virtual void printUniformLocations() = 0;
-     //
-     // virtual void addUniform(UniformVarible<i32_t> uniform) = 0;
-     // virtual void addUniform(UniformVarible<float> uniform) = 0;
-     // virtual void addUniform(UniformVarible<u32_t> uniform) = 0;
-     // virtual void addUniform(UniformVarible<Vec2> uniform) = 0;
-     // virtual void addUniform(UniformVarible<Vec3> uniform) = 0;
-     // virtual void addUniform(UniformVarible<Vec4> uniform) = 0;
-     // virtual void addUniform(UniformVarible<Mat2> uniform) = 0;
-     // virtual void addUniform(UniformVarible<Mat3> uniform) = 0;
-     // virtual void addUniform(UniformVarible<Mat4> uniform) = 0;
-     //
-     //
-     // virtual void addUniformsToLocList(UniformList uniforms) = 0;
-     //
-     // virtual void setUniformPtr(const UniformVarible<i32_t>& uniform) = 0;
-     // virtual void setUniformPtr(const UniformVarible<float>& uniform) = 0;
-     // virtual void setUniformPtr(const UniformVarible<u32_t>& uniform) = 0;
-     // virtual void setUniformPtr(const UniformVarible<Mat4>& uniform) = 0;
-     //
-     // virtual UniformList getUniforms() const = 0;
-     // virtual ForwardList<UniformLoc> getUniformLocs() const = 0;
 
     private:
 };

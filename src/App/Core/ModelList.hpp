@@ -23,10 +23,10 @@ class ModelList
     {
     addAmounts();
 
-    ELLIPSE_APP_LOG_WARN("Model list size: {}", m_modelModule.models().size());
+    // ELLIPSE_APP_LOG_WARN("Model list size: {}", m_modelModule.models().size());
     for(u64_t i=0;i<m_modelModule.models().size();i++)
     {
-  	Ellipse::Model model = m_modelModule.models()[i];
+    Ellipse::Model model = m_modelModule.models()[i];
 
     String name = findModelName(model.id());
 
@@ -47,59 +47,17 @@ class ModelList
     }
 
     }
-
-    void addModelDefinition(const char* name,
-                            const char* objectName,
-                            String vertex,
+    void addModelDefinition(const char* objectName,
+                            String vert,
                             String frag,
                             Ellipse::RenderObjData data
                            )
     {
-    Ellipse::ModelID id;
-    m_modelModule.addModelDefinition(id,
-                                     objectName,
-                                     Mat4{1.0f},
-                                     vertex,
-                                     frag,
-                                     Ellipse::UniformList{},
-                                     data
-                                    );
-
-    m_nameIds[name] = id;
-    m_models[id] = ModelVal{};
-
-    modelModuleVal(name).uniformList().setUniformLocations(modelModuleVal(name).shaderObject()->findUniformLocationList(modelModuleVal(name).uniformList()));
-    }
-
-    void addModelDefinition(const char* name,
-                            const char* objectName,
-                            String vert,
-                            String frag,
-                            Ellipse::Camera& camera,
-                            Light& light,
-                            Ellipse::RenderObjData renderObjData
-                           )
-    {
-    Ellipse::ModelID id;
-    m_modelModule.addModelDefinition(id,
-                                     objectName,
-                                     Mat4{1.0f},
+    m_modelModule.addModelDefinition(objectName,
                                      vert,
                                      frag,
-                                     Ellipse::UniformList{},
-                                     renderObjData
+                                     data
                                     );
-
-    m_nameIds[name] = id;
-    m_models[id] = ModelVal{};
-
-    addCamera(modelModuleVal(name).uniformList(), camera);
-
-    addMaterials(modelModuleVal(name).uniformList(), model(name));
-
-    addLight(modelModuleVal(name).uniformList(), light);
-
-    modelModuleVal(name).uniformList().setUniformLocations(modelModuleVal(name).shaderObject()->findUniformLocationList(modelModuleVal(name).uniformList()));
     }
 
     void addModel(const char* name, const char* objectName, Ellipse::Camera& camera, Light& light)

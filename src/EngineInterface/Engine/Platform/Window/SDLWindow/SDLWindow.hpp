@@ -159,6 +159,7 @@ class SDLWindow : public Window
                      e->button.y
                      );
    data->m_eventCallBackFn(event);
+   return 0;
    }
    case SDL_EVENT_MOUSE_WHEEL:
    {

@@ -6,18 +6,8 @@
 namespace Ellipse
 {
 
-
-void OpenGLShaderObj::addShader(const char* name)
-{
-    compileShader(name);
-}
-
-void OpenGLShaderObj::linkShaders()
-{
-    linkGLShaders();
-}
-
 OpenGLShaderObj::OpenGLShaderObj()
+: m_shaderProgram{0}
 {
     m_typeMap = {
            {"vert", GL_VERTEX_SHADER},
@@ -35,73 +25,15 @@ OpenGLShaderObj::~OpenGLShaderObj()
     deleteAttachedShaders();
 }
 
-// void OpenGLShaderObj::addUniform(UniformVarible<i32_t> uniform)
-// {
-//      m_uniforms.addUniform(uniform);
-//      addUniformToList(uniform.name());
-// }
-// void OpenGLShaderObj::addUniform(UniformVarible<float> uniform)
-// {
-//      m_uniforms.addUniform(uniform);
-//      addUniformToList(uniform.name());
-// }
-// void OpenGLShaderObj::addUniform(UniformVarible<u32_t> uniform)
-// {
-//      m_uniforms.addUniform(uniform);
-//      addUniformToList(uniform.name());
-// }
-// void OpenGLShaderObj::addUniform(UniformVarible<Vec2> uniform)
-// {
-//      m_uniforms.addUniform(uniform);
-//      addUniformToList(uniform.name());
-// }
-// void OpenGLShaderObj::addUniform(UniformVarible<Vec3> uniform)
-// {
-//      m_uniforms.addUniform(uniform);
-//      addUniformToList(uniform.name());
-// }
-// void OpenGLShaderObj::addUniform(UniformVarible<Vec4> uniform)
-// {
-//      m_uniforms.addUniform(uniform);
-//      addUniformToList(uniform.name());
-// }
-// void OpenGLShaderObj::addUniform(UniformVarible<Mat2> uniform)
-// {
-//      m_uniforms.addUniform(uniform);
-//      addUniformToList(uniform.name());
-// }
-// void OpenGLShaderObj::addUniform(UniformVarible<Mat3> uniform)
-// {
-//      m_uniforms.addUniform(uniform);
-//      addUniformToList(uniform.name());
-// }
-// void OpenGLShaderObj::addUniform(UniformVarible<Mat4> uniform)
-// {
-//      m_uniforms.addUniform(uniform);
-//      addUniformToList(uniform.name());
-// }
-//
-// void OpenGLShaderObj::setUniformList(UniformList& uniforms)
-// {
-//      m_uniforms = uniforms;
-// }
-//
-// void OpenGLShaderObj::setUniformPtr(const UniformVarible<i32_t>& uniform) 
-// {
-//      m_uniforms.setUniform(uniform);
-// }
-// void OpenGLShaderObj::setUniformPtr(const UniformVarible<float>& uniform)
-// {
-//      m_uniforms.setUniform(uniform);
-// }
-// void OpenGLShaderObj::setUniformPtr(const UniformVarible<u32_t>& uniform)
-// {
-//      m_uniforms.setUniform(uniform);
-// }
-// void OpenGLShaderObj::setUniformPtr(const UniformVarible<Mat4>& uniform)
-// {
-//      m_uniforms.setUniform(uniform);
-// }
+void OpenGLShaderObj::addShader(const char* name)
+{
+    compileShader(name);
+}
+
+void OpenGLShaderObj::linkShaders()
+{
+    linkGLShaders();
+}
 
 void OpenGLShaderObj::compileShader(const char* fname)
 {
@@ -118,7 +50,7 @@ void OpenGLShaderObj::compileShader(const char* fname)
 
      GLenum type = queryType(fname);
 
-     unsigned int shader;
+     u32_t shader = 0;
      shader = glCreateShader(type);
       
      SStream streamShader;
@@ -129,6 +61,8 @@ void OpenGLShaderObj::compileShader(const char* fname)
 
      glShaderSource(shader, 1, &shaderSrc, NULL);
      glCompileShader(shader);
+
+     std::cout << "String compile " << strShader << '\n';
 
      checkCompileStatus(shader);
 
@@ -157,6 +91,26 @@ void OpenGLShaderObj::use() const
      }
 
      glUseProgram(m_shaderProgram);
+}
+
+void OpenGLShaderObj::getShaderSource()
+{
+    i32_t count = 0;
+    glGetProgramiv(m_shaderProgram, GL_ATTACHED_SHADERS, &count);
+    auto shaders = createUnique<u32_t[]>(GLuint(count));
+    glGetAttachedShaders(m_shaderProgram,
+                         sizeof(shaders.get()),
+                         NULL,
+                         shaders.get()
+                        );
+    
+    for(i32_t i=0;i<count;i++)
+    {
+    UniquePtr<char[]> source = createUnique<char[]>(static_cast<u64_t>(8192));
+    i32_t length = 0;
+    glGetShaderSource(shaders[static_cast<u64_t>(i)], 8192, &length, source.get());
+    ELLIPSE_ENGINE_LOG_INFO("source {}", source.get());
+    }
 }
 
 i32_t OpenGLShaderObj::findUniformLocation(const char* name)
@@ -235,52 +189,6 @@ Map<const char*, i32_t> OpenGLShaderObj::findUniformLocationList(UniformList uni
     return uniformLocations;
 }
 
-// void OpenGLShaderObj::addUniformsToLocList(UniformList uniforms)
-// {
-//      for(UniformVarible<i32_t>& uniform : uniforms.getIntUniforms())
-//      {
-//      addUniformToList(uniform.name());
-//      }
-//      for(UniformVarible<float>& uniform : uniforms.getFloatUniforms())
-//      {
-//      addUniformToList(uniform.name());
-//      }
-//      for(UniformVarible<u32_t>& uniform : uniforms.getUnsignedIntUniforms())
-//      {
-//      addUniformToList(uniform.name());
-//      }
-//      for(UniformVarible<Vec2>& uniform : uniforms.getVec2Uniforms())
-//      {
-//      addUniformToList(uniform.name());
-//      }
-//      for(UniformVarible<Vec3>& uniform : uniforms.getVec3Uniforms())
-//      {
-//      addUniformToList(uniform.name());
-//      }
-//      for(UniformVarible<Vec4>& uniform : uniforms.getVec4Uniforms())
-//      {
-//      addUniformToList(uniform.name());
-//      }
-//      for(UniformVarible<Mat2>& uniform : uniforms.getMat2Uniforms())
-//      {
-//      addUniformToList(uniform.name());
-//      }
-//      for(UniformVarible<Mat3>& uniform : uniforms.getMat3Uniforms())
-//      {
-//      addUniformToList(uniform.name());
-//      }
-//      for(UniformVarible<Mat4>& uniform : uniforms.getMat4Uniforms())
-//      {
-//      addUniformToList(uniform.name());
-//      }
-// }
-//
-// void OpenGLShaderObj::addUniformToList(const char* name)
-// {
-//      int loc = glGetUniformLocation(m_shaderProgram, name);
-//      m_uniformLoc.push_front(UniformLoc{name, loc});
-// }
-
 void OpenGLShaderObj::checkCompileStatus(GLuint shader)
 {
      i32_t status = 0;
@@ -290,7 +198,6 @@ void OpenGLShaderObj::checkCompileStatus(GLuint shader)
      glGetShaderiv(shader, GL_SHADER_TYPE, &type);
      const char* typeStr = typeToCString(GLenum(type));
    
-     // [ Better logging output, currently logs entire array ]
      glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
      if(!status)
      {

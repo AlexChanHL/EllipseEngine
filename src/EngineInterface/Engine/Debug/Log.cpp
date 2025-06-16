@@ -44,7 +44,14 @@ SharedPtr<sglLogger::Logger> Log::logger(String name)
 
 std::ostream& operator<<(std::ostream& os, Mat4 mat)
 {
-    os << "1\n";
+    for(u64_t i=0;i<4;i++)
+    {
+    for(u64_t j=0;j<4;j++)
+    {
+    os << mat[j][i] << ' ';
+    }
+    os << '\n';
+    }
     return os;
 }
 

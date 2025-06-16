@@ -78,10 +78,10 @@ class UniformVarible
 
     void printUniforms() const
     {
-    std::cout << "Uniform name: " << m_name << '\n';
+    ELLIPSE_ENGINE_LOG_INFO("Uniform name: {}", m_name);
     for(unsigned int i = 0; i < m_size;i++)
     {
-    std::cout << *(m_uniformValues.get()[i]) << '\n';
+    std::cout << *(m_uniformValues.get()[i]) << '\n';;
     }
     }
 

@@ -15,10 +15,10 @@ class RenderModule2D : public RenderModule
      virtual void init() override;
      virtual void onUpdate() override;
 
-     virtual void renderModel(RenderObj* render,
-                              RenderShaderObj* shaderObj,
-                              const UniformList& uniformaList
-                             );
+     virtual void render(RenderObj* render,
+                         RenderShaderObj* shaderObj,
+                         const UniformList& uniformaList
+                        );
  
      virtual void setViewCamera(Camera camera) override;
 
