@@ -19,8 +19,8 @@ class ModelObject
 
     }
     ModelObject(const char* name,
-                RenderObj* renderObject,
-                RenderShaderObj* shaderObject
+                SharedPtr<RenderObj> renderObject,
+                SharedPtr<RenderShaderObj> shaderObject
                )
     : m_name{name},
       m_isInList{false},
@@ -29,14 +29,6 @@ class ModelObject
     {
 
     }
-    // ModelObject(const ModelObject& rhs)
-    // : m_name{rhs.name()},
-    //   m_isInList{false},
-    //   m_renderObject{rhs.renderObject()},
-    //   m_shaderObject{rhs.shaderObject()}
-    // {
-    //
-    // }
     ~ModelObject()
     {
 
@@ -52,12 +44,12 @@ class ModelObject
     m_isInList = isInList;
     }
 
-    void setRenderObj(RenderObj* renderObj)
+    void setRenderObj(SharedPtr<RenderObj> renderObj)
     {
     m_renderObject = renderObj;
     }
 
-    void setShaderObj(RenderShaderObj* shaderObj)
+    void setShaderObj(SharedPtr<RenderShaderObj> shaderObj)
     {
     m_shaderObject = shaderObj;
     }
@@ -72,21 +64,21 @@ class ModelObject
     return m_isInList;
     }
 
-    RenderObj* renderObject()
+    SharedPtr<RenderObj> renderObject()
     {
     return m_renderObject;
     }
-    RenderObj* renderObject() const
+    SharedPtr<RenderObj> renderObject() const
     {
     return m_renderObject;
     }
 
-    RenderShaderObj* shaderObject()
+    SharedPtr<RenderShaderObj> shaderObject()
     {
     return m_shaderObject;
     }
 
-    RenderShaderObj* shaderObject() const
+    SharedPtr<RenderShaderObj> shaderObject() const
     {
     return m_shaderObject;
     }
@@ -94,8 +86,8 @@ class ModelObject
    private:
     const char* m_name;
     bool m_isInList;
-    RenderObj* m_renderObject;
-    RenderShaderObj* m_shaderObject;
+    SharedPtr<RenderObj> m_renderObject;
+    SharedPtr<RenderShaderObj> m_shaderObject;
 };
 
 class ModelManagerModuleImpl : public ModelManagerModule

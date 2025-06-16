@@ -32,7 +32,7 @@ class ModelList
 
     if(model.renderObject() != nullptr)
     {
-    m_renderModule.render(model.renderObject(), model.shaderObject(), model.uniformList());
+    m_renderModule.render(model.renderObject().get(), model.shaderObject().get(), model.uniformList());
     }
     }
 

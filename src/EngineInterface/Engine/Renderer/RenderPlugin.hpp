@@ -27,8 +27,8 @@ class RenderPlugin
     virtual void clearDepthBuffer() = 0;
     virtual void setClearColor(const glm::vec4& col) = 0;
     virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) = 0;
-    virtual RenderObj* createRenderObj(RenderObjData verts) = 0;
-    virtual RenderShaderObj* createShaderObj(String vShader, String fShader) = 0;
+    virtual SharedPtr<RenderObj> createRenderObj(RenderObjData verts) = 0;
+    virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader, String fShader) = 0;
     virtual void setUniforms(UniformList uniforms) = 0;
     virtual void bindTextures(const RenderObj& renderObj) = 0;
 

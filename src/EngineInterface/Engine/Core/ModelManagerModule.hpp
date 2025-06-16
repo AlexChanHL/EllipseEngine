@@ -111,8 +111,8 @@ class Model
     Model(Mat4 model,
           ModelID modelID,
           UniformList uniformList,
-          RenderObj* renderObject,
-          RenderShaderObj* shaderObject
+          SharedPtr<RenderObj> renderObject,
+          SharedPtr<RenderShaderObj> shaderObject
          )
     : m_model{model},
       m_id{modelID},
@@ -138,12 +138,12 @@ class Model
     m_id = id;
     }
 
-    void setRenderObj(RenderObj* renderObj)
+    void setRenderObj(SharedPtr<RenderObj> renderObj)
     {
     m_renderObject = renderObj;
     }
 
-    void setShaderObj(RenderShaderObj* shaderObj)
+    void setShaderObj(SharedPtr<RenderShaderObj> shaderObj)
     {
     m_shaderObject = shaderObj;
     }
@@ -173,22 +173,22 @@ class Model
     return m_uniformList;
     }
 
-    RenderObj* renderObject()
+    SharedPtr<RenderObj> renderObject()
     {
     return m_renderObject;
     }
 
-    RenderObj* renderObject() const
+    SharedPtr<RenderObj> renderObject() const
     {
     return m_renderObject;
     }
 
-    RenderShaderObj* shaderObject()
+    SharedPtr<RenderShaderObj> shaderObject()
     {
     return m_shaderObject;
     }
 
-    RenderShaderObj* shaderObject() const
+    SharedPtr<RenderShaderObj> shaderObject() const
     {
     return m_shaderObject;
     }
@@ -197,8 +197,8 @@ class Model
     Mat4 m_model;
     ModelID m_id;
     UniformList m_uniformList;
-    RenderObj* m_renderObject;
-    RenderShaderObj* m_shaderObject;
+    SharedPtr<RenderObj> m_renderObject;
+    SharedPtr<RenderShaderObj> m_shaderObject;
 };
 
 class CameraID

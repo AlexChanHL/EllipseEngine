@@ -18,8 +18,8 @@ class OpenGLRenderPlugin final : public RenderPlugin
     virtual void clearDepthBuffer() override;
     virtual void setClearColor(const glm::vec4& col) override;
     virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
-    virtual RenderObj* createRenderObj(RenderObjData modelData) override;
-    virtual RenderShaderObj* createShaderObj(String vShader,
+    virtual SharedPtr<RenderObj> createRenderObj(RenderObjData modelData) override;
+    virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader,
                                                        String fShader) override;
 
     virtual void setUniforms(UniformList uniforms) override;

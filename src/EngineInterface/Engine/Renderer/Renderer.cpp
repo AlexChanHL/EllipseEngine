@@ -22,8 +22,8 @@ class RendererImpl final : public Renderer
     return Pair<int, int>{m_currentWidth, m_currentHeight};
     }
 
-    virtual RenderObj* createRenderObj(RenderObjData modelData) override;
-    virtual RenderShaderObj* createShaderObj(String vShader,
+    virtual SharedPtr<RenderObj> createRenderObj(RenderObjData modelData) override;
+    virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader,
                                                        String fShader) override;
 
     virtual UniquePtr<RenderPlugin>& plugin() override
@@ -99,12 +99,12 @@ void RendererImpl::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height
     m_plugin->setViewport(posX, posY, width, height);
 }
 
-RenderObj* RendererImpl::createRenderObj(RenderObjData modelData)
+SharedPtr<RenderObj> RendererImpl::createRenderObj(RenderObjData modelData)
 {
     return m_plugin->createRenderObj(modelData);
 }
 
-RenderShaderObj* RendererImpl::createShaderObj(String vShader,
+SharedPtr<RenderShaderObj> RendererImpl::createShaderObj(String vShader,
                                                          String fShader)
 {
     return m_plugin->createShaderObj(vShader, fShader);

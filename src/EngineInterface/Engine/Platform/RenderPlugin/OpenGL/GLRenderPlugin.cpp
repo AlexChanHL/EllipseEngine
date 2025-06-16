@@ -55,18 +55,18 @@ void OpenGLRenderPlugin::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t 
     glViewport(posX, posY, width, height);
 }
 
-RenderObj* OpenGLRenderPlugin::createRenderObj(RenderObjData modelData)
+SharedPtr<RenderObj> OpenGLRenderPlugin::createRenderObj(RenderObjData modelData)
 {
-    auto rObj = new OpenGLRenderObj();
+    auto rObj = createShared<OpenGLRenderObj>();
     
     rObj->initializeFromResources(modelData);
 
     return rObj;
 }
 
-RenderShaderObj* OpenGLRenderPlugin::createShaderObj(String vShader, String fShader)
+SharedPtr<RenderShaderObj> OpenGLRenderPlugin::createShaderObj(String vShader, String fShader)
 {
-    auto sObj = new OpenGLShaderObj();
+    auto sObj = createShared<OpenGLShaderObj>();
 
     sObj->compileShader(vShader.c_str());
     sObj->compileShader(fShader.c_str());
