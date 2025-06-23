@@ -22,7 +22,7 @@ class ModelList2D : public ModelList
      
      virtual void onUpdate() override
      {
-         // m_renderModule.setProjOrtho();
+         m_renderModule.setProjOrtho();
          setToCameraFront();
 
          // addAmounts();
@@ -51,8 +51,8 @@ class ModelList2D : public ModelList
              if(m_camera.front().y != 0.0f)
              {
              yAxisAngle = static_cast<float>(acos(Ellipse::EllipseMath::dot(Vec3{0.0f, m_camera.front().y, 0.0f}, yAxis)));
-             }
              yAxisAngle = Ellipse::EllipseMath::radians(90.0f) - yAxisAngle;
+             }
           
              float yRotateAngle = yAxisAngle;
              if(yAxisAngle < 0)
@@ -60,10 +60,10 @@ class ModelList2D : public ModelList
                  yRotateAngle = Ellipse::EllipseMath::radians(360.0f) - yAxisAngle;
              }
              
-             Vec3 cameraFrontAxisOrtho{0.0f};
+             Vec3 cameraFrontAxisOrtho{1.0f};
              Vec3 cameraAxis{0.0f};
              float zAxisAngle = 0.0f;
-             if(m_camera.front() != Vec3{0.0f})
+             if(m_camera.front().y != 0.0f)
              {
              cameraFrontAxisOrtho = Ellipse::EllipseMath::cross(m_camera.front(), Vec3{m_camera.front().x, 0.0f, m_camera.front().z});
              cameraAxis = Ellipse::EllipseMath::rotate(m_camera.front(), yRotateAngle, cameraFrontAxisOrtho);
@@ -76,7 +76,6 @@ class ModelList2D : public ModelList
              {
              zAxisAngle = Ellipse::EllipseMath::radians(360.0f) - zAxisAngle;
              }
-             cameraFrontAxisOrtho = Ellipse::EllipseMath::normalize(cameraFrontAxisOrtho);
              if(yAxisAngle > 0)
              {
              cameraFrontAxisOrtho *= -1;
@@ -91,19 +90,6 @@ class ModelList2D : public ModelList
 
              rotateModel(model.second.model(), yAxisAngle, cameraFrontAxisOrtho);
              rotateModel(model.second.model(), zAxisAngle, yAxis);
-
-             // zAxis.x = (Ellipse::EllipseMath::radians(90.0f) - zAxisAngle) / Ellipse::EllipseMath::radians(90.0f);
-             // zAxis.z = zAxisAngle / Ellipse::EllipseMath::radians(90.0f);
-             // ELLIPSE_APP_LOG_INFO("zAxis manual x: {} z: {}", zAxis.x, zAxis.z);
-
-             // rotateModel(model.second.model(), yAxisAngle, Ellipse::EllipseMath::normalize(zAxis));
-             // rotateModel(model.second.model(), yAxisAngle, Ellipse::EllipseMath::normalize(Vec3{1.0f, 0.0f, 0.0f}));
-
-             // model.second.setRotateAmount(zAxisAngle, Vec3{0.0f, 1.0f, 0.0f});
-             // model.second.setRotateAmount(yAxisAngle, Vec3{1.0f, 0.0f, 0.0f});
-             // model.second.setRotateAmount(yAxisAngle, Vec3{1.0f, 0.0f, 0.0f});
-             // model.second.setRotateAmount(Ellipse::EllipseMath::radians(135.0f), Vec3{1.0f, 0.0f, 0.0f});
-             // model.second.setRotateAmount(Ellipse::EllipseMath::radians(90.0f), Vec3{0.0f, 1.0f, 0.0f});
 
              setModelVal(model.first);
          }

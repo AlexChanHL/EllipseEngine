@@ -20,20 +20,8 @@ void GUILayer::init()
 {
     m_modelList2D.addModelDefinition("Quad", "Assets/Shader/Quad.vert.glsl", "Assets/Shader/Quad.frag.glsl", m_objects["Quad"]);
     m_modelList2D.addModelDefinition("CubeNoLight", "Assets/Shader/CubeNoLight.vert.glsl", "Assets/Shader/CubeNoLight.frag.glsl", m_objects["Cube"]);
-    // m_modelList2D.addModelDefinition("Quad", "Assets/Shader/Quad.vert.glsl", "Assets/Shader/Quad.frag.glsl", m_objects["Quad"]);
 
-    // m_modelList2D.addModel("FrontQuad", "Quad");
-    m_modelList2D.addModel("CameraCube", "CubeNoLight");
-    // float angle = static_cast<float>(acos(
-    //  Ellipse::EllipseMath::dot(
-    //   Ellipse::EllipseMath::rotateXAxis(Vec3{0.0f, 0.0f, -1.0f}, Ellipse::EllipseMath::radians(30.0f)),
-    //   Ellipse::EllipseMath::rotateZAxis(Vec3{1.0f, 0.0f,  0.0f}, Ellipse::EllipseMath::radians(30.0f))
-    //  )
-    // )
-    // );
-    // ELLIPSE_APP_LOG_INFO("Angle {}", Ellipse::EllipseMath::degrees(angle));
-
-    // ELLIPSE_APP_LOG_INFO("Angle {}", );
+    m_modelList2D.addModel("FrontQuad", "Quad");
 }
     
 

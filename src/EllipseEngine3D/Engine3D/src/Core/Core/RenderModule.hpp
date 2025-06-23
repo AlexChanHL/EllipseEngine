@@ -42,7 +42,8 @@ class RenderModule3D : public RenderModule
      }
 
      virtual Camera& camera() override
-     { return m_camera;
+     {
+         return m_camera;
      }
 
      virtual void configureCameras() override
@@ -55,10 +56,9 @@ class RenderModule3D : public RenderModule
 
      EllipseMath::RandomRemoveLast m_objectIDGenerator;
     
-     // Vector<Camera> m_cameras;
      Camera m_camera;
-     Mat4 m_view;
-     Mat4 m_proj;
+     // Mat4 m_view;
+     // Mat4 m_proj;
 };
 
 

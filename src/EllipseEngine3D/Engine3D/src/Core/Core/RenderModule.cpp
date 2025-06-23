@@ -223,18 +223,22 @@ void RenderModule3D::setViewCamera(Camera camera)
 void RenderModule3D::setCameraFront(float amount)
 {
     m_camera.setPosition(m_camera.position() + EllipseMath::normalize(m_camera.front()) * amount);
+    updateView();
 }
 void RenderModule3D::setCameraBackward(float amount)
 {
     m_camera.setPosition(m_camera.position() - EllipseMath::normalize(m_camera.front()) * amount);
+    updateView();
 }
 void RenderModule3D::setCameraRight(float amount)
 {
     m_camera.setPosition(m_camera.position() - EllipseMath::normalize(EllipseMath::cross(m_camera.upDirection(), m_camera.front())) * amount);
+    updateView();
 }
 void RenderModule3D::setCameraLeft(float amount)
 {
     m_camera.setPosition(m_camera.position() + EllipseMath::normalize(EllipseMath::cross(m_camera.upDirection(), m_camera.front())) * amount);
+    updateView();
 }
 
 void RenderModule3D::setClearColor(Vec4 col)

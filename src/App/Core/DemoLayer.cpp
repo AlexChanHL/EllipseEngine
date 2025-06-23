@@ -218,7 +218,7 @@ bool DemoLayer::onMouseMotion(Ellipse::MouseMotionEvent& e)
    float yPos = -1.0f * (e.mousePositions().second / static_cast<float>(Ellipse::Application::get().getWindow().getWindowSize().second) * 2.0f - 1.0f);
 
 
-   m_renderModule.camera().registerMouseUpdate(Ellipse::Application::get().getWindow().mouseOffsets());
+   m_renderModule.updateCamera(Ellipse::Application::get().getWindow().mouseOffsets());
 
    return m_throughLayer ? false : true;
 }
