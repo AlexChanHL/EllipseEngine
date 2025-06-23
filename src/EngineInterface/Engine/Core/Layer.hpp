@@ -27,61 +27,51 @@ class ILayer
     virtual void showLayer() = 0;
 
   private:
-
 };
 
 class Layer : public ILayer
 {
-  public:
+   public:
     Layer(Engine& engine)
-    : m_modules{engine.modules()}
+    : m_modules{engine.modules()},
+      m_hidden{false},
+      m_throughLayer{false}
     {
 
     }
 
     virtual ~Layer() = default;
 
-    virtual void initUserLayer() = 0;
-    virtual void init() override
-    {    
-    for(SharedPtr<IModule> module : m_modules)
-    {
-    module->init();
-    }
-
-    initUserLayer();
-    }
+    virtual void init() override = 0;
     virtual void onEvent(Event& event) override = 0;
-    virtual void onUpdateUserLayer(float dt) = 0;
-    virtual void onUpdate(float dt) override
-    {
-    onUpdateUserLayer(dt);
-
-    for(SharedPtr<IModule> module : m_modules)
-    {
-    module->onUpdate();
-    }
-
-    }
+    virtual void onUpdate(float dt) override = 0;
 
     static SharedPtr<ILayer> createDefaultLayer();
 
-  protected:
-    virtual bool isHidden() override { return m_hidden; }
+   protected:
+    virtual bool isHidden() override
+    {
+    return m_hidden;
+    }
 
-    virtual void hideLayer() override { m_hidden = true; }
-    virtual void showLayer() override { m_hidden = false; }
+    virtual void hideLayer() override
+    {
+    m_hidden = true;
+    }
+    virtual void showLayer() override 
+    {
+    m_hidden = false;
+    }
 
   protected:
-    // TimeModule& m_timeModule;
-    // RenderModule& m_renderModule;
     Vector<SharedPtr<IModule>> m_modules;
 
-    bool m_hidden = false;
+    bool m_hidden;
     bool m_throughLayer;
     String m_name;
 
   private:
 };
 
-} //Ellipse namespace
+}               // Ellipse namespace
+

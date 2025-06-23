@@ -57,10 +57,10 @@ class DemoLayer : public Ellipse::Layer
     DemoLayer(Ellipse::Engine& engine);
     virtual ~DemoLayer() = default;
 
-    void initUserLayer() override;
+    void init() override;
     virtual void onEvent(Ellipse::Event& e) override;
 
-    void onUpdateUserLayer(float dt) override;
+    void onUpdate(float dt) override;
 
     void setName(String name) 
     {
@@ -85,6 +85,6 @@ class DemoLayer : public Ellipse::Layer
     LightModel m_light;
     Weapon m_weapon;
     CubeMadeCube m_cubeMadeCube;
-    Map<String, Ellipse::RenderObjData> m_objectsData;
+    Ellipse::PreDefinedObjects m_objects;
 };
 

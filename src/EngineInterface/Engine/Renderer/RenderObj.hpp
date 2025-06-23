@@ -120,7 +120,8 @@ class RenderObjData
     Vector<float> m_textureCoords;
 };
 
-// Contains model
+using PreDefinedObjects = Map<String, RenderObjData>;
+
 struct RenderObj
 {
    public:

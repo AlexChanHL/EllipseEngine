@@ -48,12 +48,12 @@ class OpenGLMesh : public RenderMesh
     m_textures.push_back(Texture{});
     glGenTextures(1, &m_textures[0].id());
 
-    i32_t textureWidth;
-    i32_t textureHeight;
-    i32_t textureClrChannels;
+    i32_t textureWidth = 0;
+    i32_t textureHeight = 0;
+    i32_t textureClrChannels = 0;
 
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* textureData = stbi_load("Assets/Images/GreenColor.png", &textureWidth, &textureHeight, &textureClrChannels, 0);
+    // stbi_set_flip_vertically_on_load(true);
+    unsigned char* textureData = stbi_load("Assets/Images/Message.png", &textureWidth, &textureHeight, &textureClrChannels, 0);
     if(!textureData)
     {
     ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");
@@ -75,7 +75,6 @@ class OpenGLMesh : public RenderMesh
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(textureData);
-
 
     m_indicies = indicies;
     m_positions = positions;

@@ -46,10 +46,17 @@ class RenderModule : public IModule
     virtual void setViewport(Viewspace viewspace) = 0;
     virtual void setClearColor(Vec4 col) = 0;
 
+    virtual void setProjPerspective() = 0;
+    virtual void setProjOrtho() = 0;
+
     virtual Mat4& proj() = 0;
     virtual Mat4& view() = 0;
 
     virtual Camera& camera() = 0;
+    Map<String, RenderObjData>& preDefinedObjects()
+    {
+    return m_objects;
+    }
 
     static SharedPtr<RenderModule> createRenderModule(Engine& engine);
 
@@ -59,6 +66,7 @@ class RenderModule : public IModule
    protected:
     Mat4 m_proj;
     Mat4 m_view;
+    Map<String, RenderObjData> m_objects;
 };
 
 }    // namespace Ellipse

@@ -15,8 +15,10 @@
 #include "Core/TimeModule.hpp"
 
 #include "Renderer/Renderer.hpp"
+#include "Renderer/RenderModule.hpp"
 #include "Renderer/VerticiesData.hpp"
 
+#include "Math/LinearFunc.hpp"
 #include "Math/TrigonometricUnits.hpp"
 #include "Math/Random/Random.hpp"
 #include "Math/Matrix.hpp"

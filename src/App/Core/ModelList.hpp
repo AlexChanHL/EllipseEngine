@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Ellipse.hpp"
-
+#include "ModelVal.hpp"
 #include "Light.hpp"
+
+#include "Ellipse.hpp"
 
 
 class ModelList
@@ -14,26 +15,21 @@ class ModelList
     {
 
     }
-    ~ModelList()
+    virtual ~ModelList()
     {
 
     }
 
-    void onUpdate()
+    virtual void onUpdate()
     {
     addAmounts();
 
-    // ELLIPSE_APP_LOG_WARN("Model list size: {}", m_modelModule.models().size());
-    for(u64_t i=0;i<m_modelModule.models().size();i++)
+    for(Pair<String, u64_t> index : m_modelIndicies)
     {
-    Ellipse::Model model = m_modelModule.models()[i];
+    Ellipse::Model model = m_modelModule.models()[index.second];
 
     String name = findModelName(model.id());
-
-    if(model.renderObject() != nullptr)
-    {
     m_renderModule.render(model.renderObject().get(), model.shaderObject().get(), model.uniformList());
-    }
     }
 
     }
@@ -47,20 +43,27 @@ class ModelList
     }
 
     }
-    void addModelDefinition(const char* objectName,
+    virtual void addModelDefinition(const char* objectName,
                             String vert,
                             String frag,
                             Ellipse::RenderObjData data
                            )
+    {
+    if(m_modelModule.findObjectIndex(objectName) == -1)
     {
     m_modelModule.addModelDefinition(objectName,
                                      vert,
                                      frag,
                                      data
                                     );
+    return;
     }
 
-    void addModel(const char* name, const char* objectName, Ellipse::Camera& camera, Light& light)
+    ELLIPSE_APP_LOG_INFO("Object already in list. Object name: {}", objectName);
+    return;
+    }
+
+    virtual void addModel(const char* name, const char* objectName, Ellipse::Camera& camera, Light& light)
     {
     Ellipse::ModelID id;
     m_modelModule.addModel(id,
@@ -71,6 +74,7 @@ class ModelList
 
     m_nameIds[name] = id;
     m_models[id] = ModelVal{};
+    m_modelIndicies[name] = m_modelModule.models().size() - 1;
 
     addCamera(modelModuleVal(name).uniformList(), camera);
 
@@ -81,7 +85,7 @@ class ModelList
     modelModuleVal(name).uniformList().setUniformLocations(modelModuleVal(name).shaderObject()->findUniformLocationList(modelModuleVal(name).uniformList()));
     }
 
-    void addModel(const char* name, const char* objectName)
+    virtual void addModel(const char* name, const char* objectName)
     {
     Ellipse::ModelID id;
     m_modelModule.addModel(id,
@@ -92,6 +96,7 @@ class ModelList
 
     m_nameIds[name] = id;
     m_models[id] = ModelVal{};
+    m_modelIndicies[name] = m_modelModule.models().size() - 1;
     }
 
     void removeModel(const char* name)
@@ -106,6 +111,12 @@ class ModelList
       
     erase_if(m_models, [&](Pair<const Ellipse::ModelID, ModelVal>& model){ return model.first == m_nameIds[name]; });
     erase_if(m_nameIds, [&](Pair<const String, Ellipse::ModelID>& nameID){ return strcmp(nameID.first.c_str(), name) == 0; });
+    erase_if(m_modelIndicies, [&](Pair<const String, u64_t>& modelIndex){ return strcmp(modelIndex.first.c_str(), name) == 0; });
+    for(Pair<String, u64_t> index : m_modelIndicies)
+    {
+    m_modelIndicies[index.first] = m_modelModule.findModelIndex(m_nameIds[index.first]);
+    }
+
     }
 
     void setModelVal(const char* name)
@@ -157,10 +168,12 @@ class ModelList
     return "No model found";
     }
 
-   private:
+   protected:
     Ellipse::ModelManagerModule& m_modelModule;
     Ellipse::RenderModule& m_renderModule;
+
     Map<String, Ellipse::ModelID> m_nameIds;
     Map<Ellipse::ModelID, ModelVal> m_models;
+    Map<String, u64_t> m_modelIndicies;
 };
 

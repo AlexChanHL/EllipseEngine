@@ -1,5 +1,6 @@
 
 #include "DemoLayer.hpp"
+#include "GUILayer.hpp"
 
 #include "Ellipse.hpp"
 
@@ -8,10 +9,10 @@ ForwardList<SharedPtr<Ellipse::Layer>> Ellipse::Application::createUserProcesses
 {
    ForwardList<SharedPtr<Ellipse::Layer>> layers;
 
+   SharedPtr<GUILayer> guiLayer = createShared<GUILayer>(Ellipse::Application::get().getEngine());
+   layers.push_front(std::move(guiLayer));
+
    SharedPtr<DemoLayer> demoLayer = createShared<DemoLayer>(Ellipse::Application::get().getEngine());
-
-   demoLayer->setName("demoLayer");
-
    layers.push_front(std::move(demoLayer));
 
    layers.reverse();

@@ -12,9 +12,149 @@ RenderModule3D::RenderModule3D(Engine& engine)
   m_objectIDGenerator{i32_t(pow(10,3))}
 {
    setName("RenderModule");
-
-   // [ Remove this ]
    setClearColor(Vec4{1.0f, 1.0f, 0.0f, 1.0f});
+
+   Ellipse::RenderObjData cubeData;
+   cubeData.setIndicies(Vector<u32_t>{0, 2, 3,
+                                      0, 1, 3,
+
+                                      4, 5, 7,
+                                      4, 6, 7,
+
+                                      8, 9, 11,
+                                      8, 10, 11,
+
+                                      12, 13, 15,
+                                      12, 14, 15,
+
+                                      16, 17, 19,
+                                      16, 18, 19,
+
+                                      20, 21, 23,
+                                      20, 22, 23
+                                      }
+                                     );
+   cubeData.setPositions(Vector<float>{-0.5f,  0.5f,  0.5f,  
+                                       0.5f,  0.5f,  0.5f,  
+                                      -0.5f, -0.5f,  0.5f,  
+                                       0.5f, -0.5f,  0.5f,  
+
+                                       0.5f,  0.5f,  0.5f,  
+                                       0.5f,  0.5f, -0.5f,  
+                                       0.5f, -0.5f,  0.5f,  
+                                       0.5f, -0.5f, -0.5f,  
+
+                                      -0.5f,  0.5f, -0.5f,  
+                                       0.5f,  0.5f, -0.5f,  
+                                      -0.5f, -0.5f, -0.5f,  
+                                       0.5f, -0.5f, -0.5f,  
+
+                                      -0.5f,  0.5f,  0.5f,  
+                                      -0.5f,  0.5f, -0.5f,  
+                                      -0.5f, -0.5f,  0.5f,  
+                                      -0.5f, -0.5f, -0.5f,  
+
+                                      -0.5f,  0.5f, -0.5f,  
+                                       0.5f,  0.5f, -0.5f,  
+                                      -0.5f,  0.5f,  0.5f,  
+                                       0.5f,  0.5f,  0.5f,  
+
+                                      -0.5f, -0.5f,  0.5f,  
+                                       0.5f, -0.5f,  0.5f,  
+                                      -0.5f, -0.5f, -0.5f,
+                                       0.5f, -0.5f, -0.5f
+                                      }
+                                     );
+   cubeData.setNormals(std::vector<float>{0,  0,  1,
+                                          0,  0,  1,
+                                          0,  0,  1,
+                                          0,  0,  1,
+
+                                          1,  0,  0,
+                                          1,  0,  0,
+                                          1,  0,  0,
+                                          1,  0,  0,
+
+                                          0,  0, -1,
+                                          0,  0, -1,
+                                          0,  0, -1,
+                                          0,  0, -1,
+
+                                         -1,  0,  0,
+                                         -1,  0,  0,
+                                         -1,  0,  0,
+                                         -1,  0,  0,
+
+                                          0,  1,  0,
+                                          0,  1,  0,
+                                          0,  1,  0,
+                                          0,  1,  0,
+
+                                          0, -1,  0,
+                                          0, -1,  0,
+                                          0, -1,  0,
+                                          0, -1,  0
+                                        }
+                                       );
+   cubeData.setTexCoords(Vector<float>{0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f,
+                                      }
+                                     );
+
+
+   Ellipse::RenderObjData quadData;
+   quadData.setIndicies(Vector<u32_t>{0, 1, 2,
+                                      1, 2, 3 
+                                      }
+                        );
+   quadData.setPositions(Vector<float>{-0.5f, 0.5f, 0.0f,
+                                        0.5f, 0.5f, 0.0f,
+                                       -0.5f, -0.5f, 0.0f,
+                                        0.5f, -0.5f, 0.0f
+                                      }
+                        );
+   quadData.setNormals(Vector<float>{0.0f, 0.0f, 1.0f,
+                                     0.0f, 0.0f, 1.0f,
+                                     0.0f, 0.0f, 1.0f,
+                                     0.0f, 0.0f, 1.0f
+                                    }
+                      );
+   quadData.setTexCoords(Vector<float>{0.0f, 1.0f,
+                                       1.0f, 1.0f,
+                                       0.0f, 0.0f,
+                                       1.0f, 0.0f
+                                      }
+                        );
+
+   m_objects["Cube"] = cubeData;
+   m_objects["Quad"] = quadData;
 
    m_view = Mat4(1.0f);
 
@@ -41,7 +181,7 @@ RenderModule3D::RenderModule3D(Engine& engine)
    //                              100.0f
    //                            );
 
-   m_proj = EllipseMath::perspective(EllipseMath::Radian(45.0f).radians(),
+   m_proj = EllipseMath::perspective(EllipseMath::radians(45.0f),
                                      aspectRatio,
                                      0.1f,
                                      100.0f
@@ -102,10 +242,32 @@ void RenderModule3D::setClearColor(Vec4 col)
    m_renderer.setClearColor(col);
 }
 
+void RenderModule3D::setProjPerspective()
+{
+   i32_t winWidth = m_renderer.getWindowFrameSize().first;
+   i32_t winHeight = m_renderer.getWindowFrameSize().second;
+
+   float aspectRatio = float(winWidth) / float(winHeight);
+
+   m_proj = EllipseMath::perspective(EllipseMath::radians(45.0f),
+                                     aspectRatio,
+                                     0.1f,
+                                     100.0f
+                                    );
+}
+void RenderModule3D::setProjOrtho()
+{
+    m_proj = EllipseMath::ortho(-1.0f,
+                                 1.0f,
+                                -1.0f,
+                                 1.0f,
+                                 0.1f,
+                                 100.0f
+                               );
+}
+
 void RenderModule3D::setViewport(Viewspace viewspace)
 {
-   // [ Casting causes the lost of precision 
-   //    in viewspace saved position ]
    m_renderer.setViewport(static_cast<i32_t>(viewspace.m_posX),
                           static_cast<i32_t>(viewspace.m_posY),
                           static_cast<i32_t>(viewspace.m_width),
@@ -113,27 +275,11 @@ void RenderModule3D::setViewport(Viewspace viewspace)
                          );
 }
 
-// void RenderModule3D::renderModels()
-// {
-//     for(u64_t i=0;i<m_modelManager.models().size();i++)
-//     {
-//     const Model& renderModelModel = m_modelManager.models()[i];
-//     if(renderModelModel.renderObject() != nullptr)
-//     {
-//     renderModel(renderModelModel.renderObject(), renderModelModel.shaderObject(), renderModelModel.uniformList());
-//     }
-//
-//     }
-//
-// }
-
 void RenderModule3D::render(RenderObj* renderObj,
                             RenderShaderObj* shaderObj,
                             const UniformList& uniformList)
 {
     m_renderer.render(*renderObj, *shaderObj, uniformList);
-    // UniformList a = uniformList; 
-    // a.getMat4UniformFromListByName("model").printUniforms(); 
 }
 
 }       // namespace Ellipse

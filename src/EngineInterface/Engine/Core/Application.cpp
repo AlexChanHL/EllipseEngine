@@ -4,6 +4,7 @@
 #include "ModelManagerModule.hpp"
 #include "Debug/Log.hpp"
 
+
 namespace Ellipse
 {
 
@@ -71,6 +72,11 @@ void Application::init(const ApplicationConfig& config)
   pushLayer(*i);
   }
 
+  for(SharedPtr<IModule> module : m_engine->modules())
+  {
+  module->init();
+  }
+
   for(auto i = layers.begin(); i != layers.end(); i++)
   {
   (*i)->init();
@@ -111,6 +117,10 @@ void Application::run()
 
   float dt = 0.0f;
   updateLayerStack(m_layerStack, dt);
+  for(SharedPtr<IModule> module : m_engine->modules())
+  {
+  module->onUpdate();
+  }
 
   m_window->updateWindow();
   }

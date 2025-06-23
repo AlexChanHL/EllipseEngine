@@ -2,19 +2,13 @@
 set(TEST_APP_NAME "${PROJECT_NAME}Demo")
 add_executable(${TEST_APP_NAME})
 
-    set(SOURCES
-        Core/main.cpp
-        Core/DemoApp.cpp
-        Core/DemoLayer.cpp
-        Core/DemoLayer.hpp
-       )
-
-    set(HEADERS
-
-         )
+file(GLOB CURRENT_DIR
+     Core/*.cpp
+     Core/*.hpp
+    )
 
 target_sources(${TEST_APP_NAME} PUBLIC
-               ${SOURCES} ${HEADERS}
+               ${CURRENT_DIR}
               )
 
 target_link_libraries(${TEST_APP_NAME} PRIVATE EllipseEngineInterface EllipseEngine

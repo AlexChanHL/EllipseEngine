@@ -14,159 +14,15 @@ DemoLayer::DemoLayer(Ellipse::Engine& engine)
    m_rotatedDegrees{0.0f},
    m_modelList{engine},
    m_weapon{m_modelList, engine, m_light.light()},
-   m_cubeMadeCube{m_modelList, engine, m_light.light()}
+   m_cubeMadeCube{m_modelList, engine, m_light.light()},
+   m_objects{m_renderModule.preDefinedObjects()}
 {
    m_name = "Placeholder";
    m_throughLayer = false;
-
-   Ellipse::RenderObjData cubeData;
-   cubeData.setIndicies(Vector<u32_t>{0, 2, 3,
-                                      0, 1, 3,
-
-                                      4, 5, 7,
-                                      4, 6, 7,
-
-                                      8, 9, 11,
-                                      8, 10, 11,
-
-                                      12, 13, 15,
-                                      12, 14, 15,
-
-                                      16, 17, 19,
-                                      16, 18, 19,
-
-                                      20, 21, 23,
-                                      20, 22, 23
-                                      }
-                                     );
-   cubeData.setPositions(Vector<float>{-0.5f,  0.5f,  0.5f,  
-                                       0.5f,  0.5f,  0.5f,  
-                                      -0.5f, -0.5f,  0.5f,  
-                                       0.5f, -0.5f,  0.5f,  
-
-                                       0.5f,  0.5f,  0.5f,  
-                                       0.5f,  0.5f, -0.5f,  
-                                       0.5f, -0.5f,  0.5f,  
-                                       0.5f, -0.5f, -0.5f,  
-
-                                      -0.5f,  0.5f, -0.5f,  
-                                       0.5f,  0.5f, -0.5f,  
-                                      -0.5f, -0.5f, -0.5f,  
-                                       0.5f, -0.5f, -0.5f,  
-
-                                      -0.5f,  0.5f,  0.5f,  
-                                      -0.5f,  0.5f, -0.5f,  
-                                      -0.5f, -0.5f,  0.5f,  
-                                      -0.5f, -0.5f, -0.5f,  
-
-                                      -0.5f,  0.5f, -0.5f,  
-                                       0.5f,  0.5f, -0.5f,  
-                                      -0.5f,  0.5f,  0.5f,  
-                                       0.5f,  0.5f,  0.5f,  
-
-                                      -0.5f, -0.5f,  0.5f,  
-                                       0.5f, -0.5f,  0.5f,  
-                                      -0.5f, -0.5f, -0.5f,
-                                       0.5f, -0.5f, -0.5f
-                                      }
-                                     );
-   cubeData.setNormals(std::vector<float>{0,  0,  1,
-                                          0,  0,  1,
-                                          0,  0,  1,
-                                          0,  0,  1,
-
-                                          1,  0,  0,
-                                          1,  0,  0,
-                                          1,  0,  0,
-                                          1,  0,  0,
-
-                                          0,  0, -1,
-                                          0,  0, -1,
-                                          0,  0, -1,
-                                          0,  0, -1,
-
-                                         -1,  0,  0,
-                                         -1,  0,  0,
-                                         -1,  0,  0,
-                                         -1,  0,  0,
-
-                                          0,  1,  0,
-                                          0,  1,  0,
-                                          0,  1,  0,
-                                          0,  1,  0,
-
-                                          0, -1,  0,
-                                          0, -1,  0,
-                                          0, -1,  0,
-                                          0, -1,  0
-                                        }
-                                       );
-   cubeData.setTexCoords(Vector<float>{0.0f, 0.0f,
-                                       1.0f, 0.0f,
-                                       0.0f, 1.0f,
-                                       1.0f, 1.0f,
-
-                                       0.0f, 0.0f,
-                                       1.0f, 0.0f,
-                                       0.0f, 1.0f,
-                                       1.0f, 1.0f,
-
-                                       0.0f, 0.0f,
-                                       1.0f, 0.0f,
-                                       0.0f, 1.0f,
-                                       1.0f, 1.0f,
-
-                                       0.0f, 0.0f,
-                                       1.0f, 0.0f,
-                                       0.0f, 1.0f,
-                                       1.0f, 1.0f,
-
-                                       0.0f, 0.0f,
-                                       1.0f, 0.0f,
-                                       0.0f, 1.0f,
-                                       1.0f, 1.0f,
-
-                                       0.0f, 0.0f,
-                                       1.0f, 0.0f,
-                                       0.0f, 1.0f,
-                                       1.0f, 1.0f,
-                                      }
-                                     );
-
-
-   Ellipse::RenderObjData quadData;
-
-   quadData.setIndicies(Vector<u32_t>{0, 1, 2,
-                                      1, 2, 3 
-                                      }
-                        );
-   quadData.setPositions(Vector<float>{-0.5f, 0.5f, 0.0f,
-                                        0.5f, 0.5f, 0.0f,
-                                       -0.5f, -0.5f, 0.0f,
-                                        0.5f, -0.5f, 0.0f
-                                      }
-                        );
-   quadData.setNormals(Vector<float>{0.0f, 0.0f, 1.0f,
-                                     0.0f, 0.0f, 1.0f,
-                                     0.0f, 0.0f, 1.0f,
-                                     0.0f, 0.0f, 1.0f
-                                    }
-                      );
-   quadData.setTexCoords(Vector<float>{0.0f, 1.0f,
-                                       1.0f, 1.0f,
-                                       0.0f, 0.0f,
-                                       1.0f, 0.0f
-                                      }
-                        );
-
-   m_objectsData["Cube"] = cubeData;
-   m_objectsData["Quad"] = quadData;
 }
 
-void DemoLayer::initUserLayer()
+void DemoLayer::init()
 {
-   // [ Layer should not set the clear color manually ]
-
    Ellipse::RenderModule& renderer = static_cast<Ellipse::RenderModule&>(m_engine.getModule("RenderModule"));
    Pair<i32_t, i32_t> size = Ellipse::Application::get().getWindow().getWindowSize();
    renderer.setViewport(Ellipse::Viewspace{0,
@@ -177,8 +33,8 @@ void DemoLayer::initUserLayer()
                        );
 
 
-   Ellipse::RenderObjData cube = m_objectsData["Cube"];
-   Ellipse::RenderObjData quad = m_objectsData["Quad"];
+   Ellipse::RenderObjData cube = m_objects["Cube"];
+   Ellipse::RenderObjData quad = m_objects["Quad"];
 
    m_modelList.addModelDefinition("LightCube",
                                   "Assets/Shader/Light.vert.glsl",
@@ -214,7 +70,6 @@ void DemoLayer::initUserLayer()
                         m_light.light()
                        );
    m_modelList.model("Cube1").setTranslateAmount(Vec3{-1.0f, 0.0f, 0.0f});
-   // exit(1);
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e)
@@ -238,12 +93,17 @@ void DemoLayer::onEvent(Ellipse::Event& e)
     );
 }
 
-void DemoLayer::onUpdateUserLayer(float dt)
+void DemoLayer::onUpdate(float dt)
 {
     // ELLIPSE_APP_LOG_INFO("{}", m_timeModule.secAndNSec())
-    m_modelList.model("Cube1").setRotateAmount(Ellipse::EllipseMath::Radian{static_cast<float>(m_timeModule.secAndNSec() * 16)}.radians(),
-                                           Vec3{1.0f, 0.0f, 0.0f}
-                                          );
+    // m_modelList.model("Cube1").setRotateAmount(Ellipse::EllipseMath::radians(static_cast<float>(m_timeModule.secAndNSec() * 16)),
+    //                                        Vec3{0.0f, 1.0f, 0.0f}
+    //                                       );
+
+    // Ellipse::EllipseMath::rotate(Ellipse::EllipseMath::radians(static_cast<float>(m_timeModule.secAndNSec() * 16)), m_renderModule.camera().front(), Vec3(0);
+    m_modelList.model("Cube1").setRotateAmount(Ellipse::EllipseMath::radians(30.0f),
+                                               Vec3{0.0f, 1.0f, 0.0f}
+                                              );
 
     m_modelList.onUpdate();
 
@@ -260,37 +120,17 @@ void DemoLayer::onUpdateUserLayer(float dt)
     Vec3 position = pixel.worldPosition();
 
     double time = m_timeModule.secAndNSec() * 16;
-    // float radiansRotated = Ellipse::EllipseMath::Radian{static_cast<float>(m_timeModule.secAndNSec())}.radians();
-    float radiansRotated = Ellipse::EllipseMath::Radian{static_cast<float>(time)}.radians();
+    float radiansRotated = Ellipse::EllipseMath::radians(static_cast<float>(time));
 
-    // ELLIPSE_APP_LOG_INFO("time value {}", time);
-
-    Mat3 xAxisMatrix{1.0f};
-
-    xAxisMatrix[1][1] = static_cast<float>(cos(radiansRotated));
-    xAxisMatrix[1][2] = static_cast<float>(sin(radiansRotated));
-    xAxisMatrix[2][1] = static_cast<float>(-sin(radiansRotated));
-    xAxisMatrix[2][2] = static_cast<float>(cos(radiansRotated));
-
-    position = position * xAxisMatrix;
+    position = Ellipse::EllipseMath::rotateXAxis(position, radiansRotated);
 
     Mat3 yAxisMatrix{1.0f};
 
-    yAxisMatrix[0][0] = static_cast<float>(cos(radiansRotated));
-    yAxisMatrix[0][2] = static_cast<float>(sin(radiansRotated));
-    yAxisMatrix[2][0] = static_cast<float>(-sin(radiansRotated));
-    yAxisMatrix[2][2] = static_cast<float>(cos(radiansRotated));
-
-    position = position * yAxisMatrix;
+    position = Ellipse::EllipseMath::rotateYAxis(position, radiansRotated);
 
     Mat3 zAxisMatrix{1.0f};
 
-    // zAxisMatrix[0][0] = cos(radiansRotated);
-    // zAxisMatrix[0][1] = sin(radiansRotated);
-    // zAxisMatrix[1][0] = -sin(radiansRotated);
-    // zAxisMatrix[1][1] = cos(radiansRotated);
-
-    position = position * zAxisMatrix;
+    // position = Ellipse::EllipseMath::rotateZAxis(position, radiansRotated);
 
     pixel.setPosition(position); 
     }

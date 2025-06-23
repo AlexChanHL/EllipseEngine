@@ -7,89 +7,6 @@
 namespace Ellipse
 {
 
-class ModelObject
-{
-   public:
-    ModelObject()
-    : m_name{nullptr},
-      m_isInList{false},
-      m_renderObject{nullptr},
-      m_shaderObject{nullptr}
-    {
-
-    }
-    ModelObject(const char* name,
-                SharedPtr<RenderObj> renderObject,
-                SharedPtr<RenderShaderObj> shaderObject
-               )
-    : m_name{name},
-      m_isInList{false},
-      m_renderObject{std::move(renderObject)},
-      m_shaderObject{std::move(shaderObject)}
-    {
-
-    }
-    ~ModelObject()
-    {
-
-    }
-
-    void setName(const char* name)
-    {
-    m_name = name;
-    }
-
-    void setIsInList(bool isInList)
-    {
-    m_isInList = isInList;
-    }
-
-    void setRenderObj(SharedPtr<RenderObj> renderObj)
-    {
-    m_renderObject = renderObj;
-    }
-
-    void setShaderObj(SharedPtr<RenderShaderObj> shaderObj)
-    {
-    m_shaderObject = shaderObj;
-    }
-
-    const char* name() const
-    {
-    return m_name;
-    }
-
-    bool isInList() const
-    {
-    return m_isInList;
-    }
-
-    SharedPtr<RenderObj> renderObject()
-    {
-    return m_renderObject;
-    }
-    SharedPtr<RenderObj> renderObject() const
-    {
-    return m_renderObject;
-    }
-
-    SharedPtr<RenderShaderObj> shaderObject()
-    {
-    return m_shaderObject;
-    }
-
-    SharedPtr<RenderShaderObj> shaderObject() const
-    {
-    return m_shaderObject;
-    }
-
-   private:
-    const char* m_name;
-    bool m_isInList;
-    SharedPtr<RenderObj> m_renderObject;
-    SharedPtr<RenderShaderObj> m_shaderObject;
-};
-
 class ModelManagerModuleImpl : public ModelManagerModule
 {
    public:
@@ -188,12 +105,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     virtual void onUpdate() override
     {
-    for(u64_t i=0;i<m_removeModels.size();i++)
-    {
-    removeModelId(m_removeModels[i]);
-    }
-
-    m_removeModels.clear();
 
     }
 
@@ -254,9 +165,17 @@ class ModelManagerModuleImpl : public ModelManagerModule
     m_objects.push_back(object);
     }
 
-    virtual void removeModel(ModelID modelID) override
+    virtual void removeModel(ModelID id) override
     {
-    m_removeModels.push_back(modelID);
+    for(u64_t i=0;i<m_models.size();i++)
+    {
+    if(id == m_models[i].id())
+    {
+    m_models.erase(m_models.begin() + i);
+    m_modelLastAddedCount--;
+    }
+
+    }
     }
 
     void removeModelId(ModelID id)
@@ -283,9 +202,23 @@ class ModelManagerModuleImpl : public ModelManagerModule
     }
     }
 
-    ELLIPSE_ENGINE_LOG_ERROR("Could not find model, returning zero index");
+    ELLIPSE_ENGINE_LOG_ERROR("Could not find model, returning invalid index");
    
     return 0;
+    }
+
+    virtual i64_t findObjectIndex(const char* name) const override
+    {
+    for(u64_t i=0;i<m_objects.size();i++)
+    {
+    if(strcmp(name, m_objects[i].name()) == 0)
+    {
+    return static_cast<i64_t>(i);
+    }
+    }
+
+    ELLIPSE_ENGINE_LOG_WARN("Could not find object, returning invalid index");
+    return -1;
     }
 
     virtual void setDifferentInViewspace(float viewspaceWidth,
@@ -296,6 +229,11 @@ class ModelManagerModuleImpl : public ModelManagerModule
     virtual VectorSharedIteratorHeap<Model>& models() override
     {
     return m_models;
+    }
+
+    virtual Vector<ModelObject>& objects() override
+    {
+    return m_objects;
     }
 
     SharedPtr<ModelManagerModule> createModelManagerModule();

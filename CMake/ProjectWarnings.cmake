@@ -52,6 +52,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
       -Wno-error=unused
       -Wno-error=unused-parameter
       -Wno-error=unused-variable
+      -Wno-error=unused-but-set-variable
      )
 
   if(WARNING_AS_ERRORS)

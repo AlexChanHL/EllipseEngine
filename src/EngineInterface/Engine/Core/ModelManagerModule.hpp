@@ -96,6 +96,89 @@ struct RotateAmount
     Vec3 m_rotationAxis;
 };
 
+class ModelObject
+{
+   public:
+    ModelObject()
+    : m_name{nullptr},
+      m_isInList{false},
+      m_renderObject{nullptr},
+      m_shaderObject{nullptr}
+    {
+
+    }
+    ModelObject(const char* name,
+                SharedPtr<RenderObj> renderObject,
+                SharedPtr<RenderShaderObj> shaderObject
+               )
+    : m_name{name},
+      m_isInList{false},
+      m_renderObject{std::move(renderObject)},
+      m_shaderObject{std::move(shaderObject)}
+    {
+
+    }
+    ~ModelObject()
+    {
+
+    }
+
+    void setName(const char* name)
+    {
+    m_name = name;
+    }
+
+    void setIsInList(bool isInList)
+    {
+    m_isInList = isInList;
+    }
+
+    void setRenderObj(SharedPtr<RenderObj> renderObj)
+    {
+    m_renderObject = renderObj;
+    }
+
+    void setShaderObj(SharedPtr<RenderShaderObj> shaderObj)
+    {
+    m_shaderObject = shaderObj;
+    }
+
+    const char* name() const
+    {
+    return m_name;
+    }
+
+    bool isInList() const
+    {
+    return m_isInList;
+    }
+
+    SharedPtr<RenderObj> renderObject()
+    {
+    return m_renderObject;
+    }
+    SharedPtr<RenderObj> renderObject() const
+    {
+    return m_renderObject;
+    }
+
+    SharedPtr<RenderShaderObj> shaderObject()
+    {
+    return m_shaderObject;
+    }
+
+    SharedPtr<RenderShaderObj> shaderObject() const
+    {
+    return m_shaderObject;
+    }
+
+   private:
+    const char* m_name;
+    bool m_isInList;
+    SharedPtr<RenderObj> m_renderObject;
+    SharedPtr<RenderShaderObj> m_shaderObject;
+};
+
 class Model
 {
    public:
@@ -289,8 +372,8 @@ class Camera
     {
     Vec3 cameraDirection = Vec3{1.0f};
       
-    float yawRadians = EllipseMath::Radian{m_yaw}.radians();
-    float pitchRadians = EllipseMath::Radian{m_pitch}.radians();
+    float yawRadians = EllipseMath::radians(m_yaw);
+    float pitchRadians = EllipseMath::radians(m_pitch);
 
     cameraDirection.x = static_cast<float>(sin(yawRadians) * cos(pitchRadians));
     cameraDirection.y = static_cast<float>(sin(pitchRadians));
@@ -511,6 +594,7 @@ class ModelManagerModule : public IModule
     virtual void removeModel(ModelID modelID) = 0;
 
     virtual u64_t findModelIndex(ModelID modelID) const = 0;
+    virtual i64_t findObjectIndex(const char* name) const = 0;
 
     virtual void setDifferentInViewspace(float viewspaceWidth,
                                          float viewspaceHeight,
@@ -532,6 +616,7 @@ class ModelManagerModule : public IModule
     // virtual CameraManager& cameraManager() = 0;
 
     virtual VectorSharedIteratorHeap<Model>& models() = 0;
+    virtual Vector<ModelObject>& objects() = 0;
 
     static SharedPtr<ModelManagerModule> createModelManagerModule(Engine& engine);
 

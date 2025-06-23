@@ -29,6 +29,9 @@ class RenderModule3D : public RenderModule
      virtual void setViewport(Ellipse::Viewspace viewspace) override;
      virtual void setClearColor(Vec4 col) override;
 
+     virtual void setProjPerspective() override;
+     virtual void setProjOrtho() override;
+
      virtual Mat4& proj() override
      {
      return m_proj;
@@ -39,8 +42,7 @@ class RenderModule3D : public RenderModule
      }
 
      virtual Camera& camera() override
-     {
-     return m_camera;
+     { return m_camera;
      }
 
      virtual void configureCameras() override

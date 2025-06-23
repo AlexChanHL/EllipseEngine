@@ -64,6 +64,9 @@ using ModelID = i64_t;
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/rotate_vector.hpp>
+
 using Vec2 = glm::vec2;
 using Vec3 = glm::vec3;
 using Vec4 = glm::vec4;
@@ -88,6 +91,11 @@ inline Mat4 scale(Mat4 model, Vec3 scalerAmount)
 inline Mat4 rotate(Mat4 model, float radians, Vec3 rotationAxis)
 {
    return glm::rotate(model, radians, rotationAxis);
+}
+
+inline Vec3 rotate(Vec3 vec, float radians, Vec3 normal)
+{
+   return glm::rotate(vec, radians, normal);
 }
 
 inline Mat4 translate(Mat4 model, Vec3 translateAmount)
@@ -143,6 +151,11 @@ inline Vec3 normalize(Vec3 vec)
 inline Vec3 cross(Vec3 vec1, Vec3 vec2)
 {
    return glm::cross(vec1, vec2);
+}
+
+inline double dot(Vec3 vec1, Vec3 vec2)
+{
+   return glm::dot(vec1, vec2);
 }
 
 }    // namespace ElipseMath

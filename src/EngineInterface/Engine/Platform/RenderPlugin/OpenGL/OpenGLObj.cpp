@@ -62,7 +62,6 @@ void OpenGLShaderObj::compileShader(const char* fname)
      glShaderSource(shader, 1, &shaderSrc, NULL);
      glCompileShader(shader);
 
-     std::cout << "String compile " << strShader << '\n';
 
      checkCompileStatus(shader);
 
