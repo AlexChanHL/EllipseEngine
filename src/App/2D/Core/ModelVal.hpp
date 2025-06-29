@@ -5,28 +5,13 @@
 #include "Ellipse.hpp"
 
 
-inline void translateModel(Mat4& model, Vec3 translateAmount)
-{
-    model = Ellipse::EllipseMath::translate(model, translateAmount);
-}
-
-inline void rotateModel(Mat4& model, float radians, Vec3 rotateAmount)
-{
-    model = Ellipse::EllipseMath::rotate(model, radians, rotateAmount);
-}
-
-inline void scaleModel(Mat4& model, Vec3 scaleAmount)
-{
-    model = Ellipse::EllipseMath::scale(model, scaleAmount);
-}
-
 class ModelVal
 {
    public:
     ModelVal()
     : m_model{Mat4{1.0f}},
       m_normalMatrix{createUnique<Mat3>(1.0f)},
-      m_translationAmount{Vec3{1.0f}},
+      m_translationAmount{Vec3{0.0f}},
       m_rotationAmount{Pair<Vec3, float>{Vec3{1.0f}, 0.0f}},
       m_scaleAmount{Vec3{1.0f}}
     {
@@ -88,13 +73,13 @@ class ModelVal
 
     void totalAmounts()
     {
-    m_model = Mat4{1.0f};
-
-    translateModel(m_model, m_translationAmount);
-    rotateModel(m_model, m_rotationAmount.second, m_rotationAmount.first);
-    scaleModel(m_model, m_scaleAmount);
-
-    *m_normalMatrix = Ellipse::EllipseMath::inverse(Ellipse::EllipseMath::transpose(Mat3{m_model}));
+    // m_model = Mat4{1.0f};
+    //
+    // m_model = Ellipse::EllipseMath::translate(m_model, m_translationAmount);
+    // m_model = Ellipse::EllipseMath::rotate(m_model, m_rotationAmount.second, m_rotationAmount.first);
+    // m_model = Ellipse::EllipseMath::scale(m_model, m_scaleAmount);
+    //
+    // *m_normalMatrix = Ellipse::EllipseMath::inverse(Ellipse::EllipseMath::transpose(Mat3{m_model}));
     }
 
     Mat4& model()

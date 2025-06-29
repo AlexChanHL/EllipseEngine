@@ -34,14 +34,21 @@ class ModelList
 
     }
 
-    void addAmounts()
+    virtual void addAmounts()
     {
-    for(Pair<const Ellipse::ModelID, ModelVal>& model : m_models)
-    {
-    model.second.totalAmounts();
-    setModelVal(model.first);
-    }
+        for(Pair<const Ellipse::ModelID, ModelVal>& model : m_models)
+        {
+            model.second.model() = Mat4{1.0f};
 
+            model.second.model() = Ellipse::EllipseMath::translate(model.second.model(), model.second.translationAmount());
+            model.second.model() = Ellipse::EllipseMath::rotate(model.second.model(), model.second.rotationAmount().second, model.second.rotationAmount().first);
+            model.second.model() = Ellipse::EllipseMath::scale(model.second.model(), model.second.scaleAmount());
+
+            *model.second.normalMatrix() = Ellipse::EllipseMath::inverse(Ellipse::EllipseMath::transpose(Mat3{model.second.model()}));
+
+            setModelVal(model.first);
+        }
+    
     }
     virtual void addModelDefinition(const char* objectName,
                             String vert,

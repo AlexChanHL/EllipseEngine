@@ -23,77 +23,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     }
  
-    struct ModelNotSet
-    {
-       public:
-        ModelNotSet(RenderObjData renderObjectData,
-                    String vertex,
-                    String fragment,
-                    Mat4 model,
-                    ModelID modelID,
-                    UniformList uniformList,
-                    const char* objectName
-                   )
-        : m_renderObjectData{renderObjectData},
-          m_vertex{vertex},
-          m_fragment{fragment},
-          m_model{model},
-          m_modelID{modelID},
-          m_uniformList{uniformList},
-          m_objectName{objectName}
-        {
-
-        }
-        ~ModelNotSet()
-        {
-
-        }
-
-        RenderObjData renderObjData() const
-        {
-        return m_renderObjectData;
-        }
-
-        String vertex() const
-        {
-        return m_vertex;
-        }
-        
-        String fragment() const
-        {
-        return m_fragment;
-        }
-
-        Mat4 model() const
-        {
-        return m_model;
-        }
-      
-        ModelID id() const
-        {
-        return m_modelID;
-        }
-
-        UniformList uniformList() const
-        {
-        return m_uniformList;
-        }
-
-        const char* objectName() const
-        {
-        return m_objectName;
-        }
-
-       private:
-        RenderObjData m_renderObjectData;
-        String m_vertex;
-        String m_fragment;
-        Mat4 m_model;
-        ModelID m_modelID;
-        UniformList m_uniformList;
-        const char* m_objectName;
-    };
-
     virtual void init() override
     {
     // m_modelWorldDrawOrder.initModelWorldDrawOrder();
@@ -277,8 +206,6 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
    private: 
     Engine& m_engine;
-
-    Vector<ModelNotSet> m_modelsNotSet;
 
     VectorSharedIteratorHeap<Model> m_models;
     Vector<ModelObject> m_objects;

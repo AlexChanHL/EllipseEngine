@@ -30,8 +30,19 @@ class RenderModule2D : public RenderModule
      virtual void setViewport(Viewspace viewspace) override;
      virtual void setClearColor(Vec4 col) override;
 
-     virtual Mat4& proj() override;
-     virtual Mat4& view() override;
+     virtual Renderer& renderer() override
+     {
+         return m_renderer;
+     }
+
+     virtual Mat4& proj() override
+     {
+         return m_proj;
+     }
+     virtual Mat4& view() override
+     {
+         return m_view;
+     }
 
      virtual Ellipse::Camera& camera() override;
 

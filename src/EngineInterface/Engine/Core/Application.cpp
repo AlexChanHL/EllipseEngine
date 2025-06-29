@@ -126,6 +126,11 @@ void Application::run()
   }
 }
 
+void Application::shutDown()
+{
+
+}
+
 void Application::quitApplication()
 {
     m_running = false;

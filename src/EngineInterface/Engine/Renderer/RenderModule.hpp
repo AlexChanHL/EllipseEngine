@@ -43,11 +43,10 @@ class Camera
       m_roll{0},
       m_cameraSpeed{0.025f},
       m_sensitivity{0.25f},
-      m_position{Vec3{1.0f, 1.0f, 1.0f}},
+      m_position{Vec3{0.0f, 0.0f, 1.0f}},
       m_front{Vec3{1.0f, 1.0f, 1.0f}},
       m_upDirection{Vec3{1.0f, 1.0f, 1.0f}}
     {
-      m_position = Vec3{0.0f, 0.0f, 0.0f};
       m_front = Vec3{0.0f, 0.0f, -1.0f};
       m_upDirection = Vec3{0.0f, 1.0f, 0.0f};
     }
@@ -185,7 +184,7 @@ class RenderModule : public IModule
     virtual void setCameraBackward(float amount) = 0;
     virtual void setCameraRight(float amount) = 0;
     virtual void setCameraLeft(float amount) = 0;
-    void updateCamera(Pair<float, float> offsets)
+    virtual void updateCamera(Pair<float, float> offsets)
     {
     camera().registerMouseUpdate(offsets);
     updateView();
@@ -194,8 +193,31 @@ class RenderModule : public IModule
     virtual void setViewport(Viewspace viewspace) = 0;
     virtual void setClearColor(Vec4 col) = 0;
 
-    virtual void setProjPerspective() = 0;
-    virtual void setProjOrtho() = 0;
+    void setProjPerspective()
+    {
+    i32_t winWidth = renderer().getWindowFrameSize().first;
+    i32_t winHeight = renderer().getWindowFrameSize().second;
+ 
+    float aspectRatio = float(winWidth) / float(winHeight);
+ 
+    m_proj = EllipseMath::perspective(EllipseMath::radians(45.0f),
+                                      aspectRatio,
+                                      0.1f,
+                                      100.0f
+                                     );
+    }
+    void setProjOrtho()
+    {
+    m_proj = EllipseMath::ortho(-1.0f,
+                                 1.0f,
+                                -1.0f,
+                                 1.0f,
+                                 0.1f,
+                                 100.0f
+                               );
+    }
+
+    virtual Renderer& renderer() = 0;
 
     virtual Mat4& proj() = 0;
     virtual Mat4& view() = 0;

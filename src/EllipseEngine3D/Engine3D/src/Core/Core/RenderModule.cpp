@@ -170,17 +170,6 @@ RenderModule3D::RenderModule3D(Engine& engine)
 
    float aspectRatio = float(winWidth) / float(winHeight);
 
-
-   //                              aspectRatio,
-   // [ Maybe should set to aspect ratio ]
-   // m_proj = EllipseMath::ortho(-1.0f,
-   //                              1.0f,
-   //                             -1.0f,
-   //                              1.0f,
-   //                              0.1f,
-   //                              100.0f
-   //                            );
-
    m_proj = EllipseMath::perspective(EllipseMath::radians(45.0f),
                                      aspectRatio,
                                      0.1f,
@@ -212,12 +201,6 @@ void RenderModule3D::setViewCamera(Camera camera)
                                  camera.front() + camera.position(),
                                  camera.upDirection()
                                 );
-
-
-    // ELLIPSE_ENGINE_LOG_INFO("{}, {}, {}", camera.position(),
-    //                                       camera.front(),
-    //                                       camera.upDirection()
-    //                        );
 }
 
 void RenderModule3D::setCameraFront(float amount)
@@ -244,30 +227,6 @@ void RenderModule3D::setCameraLeft(float amount)
 void RenderModule3D::setClearColor(Vec4 col)
 {
    m_renderer.setClearColor(col);
-}
-
-void RenderModule3D::setProjPerspective()
-{
-   i32_t winWidth = m_renderer.getWindowFrameSize().first;
-   i32_t winHeight = m_renderer.getWindowFrameSize().second;
-
-   float aspectRatio = float(winWidth) / float(winHeight);
-
-   m_proj = EllipseMath::perspective(EllipseMath::radians(45.0f),
-                                     aspectRatio,
-                                     0.1f,
-                                     100.0f
-                                    );
-}
-void RenderModule3D::setProjOrtho()
-{
-    m_proj = EllipseMath::ortho(-1.0f,
-                                 1.0f,
-                                -1.0f,
-                                 1.0f,
-                                 0.1f,
-                                 100.0f
-                               );
 }
 
 void RenderModule3D::setViewport(Viewspace viewspace)

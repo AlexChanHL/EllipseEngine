@@ -55,6 +55,8 @@ class Application
 
     void run();
 
+    void shutDown();
+
     ForwardList<SharedPtr<Layer>> createUserProcesses();
 
     void quitApplication();

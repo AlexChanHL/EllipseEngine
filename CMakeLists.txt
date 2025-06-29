@@ -12,7 +12,5 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/lib)
 include(CMake/ProjectSettings.cmake)
 
 
-set(BUILD_ENGINE_3D True)
-
 add_subdirectory(src)
 

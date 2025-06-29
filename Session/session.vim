@@ -13,35 +13,84 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +66 src/App/Core/DemoLayer.hpp
-badd +45 src/App/Core/GUILayer.cpp
-badd +10 src/App/Core/GUILayer.hpp
-badd +135 src/App/Core/DemoLayer.cpp
-badd +9650 term://~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine//10014:/bin/bash
-badd +33 src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.hpp
-badd +206 src/EngineInterface/Engine/Core/ModelManagerModule.cpp
-badd +15 src/App/Core/ModelList.hpp
-badd +32 src/EngineInterface/Engine/Core/ModelManagerModule.hpp
-badd +129 src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.cpp
+badd +1 src/App/Core/DemoLayer.hpp
+badd +17 src/App/3D/Core/GUILayer.cpp
+badd +18 src/App/3D/Core/GUILayer.hpp
+badd +62 src/App/3D/Core/DemoLayer.cpp
+badd +20 term://~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine//10014:/bin/bash
+badd +12 src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.hpp
+badd +210 src/EngineInterface/Engine/Core/ModelManagerModule.cpp
+badd +20 src/App/3D/Core/ModelList.hpp
+badd +395 src/EngineInterface/Engine/Core/ModelManagerModule.hpp
+badd +165 src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.cpp
 badd +41 src/EngineInterface/Engine/Core/Layer.hpp
-badd +1 src/App/Core/DemoApp.cpp
-badd +125 src/EngineInterface/Engine/Core/Application.cpp
+badd +34 src/App/Core/DemoApp.cpp
+badd +118 src/EngineInterface/Engine/Core/Application.cpp
 badd +21 src/EngineInterface/Engine/Engine/Engine.hpp
-badd +47 ~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine/src/App/Core/ModelList2D.hpp
-badd +7 src/App/CMakeLists.txt
-badd +14 src/EngineInterface/Engine/CMakeLists.txt
-badd +39 src/EngineInterface/Engine/Renderer/RenderModule.hpp
+badd +102 src/App/3D/Core/ModelList2D.hpp
+badd +29 src/App/CMakeLists.txt
+badd +70 src/EngineInterface/Engine/CMakeLists.txt
+badd +239 src/EngineInterface/Engine/Renderer/RenderModule.hpp
 badd +8 src/App/Core/Light.hpp
 badd +19 src/EngineInterface/Engine/Platform/Window/SDLWindow/SDLWindow.cpp
 badd +1 src/EngineInterface/Engine/Platform/Window/SDLWindow/SDLWindow.hpp
-badd +17 src/App/Core/ModelVal.hpp
+badd +15 src/App/3D/Core/ModelVal.hpp
 badd +19 src/App/Core/Material.hpp
-badd +39 src/EllipseEngine2D/Engine2D/src/Core/Core/RenderModule.hpp
+badd +18 src/EllipseEngine2D/Engine2D/src/Core/Core/RenderModule.hpp
 badd +8 Build/_deps/glmlib-src/glm/trigonometric.hpp
-badd +0 src/EngineInterface/Engine/Math/TrigonometricUnits.hpp
+badd +27 src/EngineInterface/Engine/Math/TrigonometricUnits.hpp
+badd +64 src/EngineInterface/Engine/Math/LinearFunc.hpp
+badd +13 Build/_deps/glmlib-src/glm/vec3.hpp
+badd +62 Build/_deps/glmlib-src/glm/ext.hpp
+badd +12 Build/_deps/glmlib-src/glm/ext/vector_uint4.hpp
+badd +1 Build/_deps/glmlib-src/glm/simd/vector_relational.h
+badd +124 Build/_deps/glmlib-src/glm/glm.hpp
+badd +94 Build/_deps/glmlib-src/glm/geometric.hpp
+badd +22 Build/_deps/glmlib-src/glm/common.hpp
+badd +6 Build/_deps/glmlib-src/glm/simd/trigonometric.h
+badd +803 Build/_deps/glmlib-src/glm/simd/matrix.h
+badd +1 Build/_deps/glmlib-src/glm/simd/platform.h
+badd +43 Build/_deps/glmlib-src/glm/gtx/rotate_vector.hpp
+badd +102 src/EngineInterface/Engine/Core/Base.hpp
+badd +49 Build/_deps/glmlib-src/glm/gtx/rotate_vector.inl
+badd +1 Build/_deps/glmlib-src/glm/simd/packing.h
+badd +1 Build/_deps/glmlib-src/glm/simd/common.h
+badd +18 Build/_deps/glmlib-src/glm/ext/vector_float1_precision.hpp
+badd +73 Build/_deps/glmlib-src/CMakeLists.txt
+badd +288 Build/_deps/glmlib-src/readme.md
+badd +1900 Build/_deps/glmlib-src/manual.md
+badd +8 Build/Debug/bin/Assets/Shader/Quad.frag.glsl
+badd +15 src/EngineInterface/Engine/Assets/Shader/Quad.vert.glsl
+badd +7 src/EngineInterface/Engine/Assets/Shader/Quad.frag.glsl
+badd +20 src/EngineInterface/Vendor/CMakeLists.txt
+badd +11 src/App/3D/Core/main.cpp
+badd +34 src/App/3D/Core/DemoApp.cpp
+badd +58 src/EngineInterface/Engine/Core/Application.hpp
+badd +21 src/App/2D/Core/DemoApp.cpp
+badd +11 src/App/2D/Core/main.cpp
+badd +35 src/App/2D/Core/DemoLayer.hpp
+badd +47 src/App/2D/Core/DemoLayer.cpp
+badd +5 BuildScripts/configureSettings.txt
+badd +26 CMake/ProjectSettings.cmake
+badd +11 src/CMakeLists.txt
+badd +14 CMakeLists.txt
+badd +36 src/EllipseEngine2D/Engine2D/src/Core/Core/RenderModule.cpp
+badd +62 src/App/2D/Core/ModelList.hpp
+badd +79 src/App/3D/Core/DemoLayer.hpp
+badd +1 src/App/Core/GUILayer.cpp
+badd +21 src/App/Core/GUILayer.hpp
+badd +169 src/App/Core/DemoLayer.cpp
+badd +1 src/App/Core/ModelList.hpp
+badd +1 src/App/Core/ModelList2D.hpp
+badd +1 src/App/Core/ModelVal.hpp
+badd +118 src/App/2D/Core/ModelVal.hpp
+badd +34 src/EngineInterface/Engine/Platform/RenderPlugin/OpenGL/GLRenderPlugin.cpp
+badd +299 src/EngineInterface/Engine/Renderer/UniformVarible.hpp
+badd +16 src/EngineInterface/Engine/Renderer/Renderer.cpp
+badd +0 src/EngineInterface/Engine/Platform/RenderPlugin/OpenGL/OpenGLObj.hpp
 argglobal
 %argdel
-edit src/App/Core/DemoApp.cpp
+edit BuildScripts/configureSettings.txt
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -50,20 +99,24 @@ vsplit
 1wincmd h
 wincmd _ | wincmd |
 split
-wincmd _ | wincmd |
-split
-wincmd _ | wincmd |
-split
-3wincmd k
-wincmd w
+1wincmd k
 wincmd _ | wincmd |
 vsplit
-1wincmd h
-wincmd w
-wincmd w
 wincmd _ | wincmd |
 vsplit
-1wincmd h
+2wincmd h
+wincmd _ | wincmd |
+split
+wincmd _ | wincmd |
+split
+2wincmd k
+wincmd w
+wincmd w
+wincmd w
+wincmd _ | wincmd |
+split
+1wincmd k
+wincmd w
 wincmd w
 wincmd w
 wincmd w
@@ -71,13 +124,7 @@ wincmd _ | wincmd |
 split
 wincmd _ | wincmd |
 split
-wincmd _ | wincmd |
-split
-wincmd _ | wincmd |
-split
-4wincmd k
-wincmd w
-wincmd w
+2wincmd k
 wincmd w
 wincmd w
 let &splitbelow = s:save_splitbelow
@@ -89,30 +136,28 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 16 + 33) / 67)
-exe 'vert 1resize ' . ((&columns * 210 + 158) / 316)
-exe '2resize ' . ((&lines * 15 + 33) / 67)
-exe 'vert 2resize ' . ((&columns * 105 + 158) / 316)
-exe '3resize ' . ((&lines * 15 + 33) / 67)
-exe 'vert 3resize ' . ((&columns * 104 + 158) / 316)
-exe '4resize ' . ((&lines * 16 + 33) / 67)
-exe 'vert 4resize ' . ((&columns * 105 + 158) / 316)
-exe '5resize ' . ((&lines * 16 + 33) / 67)
-exe 'vert 5resize ' . ((&columns * 104 + 158) / 316)
-exe '6resize ' . ((&lines * 15 + 33) / 67)
-exe 'vert 6resize ' . ((&columns * 210 + 158) / 316)
-exe '7resize ' . ((&lines * 12 + 33) / 67)
-exe 'vert 7resize ' . ((&columns * 105 + 158) / 316)
-exe '8resize ' . ((&lines * 12 + 33) / 67)
-exe 'vert 8resize ' . ((&columns * 105 + 158) / 316)
-exe '9resize ' . ((&lines * 12 + 33) / 67)
-exe 'vert 9resize ' . ((&columns * 105 + 158) / 316)
-exe '10resize ' . ((&lines * 13 + 33) / 67)
-exe 'vert 10resize ' . ((&columns * 105 + 158) / 316)
-exe '11resize ' . ((&lines * 12 + 33) / 67)
-exe 'vert 11resize ' . ((&columns * 105 + 158) / 316)
+exe '1resize ' . ((&lines * 15 + 32) / 65)
+exe 'vert 1resize ' . ((&columns * 91 + 184) / 369)
+exe '2resize ' . ((&lines * 15 + 32) / 65)
+exe 'vert 2resize ' . ((&columns * 91 + 184) / 369)
+exe '3resize ' . ((&lines * 15 + 32) / 65)
+exe 'vert 3resize ' . ((&columns * 91 + 184) / 369)
+exe '4resize ' . ((&lines * 23 + 32) / 65)
+exe 'vert 4resize ' . ((&columns * 92 + 184) / 369)
+exe '5resize ' . ((&lines * 23 + 32) / 65)
+exe 'vert 5resize ' . ((&columns * 92 + 184) / 369)
+exe '6resize ' . ((&lines * 47 + 32) / 65)
+exe 'vert 6resize ' . ((&columns * 91 + 184) / 369)
+exe '7resize ' . ((&lines * 15 + 32) / 65)
+exe 'vert 7resize ' . ((&columns * 276 + 184) / 369)
+exe '8resize ' . ((&lines * 20 + 32) / 65)
+exe 'vert 8resize ' . ((&columns * 92 + 184) / 369)
+exe '9resize ' . ((&lines * 21 + 32) / 65)
+exe 'vert 9resize ' . ((&columns * 92 + 184) / 369)
+exe '10resize ' . ((&lines * 20 + 32) / 65)
+exe 'vert 10resize ' . ((&columns * 92 + 184) / 369)
 argglobal
-balt src/App/Core/GUILayer.hpp
+balt src/App/2D/Core/DemoApp.cpp
 setlocal foldmethod=manual
 setlocal foldexpr=0
 setlocal foldmarker={{{,}}}
@@ -123,19 +168,19 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 14 - ((12 * winheight(0) + 8) / 16)
+let s:l = 8 - ((7 * winheight(0) + 7) / 15)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 14
+keepjumps 8
 normal! 0
 wincmd w
 argglobal
-if bufexists(fnamemodify("~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine/src/App/Core/ModelList2D.hpp", ":p")) | buffer ~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine/src/App/Core/ModelList2D.hpp | else | edit ~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine/src/App/Core/ModelList2D.hpp | endif
+if bufexists(fnamemodify("src/App/2D/Core/DemoApp.cpp", ":p")) | buffer src/App/2D/Core/DemoApp.cpp | else | edit src/App/2D/Core/DemoApp.cpp | endif
 if &buftype ==# 'terminal'
-  silent file ~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine/src/App/Core/ModelList2D.hpp
+  silent file src/App/2D/Core/DemoApp.cpp
 endif
-balt src/App/Core/DemoApp.cpp
+balt src/App/3D/Core/DemoApp.cpp
 setlocal foldmethod=manual
 setlocal foldexpr=0
 setlocal foldmarker={{{,}}}
@@ -146,109 +191,19 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 47 - ((10 * winheight(0) + 7) / 15)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 47
-normal! 039|
-wincmd w
-argglobal
-if bufexists(fnamemodify("src/App/Core/ModelList.hpp", ":p")) | buffer src/App/Core/ModelList.hpp | else | edit src/App/Core/ModelList.hpp | endif
-if &buftype ==# 'terminal'
-  silent file src/App/Core/ModelList.hpp
-endif
-balt ~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine/src/App/Core/ModelList2D.hpp
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 28 - ((8 * winheight(0) + 7) / 15)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 28
-normal! 05|
-wincmd w
-argglobal
-if bufexists(fnamemodify("src/App/Core/GUILayer.cpp", ":p")) | buffer src/App/Core/GUILayer.cpp | else | edit src/App/Core/GUILayer.cpp | endif
-if &buftype ==# 'terminal'
-  silent file src/App/Core/GUILayer.cpp
-endif
-balt src/App/Core/GUILayer.hpp
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 35 - ((10 * winheight(0) + 8) / 16)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 35
-normal! 030|
-wincmd w
-argglobal
-if bufexists(fnamemodify("src/App/Core/GUILayer.hpp", ":p")) | buffer src/App/Core/GUILayer.hpp | else | edit src/App/Core/GUILayer.hpp | endif
-if &buftype ==# 'terminal'
-  silent file src/App/Core/GUILayer.hpp
-endif
-balt src/App/Core/GUILayer.cpp
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 20 - ((14 * winheight(0) + 8) / 16)
+let s:l = 20 - ((7 * winheight(0) + 7) / 15)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 20
-normal! 02|
+normal! 0
 wincmd w
 argglobal
-if bufexists(fnamemodify("term://~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine//10014:/bin/bash", ":p")) | buffer term://~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine//10014:/bin/bash | else | edit term://~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine//10014:/bin/bash | endif
+if bufexists(fnamemodify("src/App/3D/Core/GUILayer.cpp", ":p")) | buffer src/App/3D/Core/GUILayer.cpp | else | edit src/App/3D/Core/GUILayer.cpp | endif
 if &buftype ==# 'terminal'
-  silent file term://~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine//10014:/bin/bash
+  silent file src/App/3D/Core/GUILayer.cpp
 endif
-balt src/App/Core/DemoLayer.cpp
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-let s:l = 167 - ((3 * winheight(0) + 7) / 15)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 167
-normal! 063|
-wincmd w
-argglobal
-if bufexists(fnamemodify("src/App/Core/DemoLayer.cpp", ":p")) | buffer src/App/Core/DemoLayer.cpp | else | edit src/App/Core/DemoLayer.cpp | endif
-if &buftype ==# 'terminal'
-  silent file src/App/Core/DemoLayer.cpp
-endif
-balt src/App/Core/ModelList.hpp
+balt src/App/3D/Core/DemoLayer.cpp
 setlocal foldmethod=manual
 setlocal foldexpr=0
 setlocal foldmarker={{{,}}}
@@ -259,19 +214,19 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 220 - ((7 * winheight(0) + 6) / 12)
+let s:l = 46 - ((1 * winheight(0) + 7) / 15)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 220
-normal! 028|
+keepjumps 46
+normal! 0
 wincmd w
 argglobal
-if bufexists(fnamemodify("src/EngineInterface/Engine/Math/TrigonometricUnits.hpp", ":p")) | buffer src/EngineInterface/Engine/Math/TrigonometricUnits.hpp | else | edit src/EngineInterface/Engine/Math/TrigonometricUnits.hpp | endif
+if bufexists(fnamemodify("src/App/2D/Core/DemoLayer.cpp", ":p")) | buffer src/App/2D/Core/DemoLayer.cpp | else | edit src/App/2D/Core/DemoLayer.cpp | endif
 if &buftype ==# 'terminal'
-  silent file src/EngineInterface/Engine/Math/TrigonometricUnits.hpp
+  silent file src/App/2D/Core/DemoLayer.cpp
 endif
-balt Build/_deps/glmlib-src/glm/trigonometric.hpp
+balt src/App/2D/Core/main.cpp
 setlocal foldmethod=manual
 setlocal foldexpr=0
 setlocal foldmarker={{{,}}}
@@ -282,17 +237,84 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 27 - ((10 * winheight(0) + 6) / 12)
+let s:l = 38 - ((9 * winheight(0) + 11) / 23)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 27
+keepjumps 38
+normal! 031|
+wincmd w
+argglobal
+if bufexists(fnamemodify("src/App/2D/Core/DemoLayer.hpp", ":p")) | buffer src/App/2D/Core/DemoLayer.hpp | else | edit src/App/2D/Core/DemoLayer.hpp | endif
+if &buftype ==# 'terminal'
+  silent file src/App/2D/Core/DemoLayer.hpp
+endif
+balt src/App/2D/Core/DemoLayer.cpp
+setlocal foldmethod=manual
+setlocal foldexpr=0
+setlocal foldmarker={{{,}}}
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldenable
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 23 - ((10 * winheight(0) + 11) / 23)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 23
 normal! 0
 wincmd w
 argglobal
 if bufexists(fnamemodify("src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.cpp", ":p")) | buffer src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.cpp | else | edit src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.cpp | endif
 if &buftype ==# 'terminal'
   silent file src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.cpp
+endif
+balt src/EllipseEngine2D/Engine2D/src/Core/Core/RenderModule.cpp
+setlocal foldmethod=manual
+setlocal foldexpr=0
+setlocal foldmarker={{{,}}}
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldenable
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 109 - ((36 * winheight(0) + 23) / 47)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 109
+normal! 020|
+wincmd w
+argglobal
+if bufexists(fnamemodify("term://~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine//10014:/bin/bash", ":p")) | buffer term://~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine//10014:/bin/bash | else | edit term://~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine//10014:/bin/bash | endif
+if &buftype ==# 'terminal'
+  silent file term://~/Project\ Files/C++/C++\ Active\ Projects/EllipseEngine//10014:/bin/bash
+endif
+balt src/App/3D/Core/DemoLayer.cpp
+setlocal foldmethod=manual
+setlocal foldexpr=0
+setlocal foldmarker={{{,}}}
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldenable
+let s:l = 9977 - ((5 * winheight(0) + 7) / 15)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 9977
+normal! 046|
+wincmd w
+argglobal
+if bufexists(fnamemodify("src/EngineInterface/Engine/Platform/RenderPlugin/OpenGL/OpenGLObj.hpp", ":p")) | buffer src/EngineInterface/Engine/Platform/RenderPlugin/OpenGL/OpenGLObj.hpp | else | edit src/EngineInterface/Engine/Platform/RenderPlugin/OpenGL/OpenGLObj.hpp | endif
+if &buftype ==# 'terminal'
+  silent file src/EngineInterface/Engine/Platform/RenderPlugin/OpenGL/OpenGLObj.hpp
 endif
 balt src/EngineInterface/Engine/Renderer/RenderModule.hpp
 setlocal foldmethod=manual
@@ -305,19 +327,42 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 129 - ((10 * winheight(0) + 6) / 12)
+let s:l = 56 - ((16 * winheight(0) + 10) / 20)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 129
+keepjumps 56
+normal! 023|
+wincmd w
+argglobal
+if bufexists(fnamemodify("src/App/2D/Core/ModelList.hpp", ":p")) | buffer src/App/2D/Core/ModelList.hpp | else | edit src/App/2D/Core/ModelList.hpp | endif
+if &buftype ==# 'terminal'
+  silent file src/App/2D/Core/ModelList.hpp
+endif
+balt src/EllipseEngine2D/Engine2D/src/Core/Core/RenderModule.cpp
+setlocal foldmethod=manual
+setlocal foldexpr=0
+setlocal foldmarker={{{,}}}
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldenable
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 96 - ((18 * winheight(0) + 10) / 21)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 96
 normal! 0
 wincmd w
 argglobal
-if bufexists(fnamemodify("src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.hpp", ":p")) | buffer src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.hpp | else | edit src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.hpp | endif
+if bufexists(fnamemodify("src/EllipseEngine2D/Engine2D/src/Core/Core/RenderModule.cpp", ":p")) | buffer src/EllipseEngine2D/Engine2D/src/Core/Core/RenderModule.cpp | else | edit src/EllipseEngine2D/Engine2D/src/Core/Core/RenderModule.cpp | endif
 if &buftype ==# 'terminal'
-  silent file src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.hpp
+  silent file src/EllipseEngine2D/Engine2D/src/Core/Core/RenderModule.cpp
 endif
-balt src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.cpp
+balt src/EngineInterface/Engine/Renderer/RenderModule.hpp
 setlocal foldmethod=manual
 setlocal foldexpr=0
 setlocal foldmarker={{{,}}}
@@ -328,59 +373,34 @@ setlocal foldnestmax=20
 setlocal foldenable
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 48 - ((12 * winheight(0) + 6) / 13)
+let s:l = 40 - ((18 * winheight(0) + 10) / 20)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 48
-normal! 045|
+keepjumps 40
+normal! 020|
 wincmd w
-argglobal
-if bufexists(fnamemodify("src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.cpp", ":p")) | buffer src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.cpp | else | edit src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.cpp | endif
-if &buftype ==# 'terminal'
-  silent file src/EllipseEngine3D/Engine3D/src/Core/Core/RenderModule.cpp
-endif
-balt src/EllipseEngine2D/Engine2D/src/Core/Core/RenderModule.hpp
-setlocal foldmethod=manual
-setlocal foldexpr=0
-setlocal foldmarker={{{,}}}
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldenable
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 107 - ((1 * winheight(0) + 6) / 12)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 107
-normal! 015|
-wincmd w
-4wincmd w
-exe '1resize ' . ((&lines * 16 + 33) / 67)
-exe 'vert 1resize ' . ((&columns * 210 + 158) / 316)
-exe '2resize ' . ((&lines * 15 + 33) / 67)
-exe 'vert 2resize ' . ((&columns * 105 + 158) / 316)
-exe '3resize ' . ((&lines * 15 + 33) / 67)
-exe 'vert 3resize ' . ((&columns * 104 + 158) / 316)
-exe '4resize ' . ((&lines * 16 + 33) / 67)
-exe 'vert 4resize ' . ((&columns * 105 + 158) / 316)
-exe '5resize ' . ((&lines * 16 + 33) / 67)
-exe 'vert 5resize ' . ((&columns * 104 + 158) / 316)
-exe '6resize ' . ((&lines * 15 + 33) / 67)
-exe 'vert 6resize ' . ((&columns * 210 + 158) / 316)
-exe '7resize ' . ((&lines * 12 + 33) / 67)
-exe 'vert 7resize ' . ((&columns * 105 + 158) / 316)
-exe '8resize ' . ((&lines * 12 + 33) / 67)
-exe 'vert 8resize ' . ((&columns * 105 + 158) / 316)
-exe '9resize ' . ((&lines * 12 + 33) / 67)
-exe 'vert 9resize ' . ((&columns * 105 + 158) / 316)
-exe '10resize ' . ((&lines * 13 + 33) / 67)
-exe 'vert 10resize ' . ((&columns * 105 + 158) / 316)
-exe '11resize ' . ((&lines * 12 + 33) / 67)
-exe 'vert 11resize ' . ((&columns * 105 + 158) / 316)
+9wincmd w
+exe '1resize ' . ((&lines * 15 + 32) / 65)
+exe 'vert 1resize ' . ((&columns * 91 + 184) / 369)
+exe '2resize ' . ((&lines * 15 + 32) / 65)
+exe 'vert 2resize ' . ((&columns * 91 + 184) / 369)
+exe '3resize ' . ((&lines * 15 + 32) / 65)
+exe 'vert 3resize ' . ((&columns * 91 + 184) / 369)
+exe '4resize ' . ((&lines * 23 + 32) / 65)
+exe 'vert 4resize ' . ((&columns * 92 + 184) / 369)
+exe '5resize ' . ((&lines * 23 + 32) / 65)
+exe 'vert 5resize ' . ((&columns * 92 + 184) / 369)
+exe '6resize ' . ((&lines * 47 + 32) / 65)
+exe 'vert 6resize ' . ((&columns * 91 + 184) / 369)
+exe '7resize ' . ((&lines * 15 + 32) / 65)
+exe 'vert 7resize ' . ((&columns * 276 + 184) / 369)
+exe '8resize ' . ((&lines * 20 + 32) / 65)
+exe 'vert 8resize ' . ((&columns * 92 + 184) / 369)
+exe '9resize ' . ((&lines * 21 + 32) / 65)
+exe 'vert 9resize ' . ((&columns * 92 + 184) / 369)
+exe '10resize ' . ((&lines * 20 + 32) / 65)
+exe 'vert 10resize ' . ((&columns * 92 + 184) / 369)
 tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf

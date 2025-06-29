@@ -4,7 +4,7 @@
 
 int main()
 {
-  	auto specs = Ellipse::ApplicationConfig();
+    auto specs = Ellipse::ApplicationConfig();
   
     Ellipse::Application* app = new Ellipse::Application;
 
