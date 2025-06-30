@@ -15,6 +15,13 @@ GIT_TAG release-3.2.14
 
 FetchContent_MakeAvailable(sdlLib)
 
+FetchContent_Declare(assimp
+                     GIT_REPOSITORY https://github.com/assimp/assimp.git
+                     GIT_TAG v6.0.2
+                    )
+
+FetchContent_MakeAvailable(assimp)
+
 FetchContent_Declare(
 fmtLib
 GIT_REPOSITORY https://github.com/fmtlib/fmt.git
@@ -42,5 +49,5 @@ GIT_TAG main
 FetchContent_MakeAvailable(sglLogger)
 
 
-target_link_libraries(EngineVendor INTERFACE glad stb_image SDL3::SDL3 fmt::fmt)
+target_link_libraries(EngineVendor INTERFACE glad stb_image SDL3::SDL3 assimp fmt::fmt)
 

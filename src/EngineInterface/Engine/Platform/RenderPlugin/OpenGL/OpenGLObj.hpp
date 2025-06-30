@@ -6,6 +6,8 @@
 
 
 #include <stb_image.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -43,72 +45,57 @@ class OpenGLMesh : public RenderMesh
     void initializeMesh(Vector<u32_t> indicies,
                         Vector<float> positions,
                         Vector<float> normals,
-                        Vector<float> textureCoords)
+                        Vector<float> textureCoords,
+                        bool isTextured
+                       )
     {
-    m_textures.push_back(Texture{});
-    glGenTextures(1, &m_textures[0].id());
 
-    i32_t textureWidth = 0;
-    i32_t textureHeight = 0;
-    i32_t textureClrChannels = 0;
-
-    // stbi_set_flip_vertically_on_load(true);
-    unsigned char* textureData = stbi_load("Assets/Images/Message.png", &textureWidth, &textureHeight, &textureClrChannels, 0);
-    if(!textureData)
+    if(isTextured)
     {
-        ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");
-    }
+        m_textures.push_back(Texture{});
+        glGenTextures(1, &m_textures[0].id());
 
+        i32_t textureWidth = 0;
+        i32_t textureHeight = 0;
+        i32_t textureClrChannels = 0;
 
-    glGenTextures(1, &m_textures[0].id());
+        // stbi_set_flip_vertically_on_load(true);
+        unsigned char* textureData = stbi_load("Assets/Images/Message.png", &textureWidth, &textureHeight, &textureClrChannels, 0);
+        if(!textureData)
+        {
+            ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");
+        }
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_textures[0].id());
+        glGenTextures(1, &m_textures[0].id());
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_textures[0].id());
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
-    glGenerateMipmap(GL_TEXTURE_2D);
+        Assimp::Importer importer;
 
-    stbi_image_free(textureData);
+        auto scene = importer.ReadFile("./Assets/Models/Cube.glb", 0);
+        // if(scene->mNumTextures)
+        // {
+        //
+        // }
+        // if(scene->mTextures[0]->CheckFormat("png"))
+        // {
+        //     // std::cout << scene->mTextures[0]->mFilename.c_str() << ".png\n";
+        // }
 
-  //   if(textureCoords.size() > 0)
-  //   {
-  //       m_textures.push_back(Texture{});
-  //       glGenTextures(1, &m_textures[0].id());
-  //
-  //       i32_t textureWidth = 0;
-  //       i32_t textureHeight = 0;
-  //       i32_t textureClrChannels = 0;
-  //
-  //       unsigned char* textureData = stbi_load(imagePath, &textureWidth, &textureHeight, &textureClrChannels, 0);
-  //       if(!textureData)
-  //       {
-  //           ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");
-  //       }
-  //
-  //       glGenTextures(1, &m_textures[0].id());
-  //
-  //       glActiveTexture(GL_TEXTURE0);
-  //       glBindTexture(GL_TEXTURE_2D, m_textures[0].id());
-  //
-  //       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  //       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  // 
-  //       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-  //       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  //
-  //       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
-  //       glGenerateMipmap(GL_TEXTURE_2D);
-  //
-  //       stbi_image_free(textureData);
-  //
-  //       // m_textures[0].setIsTextured(true);
-  //   }
+        auto texture = scene->mTextures[0];
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, static_cast<i32_t>(texture->mWidth), static_cast<i32_t>(texture->mHeight), 0, GL_RGB, GL_UNSIGNED_BYTE, texture->pcData);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        stbi_image_free(textureData);
+    }
 
     m_indicies = indicies;
     m_positions = positions;
@@ -249,7 +236,8 @@ struct OpenGLRenderObj : public RenderObj
     openGLMesh.initializeMesh(data.indicies(),
                               data.positions(),
                               data.normals(),
-                              data.textureCoords()
+                              data.textureCoords(),
+                              data.isTextured()
                              );
 
     m_meshes.push_back(openGLMesh);

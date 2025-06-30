@@ -70,7 +70,8 @@ class RenderObjData
     : m_indicies{indicies},
       m_positions{positions},
       m_normals{normals},
-      m_textureCoords{textureCoords}
+      m_textureCoords{textureCoords},
+      m_isTextured{true}
     {
 
     }
@@ -113,11 +114,17 @@ class RenderObjData
     return m_textureCoords;
     }
 
+    bool isTextured() const
+    {
+        return m_isTextured;
+    }
+
    private:
     Vector<u32_t> m_indicies;
     Vector<float> m_positions;
     Vector<float> m_normals;
     Vector<float> m_textureCoords;
+    bool m_isTextured;
     String m_texturePath;
 };
 

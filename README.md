@@ -4,7 +4,7 @@ Ellipse Engine
 
 A cpp written engine for rendering
 
-!(./Assets/EllipseShow.png)
+![Ellipse show demo](./Assets/EllipseShowDemo.gif)
 
 Platforms
 ==================

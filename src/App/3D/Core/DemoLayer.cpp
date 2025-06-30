@@ -69,7 +69,7 @@ void DemoLayer::init()
                         m_renderModule.camera(),
                         m_light.light()
                        );
-   m_modelList.model("Cube1").setTranslateAmount(Vec3{-1.0f, 0.0f, 0.0f});
+   m_modelList.model("Cube1").setTranslateAmount(Vec3{0.0f, 0.5f, -0.5f});
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e)

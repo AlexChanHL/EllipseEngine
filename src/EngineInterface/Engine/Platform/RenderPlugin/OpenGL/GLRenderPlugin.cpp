@@ -16,9 +16,17 @@ void OpenGLRenderPlugin::render(const RenderObj& rObj)
 
 void OpenGLRenderPlugin::renderGL(const OpenGLRenderObj& rObj)
 {
+    // glActiveTexture(GL_TEXTURE0);
+
     for(u32_t i = 0; i < rObj.meshes().size(); i++)
     {
-    renderGLMesh(static_cast<OpenGLMesh&>(*rObj.meshes()[i]));
+        // if(rObj.meshes()[i].isTextured())
+        // {
+        //     bindTextures(rObj);
+        //     glBindTexture(GL_TEXTURE_2D, renderObj.meshes()[i]->textures()[j].id());
+        // }
+
+        renderGLMesh(static_cast<OpenGLMesh&>(*rObj.meshes()[i]));
     }
 
 }
