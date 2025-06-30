@@ -67,7 +67,7 @@ void RendererImpl::render(const RenderObj& rObj, const RenderShaderObj& sObj, co
 
     if(rObj.isTextured())
     {
-    m_plugin->bindTextures(rObj);
+        m_plugin->bindTextures(rObj);
     }
 
     m_plugin->render(rObj);

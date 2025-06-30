@@ -29,6 +29,7 @@ void DemoLayer::init()
 
 
     Ellipse::RenderObjData quad = m_objects["Quad"];
+    // quad.setTexture("Textures/GreenColor.png");
 
     m_modelList.addModelDefinition("Quad",
                                    "Assets/Shader/Quad.vert.glsl",

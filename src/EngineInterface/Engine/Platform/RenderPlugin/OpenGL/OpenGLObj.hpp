@@ -56,7 +56,7 @@ class OpenGLMesh : public RenderMesh
     unsigned char* textureData = stbi_load("Assets/Images/Message.png", &textureWidth, &textureHeight, &textureClrChannels, 0);
     if(!textureData)
     {
-    ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");
+        ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");
     }
 
 
@@ -75,6 +75,40 @@ class OpenGLMesh : public RenderMesh
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(textureData);
+
+  //   if(textureCoords.size() > 0)
+  //   {
+  //       m_textures.push_back(Texture{});
+  //       glGenTextures(1, &m_textures[0].id());
+  //
+  //       i32_t textureWidth = 0;
+  //       i32_t textureHeight = 0;
+  //       i32_t textureClrChannels = 0;
+  //
+  //       unsigned char* textureData = stbi_load(imagePath, &textureWidth, &textureHeight, &textureClrChannels, 0);
+  //       if(!textureData)
+  //       {
+  //           ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");
+  //       }
+  //
+  //       glGenTextures(1, &m_textures[0].id());
+  //
+  //       glActiveTexture(GL_TEXTURE0);
+  //       glBindTexture(GL_TEXTURE_2D, m_textures[0].id());
+  //
+  //       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  //       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  // 
+  //       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+  //       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  //
+  //       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
+  //       glGenerateMipmap(GL_TEXTURE_2D);
+  //
+  //       stbi_image_free(textureData);
+  //
+  //       // m_textures[0].setIsTextured(true);
+  //   }
 
     m_indicies = indicies;
     m_positions = positions;

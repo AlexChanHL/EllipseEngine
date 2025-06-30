@@ -118,6 +118,7 @@ class RenderObjData
     Vector<float> m_positions;
     Vector<float> m_normals;
     Vector<float> m_textureCoords;
+    String m_texturePath;
 };
 
 using PreDefinedObjects = Map<String, RenderObjData>;

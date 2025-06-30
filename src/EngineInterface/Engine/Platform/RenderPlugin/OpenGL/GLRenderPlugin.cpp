@@ -5,6 +5,7 @@
 #include "Math/Matrix.hpp"
 #include "EllipsePCH.hpp"
 
+
 namespace Ellipse
 {
 
@@ -218,10 +219,10 @@ void OpenGLRenderPlugin::bindTextures(const RenderObj& renderObj)
   
    for(u32_t i=0;i<renderObj.meshes().size();i++)
    {
-   for(u32_t j=0;j<renderObj.meshes()[i]->textures().size();j++)
-   {
-   glBindTexture(GL_TEXTURE_2D, renderObj.meshes()[i]->textures()[j].id());
-   }
+       for(u32_t j=0;j<renderObj.meshes()[i]->textures().size();j++)
+       {
+           glBindTexture(GL_TEXTURE_2D, renderObj.meshes()[i]->textures()[j].id());
+       }
    }
 }
 

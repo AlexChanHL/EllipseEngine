@@ -53,7 +53,7 @@ void GUILayer::onUpdate(float dt)
     // ELLIPSE_APP_LOG_INFO("{} {}", x, y);
     ELLIPSE_APP_LOG_INFO("theta {}", theta);
     m_modelList2D.translate(modelName.c_str(), Vec2{x, y});
-    m_modelList2D.rotate(modelName.c_str(), theta);
+    // m_modelList2D.rotate(modelName.c_str(), theta);
     }
 }
 
