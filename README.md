@@ -4,9 +4,8 @@ Ellipse Engine
 
 A cpp written engine for rendering
 
-<video width="250">
+<video controls width="250" height="250">
  <source src="./Assets/EllipseShow.webm">
- </source>
 </video>
 
 Platforms
