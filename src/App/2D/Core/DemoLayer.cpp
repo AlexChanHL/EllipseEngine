@@ -29,13 +29,36 @@ void DemoLayer::init()
 
 
     Ellipse::RenderObjData quad = m_objects["Quad"];
-    // quad.setTexture("Textures/GreenColor.png");
 
-    m_modelList.addModelDefinition("Quad",
+    quad.setTextureImgPath("Assets/Images/Message.png");
+    m_modelList.addModelDefinition("MessageQuad",
                                    "Assets/Shader/Quad.vert.glsl",
                                    "Assets/Shader/Quad.frag.glsl",
                                    quad
                                   );
+
+    quad.setTextureImgPath("Assets/Images/Space.jpeg");
+    m_modelList.addModelDefinition("SpaceQuad",
+                                   "Assets/Shader/Quad.vert.glsl",
+                                   "Assets/Shader/Quad.frag.glsl",
+                                   quad
+                                  );
+      
+    // FontCollection times = m_fontModule.getFont("Times");
+    // quad.loadTexture("Assets/Images/TimesBmpFont.jpeg");
+    // Glyph glyphA = times.getGlyph("A");
+    // quad.setTextureCoord(0.0f, 0.0f,
+                     //     1.0f, 0.0f,
+                     //     0.0f, 0.1f,
+                     //     1.0f, 0.1f
+                     //    );
+    // m_modelList.addModelDefinition(glyphA.character(),
+                                   // glyphA.vert()
+                                   // glyphA.frag()
+                                   // glyphA.quad() 
+                                  // );
+    // times.freeTexture();
+
     // for(u64_t i=0;i<10;i++)
     // {
     // String modelName = fmt::format("FrontQuad{}", i);
@@ -43,9 +66,17 @@ void DemoLayer::init()
     // m_modelList.scale(modelName.c_str(), Vec2{0.5f, 0.75f});
     // }
 
-    m_modelList.addModel("FrontQuad", "Quad");
+    m_modelList.addModel("FrontQuad", "MessageQuad");
     m_modelList.translate("FrontQuad", Vec2{-0.5f, 0.1f});
     m_modelList.scale("FrontQuad", Vec2{0.5f, 0.75f});
+
+    m_modelList.addModel("FrontQuad1", "SpaceQuad");
+    m_modelList.translate("FrontQuad1", Vec2{0.5f, 0.1f});
+    m_modelList.scale("FrontQuad1", Vec2{0.5f, 0.75f});
+
+    // m_modelList.addModel("FrontQuad2", "Times_A");
+    // m_modelList.translate("FrontQuad2", Vec2{1.0f, 0.6f});
+    // m_modelList.scale("FrontQuad2", Vec2{0.5f, 0.75f});
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e)

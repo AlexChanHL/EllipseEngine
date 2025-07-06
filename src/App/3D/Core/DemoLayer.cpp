@@ -46,6 +46,11 @@ void DemoLayer::init()
                                   "Assets/Shader/Cube.frag.glsl",
                                   cube
                                  );
+   // m_modelList.addModelDefinition("Cube",
+   //                                "Assets/Shader/Cube.vert.glsl",
+   //                                "Assets/Shader/Cube.frag.glsl",
+   //                                "Assets/Models/Cube.gtlf"
+   //                               );
    m_modelList.addModelDefinition("Quad",
                                   "Assets/Shader/Quad.vert.glsl",
                                   "Assets/Shader/Quad.frag.glsl",

@@ -16,15 +16,16 @@ void OpenGLRenderPlugin::render(const RenderObj& rObj)
 
 void OpenGLRenderPlugin::renderGL(const OpenGLRenderObj& rObj)
 {
-    // glActiveTexture(GL_TEXTURE0);
-
     for(u32_t i = 0; i < rObj.meshes().size(); i++)
     {
-        // if(rObj.meshes()[i].isTextured())
-        // {
-        //     bindTextures(rObj);
-        //     glBindTexture(GL_TEXTURE_2D, renderObj.meshes()[i]->textures()[j].id());
-        // }
+        if(rObj.meshes()[i]->isTextured())
+        {
+            glActiveTexture(GL_TEXTURE0);
+            for(u32_t j=0;j<rObj.meshes()[i]->textures().size();j++)
+            {
+                glBindTexture(GL_TEXTURE_2D, rObj.meshes()[i]->textures()[j].id());
+            }
+        }
 
         renderGLMesh(static_cast<OpenGLMesh&>(*rObj.meshes()[i]));
     }
@@ -33,8 +34,6 @@ void OpenGLRenderPlugin::renderGL(const OpenGLRenderObj& rObj)
 
 void OpenGLRenderPlugin::renderGLMesh(const OpenGLMesh& mesh)
 {
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
     glBindVertexArray(mesh.vao()); 
     glDrawElements(GL_TRIANGLES, static_cast<i32_t>(mesh.indicies().size()), GL_UNSIGNED_INT, NULL);
     glBindVertexArray(0);

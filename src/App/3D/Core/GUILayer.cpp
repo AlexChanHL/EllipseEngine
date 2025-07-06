@@ -19,8 +19,13 @@ GUILayer::~GUILayer()
 
 void GUILayer::init()
 {
-    m_modelList2D.addModelDefinition("Quad", "Assets/Shader/Quad.vert.glsl", "Assets/Shader/Quad.frag.glsl", m_objects["Quad"]);
-    m_modelList2D.addModelDefinition("CubeNoLight", "Assets/Shader/CubeNoLight.vert.glsl", "Assets/Shader/CubeNoLight.frag.glsl", m_objects["Cube"]);
+    auto quadData = m_objects["Quad"];
+    quadData.setTextureImgPath("Assets/Images/Message.png");
+    m_modelList2D.addModelDefinition("Quad",
+                                     "Assets/Shader/Quad.vert.glsl",
+                                     "Assets/Shader/Quad.frag.glsl",
+                                     quadData
+                                    );
 
     for(u64_t i=0;i<10;i++)
     {
@@ -51,7 +56,7 @@ void GUILayer::onUpdate(float dt)
     double x = sin(theta) / 2;
     double y = cos(theta) / 2;
     // ELLIPSE_APP_LOG_INFO("{} {}", x, y);
-    ELLIPSE_APP_LOG_INFO("theta {}", theta);
+    // ELLIPSE_APP_LOG_INFO("theta {}", theta);
     m_modelList2D.translate(modelName.c_str(), Vec2{x, y});
     // m_modelList2D.rotate(modelName.c_str(), theta);
     }

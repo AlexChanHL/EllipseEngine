@@ -55,7 +55,31 @@ class RenderMesh
     virtual Vector<float> textureCoords() const = 0;
     virtual Vector<u32_t> indicies() const = 0;
     virtual Vector<Texture> textures() const = 0;
-    
+
+    bool isTextured() const
+    {
+        return textures().size() > 0;
+    }
+
+   private:
+};
+
+class TextureData
+{
+   public:
+    TextureData()
+    {
+
+    }
+    ~TextureData()
+    {
+
+    }
+
+   public:
+    String m_path;
+    unsigned char* m_data;
+
    private:
 };
 
@@ -63,15 +87,17 @@ class RenderObjData
 {
    public:
     RenderObjData()
+    : m_isTextured{false}
     {
 
     }
-    RenderObjData(Vector<u32_t> indicies, Vector<float> positions, Vector<float> normals, Vector<float> textureCoords)
+    RenderObjData(Vector<u32_t> indicies, Vector<float> positions, Vector<float> normals, Vector<float> textureCoords, String textureImgPath)
     : m_indicies{indicies},
       m_positions{positions},
       m_normals{normals},
       m_textureCoords{textureCoords},
-      m_isTextured{true}
+      m_textureImgPath{textureImgPath},
+      m_isTextured{false}
     {
 
     }
@@ -97,6 +123,12 @@ class RenderObjData
     m_textureCoords = textureCoords;
     }
 
+    void setTextureImgPath(String textureImgPath)
+    {
+    m_isTextured = true;
+    m_textureImgPath = textureImgPath;
+    }
+
     Vector<u32_t> indicies()
     {
     return m_indicies;
@@ -113,7 +145,10 @@ class RenderObjData
     {
     return m_textureCoords;
     }
-
+    String textureImgPath() const
+    {
+        return m_textureImgPath;
+    }
     bool isTextured() const
     {
         return m_isTextured;
@@ -124,8 +159,9 @@ class RenderObjData
     Vector<float> m_positions;
     Vector<float> m_normals;
     Vector<float> m_textureCoords;
+    String m_textureImgPath;
     bool m_isTextured;
-    String m_texturePath;
+    // unsigned char* m_textureData;
 };
 
 using PreDefinedObjects = Map<String, RenderObjData>;
@@ -145,7 +181,6 @@ struct RenderObj
 
     virtual void initializeFromResources(RenderObjData& data) = 0;
 
-    virtual bool isTextured() const = 0;
     virtual Vector<UniquePtr<RenderMesh>> meshes() = 0;
     virtual Vector<UniquePtr<RenderMesh>> meshes() const = 0;
     // virtual time_t timeCreated() = 0;

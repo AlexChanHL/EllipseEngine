@@ -80,18 +80,18 @@ class ModelList2D : public ModelList
                  cameraFrontAxisOrtho *= -1;
              }
 
-             ELLIPSE_APP_LOG_INFO("camera vec: x {} y {} z {}", m_camera.front().x, m_camera.front().y, m_camera.front().z); 
-             ELLIPSE_APP_LOG_INFO("rotated camera vec: x {} y {} z {}", cameraAxis.x, cameraAxis.y, cameraAxis.z); 
-             ELLIPSE_APP_LOG_INFO("camera ortho vec: x {} y {} z {}", cameraFrontAxisOrtho.x, cameraFrontAxisOrtho.y, cameraFrontAxisOrtho.z); 
-             ELLIPSE_APP_LOG_INFO("z Degrees {}", Ellipse::EllipseMath::degrees(zAxisAngle)); 
-             ELLIPSE_APP_LOG_INFO("y Degrees {}", Ellipse::EllipseMath::degrees(yAxisAngle)); 
-             ELLIPSE_APP_LOG_INFO("y rotate Degrees {}", Ellipse::EllipseMath::degrees(yRotateAngle)); 
+             // ELLIPSE_APP_LOG_INFO("camera vec: x {} y {} z {}", m_camera.front().x, m_camera.front().y, m_camera.front().z); 
+             // ELLIPSE_APP_LOG_INFO("rotated camera vec: x {} y {} z {}", cameraAxis.x, cameraAxis.y, cameraAxis.z); 
+             // ELLIPSE_APP_LOG_INFO("camera ortho vec: x {} y {} z {}", cameraFrontAxisOrtho.x, cameraFrontAxisOrtho.y, cameraFrontAxisOrtho.z); 
+             // ELLIPSE_APP_LOG_INFO("z Degrees {}", Ellipse::EllipseMath::degrees(zAxisAngle)); 
+             // ELLIPSE_APP_LOG_INFO("y Degrees {}", Ellipse::EllipseMath::degrees(yAxisAngle)); 
+             // ELLIPSE_APP_LOG_INFO("y rotate Degrees {}", Ellipse::EllipseMath::degrees(yRotateAngle)); 
 
              model.second.model() = Ellipse::EllipseMath::translate(model.second.model(), (m_camera.position() + m_camera.front() * 2.0f));
              Vec3 translateVec = model.second.translationAmount();
              translateVec = Ellipse::EllipseMath::rotate(translateVec, zAxisAngle, yAxis);
              translateVec = Ellipse::EllipseMath::rotate(translateVec, yAxisAngle, cameraFrontAxisOrtho);
-             ELLIPSE_APP_LOG_INFO("translate vector x {} y {} z {}", translateVec.x, translateVec.y, translateVec.z); 
+             // ELLIPSE_APP_LOG_INFO("translate vector x {} y {} z {}", translateVec.x, translateVec.y, translateVec.z); 
              model.second.model() = Ellipse::EllipseMath::translate(model.second.model(), translateVec);
 
 

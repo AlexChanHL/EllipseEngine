@@ -127,6 +127,7 @@ RenderModule3D::RenderModule3D(Engine& engine)
                                        1.0f, 1.0f,
                                       }
                                      );
+    cubeData.setTextureImgPath("Assets/Models/Textures/Message.png");
 
 
    Ellipse::RenderObjData quadData;
@@ -146,10 +147,10 @@ RenderModule3D::RenderModule3D(Engine& engine)
                                      0.0f, 0.0f, 1.0f
                                     }
                       );
-   quadData.setTexCoords(Vector<float>{0.0f, 1.0f,
-                                       1.0f, 1.0f,
-                                       0.0f, 0.0f,
-                                       1.0f, 0.0f
+   quadData.setTexCoords(Vector<float>{0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f
                                       }
                         );
 

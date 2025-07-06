@@ -46,10 +46,10 @@ class OpenGLMesh : public RenderMesh
                         Vector<float> positions,
                         Vector<float> normals,
                         Vector<float> textureCoords,
+                        String textureImgPath,
                         bool isTextured
                        )
     {
-
     if(isTextured)
     {
         m_textures.push_back(Texture{});
@@ -59,8 +59,8 @@ class OpenGLMesh : public RenderMesh
         i32_t textureHeight = 0;
         i32_t textureClrChannels = 0;
 
-        // stbi_set_flip_vertically_on_load(true);
-        unsigned char* textureData = stbi_load("Assets/Images/Message.png", &textureWidth, &textureHeight, &textureClrChannels, 0);
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char* textureData = stbi_load(textureImgPath.c_str(), &textureWidth, &textureHeight, &textureClrChannels, 0);
         if(!textureData)
         {
             ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");
@@ -77,20 +77,6 @@ class OpenGLMesh : public RenderMesh
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        Assimp::Importer importer;
-
-        auto scene = importer.ReadFile("./Assets/Models/Cube.glb", 0);
-        // if(scene->mNumTextures)
-        // {
-        //
-        // }
-        // if(scene->mTextures[0]->CheckFormat("png"))
-        // {
-        //     // std::cout << scene->mTextures[0]->mFilename.c_str() << ".png\n";
-        // }
-
-        auto texture = scene->mTextures[0];
-        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, static_cast<i32_t>(texture->mWidth), static_cast<i32_t>(texture->mHeight), 0, GL_RGB, GL_UNSIGNED_BYTE, texture->pcData);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
         glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -175,6 +161,17 @@ class OpenGLMesh : public RenderMesh
 
     }
 
+    // void initializeMesh(Vector<u32_t> indicies,
+    //                     Vector<float> positions,
+    //                     Vector<float> normals,
+    //                     Vector<float> textureCoords,
+    //                     ImgData imgData,
+    //                     bool isTextured
+    //                    )
+    // {
+    //    imgData.onDestroy();
+    // }
+
 
     virtual u32_t vao() const override
     {
@@ -206,7 +203,6 @@ class OpenGLMesh : public RenderMesh
     return m_textures;
     }
 
-
    private:
     u32_t m_vao;
 
@@ -237,6 +233,8 @@ struct OpenGLRenderObj : public RenderObj
                               data.positions(),
                               data.normals(),
                               data.textureCoords(),
+                              data.textureImgPath(),
+                              // data.texture(),
                               data.isTextured()
                              );
 
@@ -244,20 +242,14 @@ struct OpenGLRenderObj : public RenderObj
     }
 
 
-    virtual bool isTextured() const override
-    {
-    return true;
-    }
-
     virtual Vector<UniquePtr<RenderMesh>> meshes() override
     {
-    return createVectorFromDerived<RenderMesh, OpenGLMesh>(m_meshes);
-
+        return createVectorFromDerived<RenderMesh, OpenGLMesh>(m_meshes);
     }
 
     virtual Vector<UniquePtr<RenderMesh>> meshes() const override
     {
-    return createVectorFromDerived<RenderMesh, OpenGLMesh>(m_meshes);
+        return createVectorFromDerived<RenderMesh, OpenGLMesh>(m_meshes);
     }
 
    public:
