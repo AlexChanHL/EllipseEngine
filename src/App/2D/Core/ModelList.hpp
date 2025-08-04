@@ -51,10 +51,10 @@ class ModelList
     
     }
     virtual void addModelDefinition(const char* objectName,
-                            String vert,
-                            String frag,
-                            Ellipse::RenderObjData data
-                           )
+                                    String vert,
+                                    String frag,
+                                    Ellipse::RenderObjData data
+                                   )
     {
     if(m_modelModule.findObjectIndex(objectName) == -1)
     {
@@ -101,9 +101,18 @@ class ModelList
                            Ellipse::UniformList{}
                           );
 
-    m_nameIds[name] = id;
-    m_models[id] = ModelVal{};
-    m_modelIndicies[name] = m_modelModule.models().size() - 1;
+    if(id != -1)
+    {
+        ELLIPSE_APP_LOG_INFO("model {}", name);
+        m_nameIds[name] = id;
+        m_models[id] = ModelVal{};
+        m_modelIndicies[name] = m_modelModule.models().size() - 1;
+    }
+    if(id == -1)
+    {
+        ELLIPSE_APP_LOG_WARN("no object {}", name);
+    }
+
     }
 
     void removeModel(const char* name)
@@ -189,6 +198,13 @@ class ModelList
 
     return "No model found";
     }
+
+    CREATE_FUNC_CALLBACK(addModelDefinition, void(const char* objectName,
+                         String vertexShader,
+                         String fragmentShader,
+                         Ellipse::RenderObjData renderObjData
+                                                 )
+                        );
 
    protected:
     Ellipse::ModelManagerModule& m_modelModule;

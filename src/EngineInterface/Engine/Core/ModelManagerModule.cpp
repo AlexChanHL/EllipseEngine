@@ -49,14 +49,14 @@ class ModelManagerModuleImpl : public ModelManagerModule
                           UniformList uniformList
                           ) override
     {
-    ModelID idLocation{m_randomRemoveLast.chooseRandomVal()};
-
-    modelID = idLocation;
 
     for(const ModelObject& object : m_objects)
     {
-    if(strcmp(objectName, object.name()) == 0)
+    if(strcmp(objectName, object.name().c_str()) == 0)
     {
+    ModelID idLocation{m_randomRemoveLast.chooseRandomVal()};
+    modelID = idLocation;
+
     Model model = prepareModel(objectName);
     model.setId(modelID);
     model.setModel(modelMat);
@@ -140,7 +140,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
     {
     for(u64_t i=0;i<m_objects.size();i++)
     {
-    if(strcmp(name, m_objects[i].name()) == 0)
+    if(strcmp(name, m_objects[i].name().c_str()) == 0)
     {
     return static_cast<i64_t>(i);
     }
@@ -194,7 +194,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
     for(u64_t j=0;j<m_objects.size();j++)
     {
     ModelObject& object = m_objects[j];
-    if(strcmp(objectName, object.name()) == 0)
+    if(strcmp(objectName, object.name().c_str()) == 0)
     {
     model.setRenderObj(m_objects[j].renderObject());
     model.setShaderObj(m_objects[j].shaderObject());

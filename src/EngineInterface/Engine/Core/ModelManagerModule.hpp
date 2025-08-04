@@ -14,6 +14,63 @@
 namespace Ellipse
 {
 
+#define MODEL
+#ifdef MODEL 
+
+struct ModelID
+{
+   public:
+    ModelID()
+    : m_id{-1}
+    {
+
+    }
+    ModelID(i64_t id)
+    : m_id{id}
+    {
+
+    }
+    ~ModelID()
+    {
+
+    }
+    ModelID(const ModelID& id)
+    : m_id{id.m_id}
+    {
+
+    }
+    void operator=(const ModelID& id)
+    {
+        m_id = id.m_id;
+    }
+
+    void operator=(const i64_t& id)
+    {
+        m_id = id;
+    }
+    bool operator==(const ModelID& id) const
+    {
+        return m_id == id.m_id;
+    }
+    bool operator==(const i64_t& id)
+    {
+        return m_id == id;
+    }
+    bool operator<(const ModelID& id) const
+    {
+        return m_id < id.m_id;
+    }
+
+   public:
+    i64_t m_id;
+
+   private:
+};
+
+#endif
+
+// using ModelID = i64_t;
+
 struct Viewspace
 {
    public:
@@ -100,7 +157,7 @@ class ModelObject
 {
    public:
     ModelObject()
-    : m_name{nullptr},
+    : m_name{""},
       m_isInList{false},
       m_renderObject{nullptr},
       m_shaderObject{nullptr}
@@ -143,7 +200,7 @@ class ModelObject
     m_shaderObject = shaderObj;
     }
 
-    const char* name() const
+    String name() const
     {
     return m_name;
     }
@@ -173,7 +230,7 @@ class ModelObject
     }
 
    private:
-    const char* m_name;
+    String m_name;
     bool m_isInList;
     SharedPtr<RenderObj> m_renderObject;
     SharedPtr<RenderShaderObj> m_shaderObject;

@@ -2,6 +2,7 @@
 #include "Application.hpp"
 #include "TimeModule.hpp"
 #include "ModelManagerModule.hpp"
+#include "FontModule.hpp"
 #include "Debug/Log.hpp"
 
 
@@ -58,6 +59,10 @@ void Application::init(const ApplicationConfig& config)
   if((key == "RenderModule") && (value))
   {
   m_engine->addModule(RenderModule::createRenderModule(*m_engine));
+  }
+  if((key == "FontModule") && (value))
+  {
+  m_engine->addModule(FontModule::createFontModule(*m_engine));
   }
 
   }

@@ -6,6 +6,8 @@
 
 #include "UniformVarible.hpp"
 
+#include <stb_image.h>
+
 
 namespace Ellipse
 {
@@ -68,6 +70,10 @@ class TextureData
 {
    public:
     TextureData()
+    : m_width{0},
+      m_height{0},
+      m_clrChannels{0},
+      m_data{nullptr}
     {
 
     }
@@ -75,29 +81,91 @@ class TextureData
     {
 
     }
+    TextureData(const TextureData& textureData)
+    : m_width{textureData.m_width},
+      m_height{textureData.m_height},
+      m_clrChannels{textureData.m_clrChannels},
+      m_data{textureData.m_data}
+    {
+     
+    }
+    void operator=(const TextureData& textureData)
+    {
+        m_width = textureData.m_width;
+        m_height = textureData.m_height;
+        m_clrChannels = textureData.m_clrChannels;
+        m_data = textureData.m_data;
+    }
 
    public:
     String m_path;
+    i32_t m_width;
+    i32_t m_height;
+    i32_t m_clrChannels;
     unsigned char* m_data;
 
    private:
 };
 
+class TextureReminder
+{
+   public:
+    TextureReminder(String path)
+    : m_path{path},
+      m_isFulfilled{false}
+    {
+
+    }
+    ~TextureReminder()
+    {
+        if(!m_isFulfilled)
+        {
+            ELLIPSE_ENGINE_LOG_WARN("Did not fulfill {}", m_path);
+        }
+    }
+
+    void fulfill(TextureData& texture)
+    {
+        m_isFulfilled = true;
+        stbi_image_free(texture.m_data);
+    }
+
+    void load(String path)
+    {
+        m_path = path;
+        m_isFulfilled = false;
+    }
+
+   private:
+    String m_path;
+    bool m_isFulfilled;
+};
+
+inline void loadTexture(TextureReminder& reminder, TextureData& texture, String path)
+{
+    texture.m_path = path;
+    // stbi_set_flip_vertically_on_load(true);
+    texture.m_data = stbi_load(path.c_str(), &texture.m_width, &texture.m_height, &texture.m_clrChannels, 0);
+    if(!texture.m_data)
+    {
+        ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");
+    }
+
+    reminder.load(path);
+}
+
 class RenderObjData
 {
    public:
     RenderObjData()
-    : m_isTextured{false}
     {
 
     }
-    RenderObjData(Vector<u32_t> indicies, Vector<float> positions, Vector<float> normals, Vector<float> textureCoords, String textureImgPath)
+    RenderObjData(Vector<u32_t> indicies, Vector<float> positions, Vector<float> normals, Vector<float> textureCoords)
     : m_indicies{indicies},
       m_positions{positions},
       m_normals{normals},
-      m_textureCoords{textureCoords},
-      m_textureImgPath{textureImgPath},
-      m_isTextured{false}
+      m_textureCoords{textureCoords}
     {
 
     }
@@ -123,12 +191,6 @@ class RenderObjData
     m_textureCoords = textureCoords;
     }
 
-    void setTextureImgPath(String textureImgPath)
-    {
-    m_isTextured = true;
-    m_textureImgPath = textureImgPath;
-    }
-
     Vector<u32_t> indicies()
     {
     return m_indicies;
@@ -145,13 +207,9 @@ class RenderObjData
     {
     return m_textureCoords;
     }
-    String textureImgPath() const
+    TextureData& textureData()
     {
-        return m_textureImgPath;
-    }
-    bool isTextured() const
-    {
-        return m_isTextured;
+        return m_textureData;
     }
 
    private:
@@ -159,9 +217,7 @@ class RenderObjData
     Vector<float> m_positions;
     Vector<float> m_normals;
     Vector<float> m_textureCoords;
-    String m_textureImgPath;
-    bool m_isTextured;
-    // unsigned char* m_textureData;
+    TextureData m_textureData;
 };
 
 using PreDefinedObjects = Map<String, RenderObjData>;

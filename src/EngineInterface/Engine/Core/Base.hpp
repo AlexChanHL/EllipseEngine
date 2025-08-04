@@ -8,7 +8,7 @@
 
 #define CREATE_FUNC_CALLBACK_INTERFACE(fn, type) virtual function<type> fn ## CallReturn() = 0;
 
-#define CREATE_FUNC_CALLBACK(fn, type) virtual function<type> fn ## CallReturn() override\
+#define CREATE_FUNC_CALLBACK(fn, type) virtual function<type> fn ## CallBack()\
                                        {\
                                        return [this](auto&&... args) -> decltype(auto)  { return this->fn(std::forward<decltype(args)>(args)...); };\
                                        }
@@ -57,7 +57,7 @@ using EntityRef = uLong_t;
 namespace Ellipse
 {
 
-using ModelID = i64_t;
+// using ModelID = i64_t;
 
 };     // namespace Ellipse
 

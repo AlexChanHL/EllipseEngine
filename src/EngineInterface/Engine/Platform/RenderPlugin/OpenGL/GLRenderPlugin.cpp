@@ -34,6 +34,8 @@ void OpenGLRenderPlugin::renderGL(const OpenGLRenderObj& rObj)
 
 void OpenGLRenderPlugin::renderGLMesh(const OpenGLMesh& mesh)
 {
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     glBindVertexArray(mesh.vao()); 
     glDrawElements(GL_TRIANGLES, static_cast<i32_t>(mesh.indicies().size()), GL_UNSIGNED_INT, NULL);
     glBindVertexArray(0);

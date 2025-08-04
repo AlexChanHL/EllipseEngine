@@ -31,6 +31,7 @@ class DemoLayer : public Ellipse::Layer
     Ellipse::TimeModule& m_timeModule;
     Ellipse::ModelManagerModule& m_modelManagerLayerModule;
     Ellipse::RenderModule& m_renderModule;
+    Ellipse::FontModule& m_fontModule;
 
     ModelList m_modelList;
     Ellipse::PreDefinedObjects& m_objects;

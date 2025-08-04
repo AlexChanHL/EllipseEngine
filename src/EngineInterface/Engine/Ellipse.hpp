@@ -3,6 +3,7 @@
 #include "Core/Application.hpp"
 #include "Core/Base.hpp"
 #include "Core/Formatter.hpp"
+#include "Core/FontModule.hpp"
 #include "Core/KeyCodes.hpp"
 #include "Core/Layer.hpp"
 #include "Core/MouseCodes.hpp"
