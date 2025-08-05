@@ -15,6 +15,11 @@ option(DEBUG "Enable debug mode" ON)
   add_compile_definitions(DEBUG)
  endif()
 
+option(BUILD_OFFLINE "Building offline" ON)
+if(BUILD_OFFLINE)
+  message(STATUS "Building offline")
+ endif()
+
 option(BUILD_ENGINE_2D "Building engine 2D" ON)
  if(BUILD_ENGINE_2D)
   message(STATUS "Building engine 2D")

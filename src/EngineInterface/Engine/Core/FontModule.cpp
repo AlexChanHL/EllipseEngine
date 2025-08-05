@@ -37,7 +37,7 @@ class FontModuleImpl : public FontModule
 
     }
 
-    FontCollection getFont(String font)
+    FontCollection getFont(String font) override
     {
         return m_fonts[font];   
     }

@@ -47,12 +47,12 @@ void DemoLayer::init()
                                     1.0f, 0.0f
                                    }
                      );
-    quad.setTexCoords(Vector<float>{0.0f, 1.0f,
-                                    1.0f, 1.0f,
-                                    0.0f, 0.0f,
-                                    1.0f, 0.0f
-                                   }
-                     );
+    // quad.setTexCoords(Vector<float>{0.0f, 1.0f,
+    //                                 1.0f, 1.0f,
+    //                                 0.0f, 0.0f,
+    //                                 1.0f, 0.0f
+    //                                }
+    //                  );
     m_modelList.addModelDefinition("SpaceQuad",
                                    "Assets/Shader/Quad.vert.glsl",
                                    "Assets/Shader/Quad.frag.glsl",
