@@ -3,6 +3,8 @@
 
 #include "DemoLayer.hpp"
 
+#include <CImg.h>
+
 
 DemoLayer::DemoLayer(Ellipse::Engine& engine)
  : Layer{engine},
@@ -32,34 +34,38 @@ void DemoLayer::init()
     Ellipse::RenderObjData quad = m_objects["Quad"];
     Ellipse::TextureReminder reminder{""};
 
-    Ellipse::loadTexture(reminder, quad.textureData(), "Assets/Images/Message.png");
-    m_modelList.addModelDefinition("MessageQuad",
+    // Ellipse::loadTexture(reminder, quad.textureData(), "Assets/Images/Message.png");
+    // m_modelList.addModelDefinition("MessageQuad",
+    //                                "Assets/Shader/Quad.vert.glsl",
+    //                                "Assets/Shader/Quad.frag.glsl",
+    //                                quad
+    //                               );
+    // reminder.fulfill(quad.textureData());
+
+    
+    // quad = m_objects["Quad"];
+    // // Ellipse::loadTexture(reminder, quad.textureData(), "Assets/Images/Solar.jpeg");
+    // Ellipse::loadTexture(reminder, quad.textureData(), "Assets/Images/Solar2048.jpeg");
+    // m_modelList.addModelDefinition("SpaceQuad",
+    //                                "Assets/Shader/Quad.vert.glsl",
+    //                                "Assets/Shader/Quad.frag.glsl",
+    //                                quad
+    //                               );
+    // reminder.fulfill(quad.textureData());
+      
+
+    quad = m_objects["Quad"];
+    // Ellipse::loadTexture(reminder, quad.textureData(), "Assets/Fonts/Font.png");
+    Ellipse::loadTexture(reminder, quad.textureData(), "Assets/Fonts/FontScaled.png");
+    
+    
+    m_modelList.addModelDefinition("Times",
                                    "Assets/Shader/Quad.vert.glsl",
                                    "Assets/Shader/Quad.frag.glsl",
                                    quad
                                   );
     reminder.fulfill(quad.textureData());
 
-    Ellipse::loadTexture(reminder, quad.textureData(), "Assets/Images/Solar.jpeg");
-    quad.setTexCoords(Vector<float>{0.0f, 1.0f,
-                                    1.0f, 1.0f,
-                                    0.0f, 0.0f,
-                                    1.0f, 0.0f
-                                   }
-                     );
-    // quad.setTexCoords(Vector<float>{0.0f, 1.0f,
-    //                                 1.0f, 1.0f,
-    //                                 0.0f, 0.0f,
-    //                                 1.0f, 0.0f
-    //                                }
-    //                  );
-    m_modelList.addModelDefinition("SpaceQuad",
-                                   "Assets/Shader/Quad.vert.glsl",
-                                   "Assets/Shader/Quad.frag.glsl",
-                                   quad
-                                  );
-    reminder.fulfill(quad.textureData());
-      
 
     // Ellipse::Glyph glyphA = times.getGlyph('A');
     // Ellipse::RenderObjData glyphAQuad = Ellipse::createFontQuad(glyphA, m_objects["Quad"], timesTexture);
@@ -69,9 +75,10 @@ void DemoLayer::init()
     //                                glyphAQuad
     //                               );
 
+
     // Ellipse::FontCollection times = m_fontModule.getFont("TimesNewRoman");
     // Ellipse::TextureData timesTexture;
-    // reminder = Ellipse::loadTexture(timesTexture, times.sheetPath());
+    // Ellipse::loadTexture(reminder, timesTexture, times.sheetPath());
     // Ellipse::addGlyphs(times.glyphs(),
     //                    m_objects["Quad"],
     //                    timesTexture,
@@ -81,15 +88,17 @@ void DemoLayer::init()
     //                   );
     // reminder.fulfill(timesTexture);
 
-    m_modelList.addModel("FrontQuad", "MessageQuad");
-    m_modelList.translate("FrontQuad", Vec2{-0.5f, 0.1f});
-    m_modelList.scale("FrontQuad", Vec2{0.5f, 0.75f});
 
-    m_modelList.addModel("FrontQuad1", "SpaceQuad");
-    m_modelList.translate("FrontQuad1", Vec2{0.5f, 0.1f});
-    m_modelList.scale("FrontQuad1", Vec2{0.5f, 0.75f});
+    // m_modelList.addModel("FrontQuad", "MessageQuad");
+    // m_modelList.translate("FrontQuad", Vec2{-0.5f, 0.1f});
+    // m_modelList.scale("FrontQuad", Vec2{0.5f, 0.75f});
+
+    // m_modelList.addModel("FrontQuad1", "SpaceQuad");
+    // m_modelList.translate("FrontQuad1", Vec2{0.5f, 0.1f});
+    // m_modelList.scale("FrontQuad1", Vec2{0.5f, 0.75f});
 
     // m_modelList.addModel("FrontQuad2", "A");
+    m_modelList.addModel("FrontQuad2", "Times");
     // m_modelList.translate("FrontQuad2", Vec2{0.3f, 0.6f});
     // m_modelList.scale("FrontQuad2", Vec2{0.5f, 0.75f});
 }

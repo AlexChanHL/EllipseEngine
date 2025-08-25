@@ -29,8 +29,7 @@ class FontModuleImpl : public FontModule
         }
 
         // m_fonts["TimesNewRoman"] = FontCollection{"Assets/Fonts/Font.png", Vec2{0.0f}, 0.1f, 0.1f, commonGlyphs}; 
-        m_fonts["TimesNewRoman"] = FontCollection{"Assets/Fonts/Text.png", Vec2{0.0f}, 0.1f, 0.1f, commonGlyphs}; 
-        // m_fonts["TimesNewRoman"] = FontCollection{"Assets/Fonts/Solar.jpeg", Vec2{0.0f}, 0.1f, 0.1f, commonGlyphs}; 
+        m_fonts["TimesNewRoman"] = FontCollection{"Assets/Fonts/Font1080.png", Vec2{0.0f}, 0.1f, 0.1f, commonGlyphs}; 
     }
     virtual void onUpdate() override 
     {

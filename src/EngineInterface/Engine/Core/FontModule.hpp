@@ -107,17 +107,11 @@ inline RenderObjData createFontQuad(Glyph glyph,
     Vec2 posRight = glyph.m_pos + glyph.m_xMax;
     Vec2 posTop = glyph.m_pos + glyph.m_yMax;
     Vec2 posTopRight = glyph.m_pos + glyph.m_xMax + glyph.m_yMax;
-    // fontQuad.setTexCoords(Vector<float>{glyph.m_pos.x, glyph.m_pos.y,
-    //                                     posRight.x, posRight.y,
-    //                                     posTop.x, posTop.y, 
-    //                                     posTopRight.x, posTopRight.y
-    //                                    }
-    //                      );
-
-    fontQuad.setTexCoords(Vector<float>{0.0f, 1.0f,
-                                        1.0f, 1.0f,
-                                        0.0f, 0.0f,
-                                        1.0f, 0.0f
+    fontQuad.setTexCoords(Vector<float>{
+                                        posTop.x, posTop.y, 
+                                        posTopRight.x, posTopRight.y,
+                                        glyph.m_pos.x, glyph.m_pos.y,
+                                        posRight.x, posRight.y
                                        }
                          );
 
@@ -140,11 +134,11 @@ void addGlyphs(Vector<Glyph> glyphs,
         Ellipse::RenderObjData data = Ellipse::createFontQuad(glyph, quad, timesTexture);
         String name = String{glyph.m_character};
         func(name.c_str(), vert, frag, data);
-        ELLIPSE_ENGINE_LOG_INFO("{}", name.c_str());
-        for(u64_t i=0;i<data.textureCoords().size();i+=2)
-        {
-             std::cout << data.textureCoords()[i] << ' ' << data.textureCoords()[i+1] << '\n';
-        }
+        // ELLIPSE_ENGINE_LOG_INFO("{}", name.c_str());
+        // for(u64_t i=0;i<data.textureCoords().size();i+=2)
+        // {
+             // std::cout << data.textureCoords()[i] << ' ' << data.textureCoords()[i+1] << '\n';
+        // }
     }
 }
 

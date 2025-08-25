@@ -23,6 +23,7 @@ void OpenGLRenderPlugin::renderGL(const OpenGLRenderObj& rObj)
             glActiveTexture(GL_TEXTURE0);
             for(u32_t j=0;j<rObj.meshes()[i]->textures().size();j++)
             {
+                // ELLIPSE_ENGINE_LOG_INFO("Bind texture");
                 glBindTexture(GL_TEXTURE_2D, rObj.meshes()[i]->textures()[j].id());
             }
         }
@@ -37,6 +38,7 @@ void OpenGLRenderPlugin::renderGLMesh(const OpenGLMesh& mesh)
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glBindVertexArray(mesh.vao()); 
+    // ELLIPSE_ENGINE_LOG_INFO("{}", mesh.indicies().size());
     glDrawElements(GL_TRIANGLES, static_cast<i32_t>(mesh.indicies().size()), GL_UNSIGNED_INT, NULL);
     glBindVertexArray(0);
 }

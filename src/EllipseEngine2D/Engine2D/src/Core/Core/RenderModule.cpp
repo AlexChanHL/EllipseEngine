@@ -21,7 +21,7 @@ RenderModule2D::~RenderModule2D()
 void RenderModule2D::init()
 {
     m_view = EllipseMath::lookAt(m_camera.position(),
-	   	                 m_camera.position() + m_camera.front(),
+	   	                           m_camera.position() + m_camera.front(),
                                  m_camera.upDirection()
                                 );
 

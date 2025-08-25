@@ -54,6 +54,7 @@ class ModelManagerModuleImpl : public ModelManagerModule
     {
     if(strcmp(objectName, object.name().c_str()) == 0)
     {
+    // ELLIPSE_ENGINE_LOG_ERROR("Object in list");
     ModelID idLocation{m_randomRemoveLast.chooseRandomVal()};
     modelID = idLocation;
 

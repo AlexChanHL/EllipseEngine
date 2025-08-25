@@ -160,7 +160,7 @@ bool Application::onWindowResize(WindowResizeEvent& resizeEvent)
   i32_t viewspaceDiffernceWidth = newSizeWidth - windowSize.first;
   i32_t viewspaceDiffernceHeight = newSizeHeight - windowSize.second;
 
-  ModelManagerModule& modelManagerModule = static_cast<ModelManagerModule&>(m_engine->getModule("ModelManagerLayerModule"));
+  ModelManagerModule& modelManagerModule = static_cast<ModelManagerModule&>(m_engine->getModule("ModelModule"));
 
   // modelManagerModule.setDifferentInViewspace(
   //   static_cast<float>(viewspaceDiffernceWidth),

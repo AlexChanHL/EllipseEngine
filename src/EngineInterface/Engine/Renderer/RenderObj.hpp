@@ -144,7 +144,7 @@ class TextureReminder
 inline void loadTexture(TextureReminder& reminder, TextureData& texture, String path)
 {
     texture.m_path = path;
-    // stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(true);
     texture.m_data = stbi_load(path.c_str(), &texture.m_width, &texture.m_height, &texture.m_clrChannels, 0);
     if(!texture.m_data)
     {

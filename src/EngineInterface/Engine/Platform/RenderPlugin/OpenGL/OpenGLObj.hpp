@@ -52,6 +52,7 @@ class OpenGLMesh : public RenderMesh
     {
         m_textures.push_back(Texture{});
         glGenTextures(1, &m_textures[0].id());
+        ELLIPSE_ENGINE_LOG_INFO("{} {}", texture.m_width, texture.m_height);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_textures[0].id());
@@ -59,14 +60,20 @@ class OpenGLMesh : public RenderMesh
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.m_width, texture.m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.m_data);
         glGenerateMipmap(GL_TEXTURE_2D);
+
+       //  i32_t width = 0;
+       //  glGetTexLevelParameteriv(GL_TEXTURE_2D,
+       //                           0,
+       //                           GL_TEXTURE_WIDTH,
+       //                           &width
+       //                          );
+       // 
+       //  ELLIPSE_ENGINE_LOG_INFO("{}", width);
     }
 
     m_indicies = indicies;

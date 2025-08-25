@@ -24,8 +24,8 @@ Ellipse::ApplicationConfig::ApplicationConfig()
    m_windowSettings.m_media = WindowLibrary::SDLWindow;
    m_windowSettings.m_graphics = GraphicsLibrary::OpenGL;
 
-   m_windowSettings.m_width = 1280;
-   m_windowSettings.m_height = 640;
+   m_windowSettings.m_width = 649;
+   m_windowSettings.m_height = 600;
 
    m_graphicsSpec = GraphicsSpec::OpenGL;
 
