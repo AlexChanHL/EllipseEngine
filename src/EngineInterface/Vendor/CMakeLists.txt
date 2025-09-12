@@ -1,7 +1,6 @@
 
 add_subdirectory(glad)
 add_subdirectory(stb_image)
-add_subdirectory(CImg SYSTEM)
 
 
 add_library(EngineVendor INTERFACE)
@@ -24,18 +23,19 @@ if(${BUILD_OFFLINE} STREQUAL "False")
  FetchContent_Declare(assimp
                       GIT_REPOSITORY https://github.com/assimp/assimp.git
                       GIT_TAG v6.0.2
+                      SYSTEM
                      )
  
  FetchContent_MakeAvailable(assimp)
  
- FetchContent_Declare(
- fmtLib
- GIT_REPOSITORY https://github.com/fmtlib/fmt.git
- GIT_TAG 11.2.0
- SYSTEM
-                    )
- 
- FetchContent_MakeAvailable(fmtLib)
+ # FetchContent_Declare(
+ # fmtLib
+ # GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+ # GIT_TAG 11.2.0
+ # SYSTEM
+ #                    )
+ # 
+ # FetchContent_MakeAvailable(fmtLib)
  
  FetchContent_Declare(
  glmLib
@@ -53,8 +53,22 @@ if(${BUILD_OFFLINE} STREQUAL "False")
                      )
  
  FetchContent_MakeAvailable(sglLogger)
+# message(${BUILD_OFFLINE})
  
 endif()
 
-target_link_libraries(EngineVendor INTERFACE glad stb_image SDL3::SDL3 assimp fmt::fmt)
+
+find_package(fmt)
+
+
+include(FindPkgConfig) 
+pkg_check_modules(VIPS vips-cpp)
+
+add_library(vips INTERFACE)
+target_link_options(vips INTERFACE ${VIPS_LDFLAGS})
+target_include_directories(vips SYSTEM INTERFACE ${VIPS_INCLUDE_DIRS})
+
+target_compile_options(assimp INTERFACE -Wno-error=character-conversion)
+
+target_link_libraries(EngineVendor INTERFACE glad stb_image SDL3::SDL3 assimp fmt::fmt vips)
 

@@ -341,124 +341,6 @@ class Model
     SharedPtr<RenderShaderObj> m_shaderObject;
 };
 
-// class CameraManager
-// {
-//    public:
-//     CameraManager()
-//     {
-//
-//     }
-//     ~CameraManager()
-//     {
-//
-//     }
-//
-//
-//     void addCamera(const char* name)
-//     {
-//     m_cameras.push_back(Camera{name});
-//     }
-//
-//     void translateForward(u64_t index)
-//     {
-//     Camera camera = m_cameras[index];
-//
-//     m_cameras[index].setPosition(camera.position() + (camera.front() * camera.cameraSpeed()));
-//     }
-//     
-//     void translateBackward(u64_t index)
-//     {
-//     Camera camera = m_cameras[index];
-//
-//     m_cameras[index].setPosition(camera.position() - (camera.front() * camera.cameraSpeed()));
-//     
-//     }
-//     void translateLeft(u64_t index)
-//     {
-//     Camera camera = m_cameras[index];
-//
-//     m_cameras[index].setPosition(camera.position() - (EllipseMath::cross(camera.front(), camera.upDirection()) * camera.cameraSpeed()));
-//     
-//     }
-//     void translateRight(u64_t index)
-//     {
-//     Camera camera = m_cameras[index];
-//
-//     m_cameras[index].setPosition(camera.position() + (EllipseMath::cross(camera.front(), camera.upDirection()) * camera.cameraSpeed()));
-//     
-//     }
-//
-//     void registerMouseUpdate(Pair<float, float> mouseOffsets)
-//     {
-//     for(u32_t i = 0; i < m_cameras.size(); i++)
-//     {
-//     m_cameras[i].setCameraYawValues(mouseOffsets);
-//     m_cameras[i].setCameraFront();
-//     }
-//
-//     }
-//
-//     void setFronts()
-//     {
-//     // for(u32_t i = 0; i < m_cameras.size(); i++)
-//     // {
-//     // m_cameras[i].setFront(m_cameras[i].position() + Vec3{4.0f, 0.0f, 0.0f});
-//     // }
-//     }
-//
-//     void setCameraPosition(u64_t index,
-//                            Vec3 position)
-//     {
-//     m_cameras[index].setPosition(position);
-//     }
-//
-//     Vec3 front(u64_t index) const
-//     {
-//     return m_cameras[index].front();
-//     }
-//
-//     Camera findCamera(const char* cameraName) const
-//     {
-//     for(u32_t i = 0; i < m_cameras.size(); i++)
-//     {
-//     if(strcmp(cameraName, m_cameras[i].name()) == 0)
-//     {
-//     return m_cameras[i];
-//     }
-//     }
-//
-//     ELLIPSE_ENGINE_LOG_WARN("Camera not in list, returning invaild camara");
-//
-//     return Camera{};
-//
-//     }
-//
-//     u64_t findCameraIndex(const char* cameraName) const
-//     {
-//     for(u64_t i = 0; i < m_cameras.size(); i++)
-//     {
-//     if(strcmp(cameraName, m_cameras[i].name()) == 0)
-//     {
-//     return i;
-//     }
-//     }
-//
-//     ELLIPSE_ENGINE_LOG_WARN("Camera not in list, returning cameras size");
-//
-//     return m_cameras.size();
-//
-//     }
-//
-//     Camera& cameraIndex(u64_t index)
-//     {
-//     return m_cameras[index];
-//     }
-//
-//    private:
-//     Vector<Camera> m_cameras;
-// };
-
-
 class ModelManagerModule : public IModule
 {
    public:
@@ -507,8 +389,6 @@ class ModelManagerModule : public IModule
     // CREATE_FUNC_CALLBACK_INTERFACE(translateModel, void(ModelID modelID, Vec3 translationAmount))
     // CREATE_FUNC_CALLBACK_INTERFACE(rotateModel, void(ModelID modelID, float radians, Vec3 rotationAxis))
     // CREATE_FUNC_CALLBACK_INTERFACE(scaleModel, void(ModelID modelID, Vec3 scalarAmount))
-
-    // virtual CameraManager& cameraManager() = 0;
 
     virtual VectorSharedIteratorHeap<Model>& models() = 0;
     virtual Vector<ModelObject>& objects() = 0;

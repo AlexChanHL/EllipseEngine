@@ -64,6 +64,7 @@ class OpenGLMesh : public RenderMesh
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.m_width, texture.m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.m_data);
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 512, 512, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.m_data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
        //  i32_t width = 0;

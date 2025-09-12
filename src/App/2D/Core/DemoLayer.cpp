@@ -3,8 +3,6 @@
 
 #include "DemoLayer.hpp"
 
-#include <CImg.h>
-
 
 DemoLayer::DemoLayer(Ellipse::Engine& engine)
  : Layer{engine},
