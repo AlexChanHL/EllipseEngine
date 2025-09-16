@@ -28,14 +28,14 @@ if(${BUILD_OFFLINE} STREQUAL "False")
  
  FetchContent_MakeAvailable(assimp)
  
- # FetchContent_Declare(
- # fmtLib
- # GIT_REPOSITORY https://github.com/fmtlib/fmt.git
- # GIT_TAG 11.2.0
- # SYSTEM
- #                    )
- # 
- # FetchContent_MakeAvailable(fmtLib)
+ FetchContent_Declare(
+ fmtLib
+ GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+ GIT_TAG master
+ SYSTEM
+                    )
+
+ FetchContent_MakeAvailable(fmtLib)
  
  FetchContent_Declare(
  glmLib
@@ -58,7 +58,7 @@ if(${BUILD_OFFLINE} STREQUAL "False")
 endif()
 
 
-find_package(fmt)
+# find_package(fmt)
 
 
 include(FindPkgConfig) 
@@ -69,6 +69,8 @@ target_link_options(vips INTERFACE ${VIPS_LDFLAGS})
 target_include_directories(vips SYSTEM INTERFACE ${VIPS_INCLUDE_DIRS})
 
 target_compile_options(assimp INTERFACE -Wno-error=character-conversion)
+# target_compile_options(assimp INTERFACE ${ALL_WARNINGS})
 
-target_link_libraries(EngineVendor INTERFACE glad stb_image SDL3::SDL3 assimp fmt::fmt vips)
+
+target_link_libraries(EngineVendor INTERFACE glad stb_image SDL3::SDL3 assimp fmt::fmt)
 

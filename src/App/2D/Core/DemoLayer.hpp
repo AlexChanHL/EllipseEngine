@@ -16,9 +16,8 @@ class DemoLayer : public Ellipse::Layer
 
     void onUpdate(float dt) override;
 
-    void setName(String name) 
-    {
-        m_name = name;
+    void setName(String name) {
+     m_name = name;
     }
 
     bool onKeyPressed(Ellipse::KeyboardPressedEvent& e);
@@ -35,5 +34,9 @@ class DemoLayer : public Ellipse::Layer
 
     ModelList m_modelList;
     Ellipse::PreDefinedObjects& m_objects;
+
+    Ellipse::Timer m_timer;
+    Vector<String> m_names;
+    Vec2 m_cursor;
 };
 

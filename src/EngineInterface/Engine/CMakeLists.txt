@@ -67,7 +67,7 @@ add_custom_target(CopyAssets ALL
 
 add_dependencies(${NAME} CopyAssets)
 
-target_link_libraries(${NAME} PUBLIC glm sglLogger stb_image)
+target_link_libraries(${NAME} PUBLIC glm sglLogger stb_image vips)
 target_link_libraries(${NAME} PRIVATE EngineVendor)
 
 

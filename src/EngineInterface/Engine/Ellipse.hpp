@@ -14,6 +14,7 @@
 #include "Core/Window.hpp"
 #include "Core/OSTime.hpp"
 #include "Core/TimeModule.hpp"
+#include "Core/Utils/Miscellaneous.hpp"
 
 #include "Renderer/Renderer.hpp"
 #include "Renderer/RenderModule.hpp"

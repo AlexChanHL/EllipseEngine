@@ -15,9 +15,8 @@ namespace EllipseMath
 class Random
 {
     public:
-     static std::mt19937& randomEngine()
-     {
-     return m_randomEngine;
+     static std::mt19937& randomEngine() {
+      return m_randomEngine;
      }
 
     private:

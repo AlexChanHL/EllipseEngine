@@ -19,26 +19,21 @@ class FontModuleImpl : public FontModule
 
     }
 
-    virtual void init() override 
-    {
-        String commonChars = " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-        Vector<char> commonGlyphs;
-        for(char ch : commonChars)
-        {
-             commonGlyphs.push_back(ch);
-        }
+    virtual void init() override {
+     String commonChars = " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+     Vector<char> commonGlyphs;
+     for(char ch : commonChars) {
+          commonGlyphs.push_back(ch);
+     }
 
-        // m_fonts["TimesNewRoman"] = FontCollection{"Assets/Fonts/Font.png", Vec2{0.0f}, 0.1f, 0.1f, commonGlyphs}; 
-        m_fonts["TimesNewRoman"] = FontCollection{"Assets/Fonts/Font1080.png", Vec2{0.0f}, 0.1f, 0.1f, commonGlyphs}; 
+     m_fonts["TimesNewRoman"] = FontCollection{"Assets/Fonts/Font.png", Vec2{0.0f}, 0.1f, 0.1f, commonGlyphs}; 
     }
-    virtual void onUpdate() override 
-    {
+    virtual void onUpdate() override {
 
     }
 
-    FontCollection getFont(String font) override
-    {
-        return m_fonts[font];   
+    FontCollection getFont(String font) override {
+     return m_fonts[font];   
     }
 
    private:
@@ -46,8 +41,7 @@ class FontModuleImpl : public FontModule
     Map<String, FontCollection> m_fonts;
 };
 
-SharedPtr<IModule> FontModule::createFontModule(Engine& engine)
-{
+SharedPtr<IModule> FontModule::createFontModule(Engine& engine) {
     return createShared<FontModuleImpl>(engine);
 }
 

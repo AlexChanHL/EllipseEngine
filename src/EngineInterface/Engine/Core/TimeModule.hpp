@@ -30,86 +30,71 @@ struct TimeModule : public IModule
 
      }
     
-     void pause()
-     {
-     if(m_isPaused)
-     {
-     return;
+     void pause() {
+      if(m_isPaused) {
+       return;
+      }
+
+      m_isPaused = true;
+      m_pauseStart = OSTime::secAndNSec();
      }
 
-     m_isPaused = true;
-     m_pauseStart = OSTime::secAndNSec();
+     void unPause() {
+      if(!m_isPaused) {
+       return;
+      }
+
+      m_isPaused = false;
+      m_difference += OSTime::secAndNSec() - m_pauseStart;
      }
 
-     void unPause()
-     {
-     if(!m_isPaused)
-     {
-     return;
+     bool setTimer(Timer& timer, float val) {
+      if(timer.m_isSetTimer) {
+       timer.m_secAndNSec = secAndNSec();
+       timer.m_isSetTimer = false;
+      }
+
+      if((secAndNSec() - timer.m_secAndNSec) >= val) {
+       timer.m_isSetTimer = true;
+       return true;
+      }
+
+      return false;
      }
 
-     m_isPaused = false;
-     m_difference += OSTime::secAndNSec() - m_pauseStart;
-     }
+     int64_t sec() const {
+      if(m_isPaused) {
+       return int64_t(m_pauseStart - m_difference);
+      }
 
-     bool setTimer(Timer& timer, int32_t val)
-     {
-     if(timer.m_isSetTimer)
-     {
-     timer.m_secAndNSec = secAndNSec();
-     timer.m_isSetTimer = false;
-     }
-
-     if((secAndNSec() - timer.m_secAndNSec) >= val)
-     {
-     timer.m_isSetTimer = true;
-     return true;
-     }
-
-     return false;
-     }
-
-     int64_t sec() const
-     {
-     if(m_isPaused)
-     {
-     return int64_t(m_pauseStart - m_difference);
-     }
-
-     return int64_t(OSTime::secAndNSec() - m_difference);
+      return int64_t(OSTime::secAndNSec() - m_difference);
      }
 
      // [ Nsec may be returning a wrong number ]
-     int64_t nsec() const
-     {
-     if(m_isPaused)
-     {
-     // [ Weired casting, may lead to conversions to lower size types ] return int64_t((m_pauseStart - m_difference - double(int64_t(m_pauseStart - m_difference))) * pow(10, 9));
-     }
+     int64_t nsec() const {
+      if(m_isPaused) {
+       // [ Weired casting, may lead to conversions to lower size types ] return int64_t((m_pauseStart - m_difference - double(int64_t(m_pauseStart - m_difference))) * pow(10, 9));
+      }
      // [ Loses percision when dividing] 
 
-     double difference = OSTime::secAndNSec() - m_difference;
-     return int64_t((difference - double(int64_t(difference))) * pow(10, 9));
+      double difference = OSTime::secAndNSec() - m_difference;
+      return int64_t((difference - double(int64_t(difference))) * pow(10, 9));
      }
 
-     double secAndNSec() const
-     {
-     if(m_isPaused)
-     {
-     return m_pauseStart - m_difference;
-     }
+     double secAndNSec() const {
+      if(m_isPaused) {
+       return m_pauseStart - m_difference;
+      }
     
-     return OSTime::secAndNSec() - m_difference;
+      return OSTime::secAndNSec() - m_difference;
      }
 
-     bool isPaused() const
-     {
-     return m_isPaused;
+     bool isPaused() const {
+      return m_isPaused;
      }
 
-     static SharedPtr<TimeModule> createTimeModule()
-     {
-     return createShared<TimeModule>();
+     static SharedPtr<TimeModule> createTimeModule() {
+      return createShared<TimeModule>();
      }
 
     private:

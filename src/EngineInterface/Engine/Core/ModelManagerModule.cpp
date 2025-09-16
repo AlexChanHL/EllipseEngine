@@ -49,50 +49,45 @@ class ModelManagerModuleImpl : public ModelManagerModule
                           UniformList uniformList
                           ) override
     {
+     for(const ModelObject& object : m_objects) {
+      if(strcmp(objectName, object.name().c_str()) == 0) {
+       ModelID idLocation{m_randomRemoveLast.chooseRandomVal()};
+       modelID = idLocation;
 
-    for(const ModelObject& object : m_objects)
-    {
-    if(strcmp(objectName, object.name().c_str()) == 0)
-    {
-    // ELLIPSE_ENGINE_LOG_ERROR("Object in list");
-    ModelID idLocation{m_randomRemoveLast.chooseRandomVal()};
-    modelID = idLocation;
-
-    Model model = prepareModel(objectName);
-    model.setId(modelID);
-    model.setModel(modelMat);
-    model.setUniformList(uniformList);
+       Model model = prepareModel(objectName);
+       model.setId(modelID);
+       model.setModel(modelMat);
+       model.setUniformList(uniformList);
 
 
-    m_models.push_back(model);
+       m_models.push_back(model);
    
-    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"model", &m_models[m_models.size() - 1].model()});
+       m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"model", &m_models[m_models.size() - 1].model()});
 
-    RenderModule& renderModule = static_cast<RenderModule&>(m_engine.getModule("RenderModule"));
-    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"proj", &renderModule.proj()});
-    m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"view", &renderModule.view()});
+       RenderModule& renderModule = static_cast<RenderModule&>(m_engine.getModule("RenderModule"));
+       m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"proj", &renderModule.proj()});
+       m_models[m_models.size() - 1].uniformList().addUniform(UniformVarible<Mat4>{"view", &renderModule.view()});
 
-    m_models[m_models.size() - 1].uniformList().setUniformLocations(m_models[m_models.size() - 1].shaderObject()->findUniformLocationList(m_models[m_models.size() - 1].uniformList()));
+       m_models[m_models.size() - 1].uniformList().setUniformLocations(m_models[m_models.size() - 1].shaderObject()->findUniformLocationList(m_models[m_models.size() - 1].uniformList()));
 
-    return;
-    }
-    }
+       return;
+      }
+     }
 
-    ELLIPSE_ENGINE_LOG_ERROR("Object not list");
+     ELLIPSE_ENGINE_LOG_ERROR("Object not in the modelmanager's list");
     }
 
     virtual void addModelDefinition(const char* objectName,
                                     String vertexShader,
                                     String fragmentShader,
                                     RenderObjData renderObjData
-                                   ) override
-    {
-    ModelObject object = prepareObject(objectName, 
-                                       renderObjData,
-                                       vertexShader,
-                                       fragmentShader
-                                      );
-    m_objects.push_back(object);
+                                   ) override {
+     ModelObject object = prepareObject(objectName, 
+                                        renderObjData,
+                                        vertexShader,
+                                        fragmentShader
+                                       );
+     m_objects.push_back(object);
     }
 
     virtual void removeModel(ModelID id) override
@@ -122,33 +117,36 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     }
 
-    virtual u64_t findModelIndex(ModelID modelID) const override 
-    {
-    for(u64_t i=0;i<m_models.size();i++)
-    {
-    if(m_models[i].id() == modelID)
-    {
-    return i;
-    }
-    }
+    virtual u64_t findModelIndex(ModelID modelID) const override {
+     for(u64_t i=0;i<m_models.size();i++) {
+     if(m_models[i].id() == modelID) {
+      return i;
+     }
+     }
 
-    ELLIPSE_ENGINE_LOG_ERROR("Could not find model, returning invalid index");
+     ELLIPSE_ENGINE_LOG_ERROR("Could not find model, returning invalid index");
    
-    return 0;
+     return 0;
     }
 
-    virtual i64_t findObjectIndex(const char* name) const override
-    {
-    for(u64_t i=0;i<m_objects.size();i++)
-    {
-    if(strcmp(name, m_objects[i].name().c_str()) == 0)
-    {
-    return static_cast<i64_t>(i);
-    }
-    }
+    virtual i64_t findObjectIndex(const char* name) const override {
+     for(u64_t i=0;i<m_objects.size();i++) {
+     if(strcmp(name, m_objects[i].name().c_str()) == 0) {
+      return static_cast<i64_t>(i);
+      }
+     }
 
-    ELLIPSE_ENGINE_LOG_WARN("Could not find object, returning invalid index");
-    return -1;
+     ELLIPSE_ENGINE_LOG_WARN("Could not find object, returning invalid index");
+     return -1;
+    }
+    virtual bool isObjectInList(const char* name) const override {
+     for(u64_t i=0;i<m_objects.size();i++) {
+     if(strcmp(name, m_objects[i].name().c_str()) == 0) {
+      return true;
+      }
+     }
+
+     return false;
     }
 
     virtual void setDifferentInViewspace(float viewspaceWidth,

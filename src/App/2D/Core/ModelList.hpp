@@ -20,35 +20,30 @@ class ModelList
 
     }
 
-    virtual void onUpdate()
-    {
-        addAmounts();
+    virtual void onUpdate() {
+     addAmounts();
 
-        for(Pair<String, u64_t> index : m_modelIndicies)
-        {
-            Ellipse::Model model = m_modelModule.models()[index.second];
+     for(Pair<String, u64_t> index : m_modelIndicies) {
+      Ellipse::Model model = m_modelModule.models()[index.second];
 
-            String name = findModelName(model.id());
-            m_renderModule.render(model.renderObject().get(), model.shaderObject().get(), model.uniformList());
-        }
+      String name = findModelName(model.id());
+      m_renderModule.render(model.renderObject().get(), model.shaderObject().get(), model.uniformList());
+     }
 
     }
 
-    virtual void addAmounts()
-    {
-        for(Pair<const Ellipse::ModelID, ModelVal>& model : m_models)
-        {
-            model.second.model() = Mat4{1.0f};
+    virtual void addAmounts() {
+     for(Pair<const Ellipse::ModelID, ModelVal>& model : m_models) {
+      model.second.model() = Mat4{1.0f};
 
-            model.second.model() = Ellipse::EllipseMath::translate(model.second.model(), model.second.translationAmount());
-            model.second.model() = Ellipse::EllipseMath::rotate(model.second.model(), model.second.rotationAmount().second, model.second.rotationAmount().first);
-            model.second.model() = Ellipse::EllipseMath::scale(model.second.model(), model.second.scaleAmount());
+      model.second.model() = Ellipse::EllipseMath::translate(model.second.model(), model.second.translationAmount());
+      model.second.model() = Ellipse::EllipseMath::rotate(model.second.model(), model.second.rotationAmount().second, model.second.rotationAmount().first);
+      model.second.model() = Ellipse::EllipseMath::scale(model.second.model(), model.second.scaleAmount());
 
-            *model.second.normalMatrix() = Ellipse::EllipseMath::inverse(Ellipse::EllipseMath::transpose(Mat3{model.second.model()}));
+      *model.second.normalMatrix() = Ellipse::EllipseMath::inverse(Ellipse::EllipseMath::transpose(Mat3{model.second.model()}));
 
-            setModelVal(model.first);
-        }
-    
+      setModelVal(model.first);
+     }
     }
     virtual void addModelDefinition(const char* objectName,
                                     String vert,
@@ -56,147 +51,138 @@ class ModelList
                                     Ellipse::RenderObjData data
                                    )
     {
-    if(m_modelModule.findObjectIndex(objectName) == -1)
-    {
-    m_modelModule.addModelDefinition(objectName,
-                                     vert,
-                                     frag,
-                                     data
-                                    );
-    return;
+     if(!m_modelModule.isObjectInList(objectName)) {
+      m_modelModule.addModelDefinition(objectName,
+                                       vert,
+                                       frag,
+                                       data
+                                      );
+      return;
+     }
+
+     ELLIPSE_APP_LOG_INFO("Object already in list. Object name: {}", objectName);
+     return;
     }
 
-    ELLIPSE_APP_LOG_INFO("Object already in list. Object name: {}", objectName);
-    return;
+    virtual void defineObject(const char* objectName, const char* texturePath, Ellipse::RenderObjData objectData) {
+     objectData.textureData() = Ellipse::loadTexture(texturePath, false);
+     addModelDefinition(objectName, "Assets/Shader/Quad.vert.glsl", "Assets/Shader/Quad.frag.glsl", objectData);
+     Ellipse::freeTexture(objectData.textureData());
     }
 
-    virtual void addModel(const char* name, const char* objectName, Ellipse::Camera& camera, Light& light)
-    {
-    Ellipse::ModelID id;
-    m_modelModule.addModel(id,
-                           objectName,
-                           Mat4{1.0f},
-                           Ellipse::UniformList{}
-                          );
+    virtual void addModel(const char* name, const char* objectName, Ellipse::Camera& camera, Light& light) {
+     Ellipse::ModelID id;
+     m_modelModule.addModel(id,
+                            objectName,
+                            Mat4{1.0f},
+                            Ellipse::UniformList{}
+     );
 
-    m_nameIds[name] = id;
-    m_models[id] = ModelVal{};
-    m_modelIndicies[name] = m_modelModule.models().size() - 1;
+     m_nameIds[name] = id;
+     m_models[id] = ModelVal{};
+     m_modelIndicies[name] = m_modelModule.models().size() - 1;
 
-    addCamera(modelModuleVal(name).uniformList(), camera);
+     addCamera(modelModuleVal(name).uniformList(), camera);
 
-    addMaterials(modelModuleVal(name).uniformList(), model(name));
+     addMaterials(modelModuleVal(name).uniformList(), model(name));
 
-    addLight(modelModuleVal(name).uniformList(), light);
+     addLight(modelModuleVal(name).uniformList(), light);
 
-    modelModuleVal(name).uniformList().setUniformLocations(modelModuleVal(name).shaderObject()->findUniformLocationList(modelModuleVal(name).uniformList()));
+     modelModuleVal(name).uniformList().setUniformLocations(modelModuleVal(name).shaderObject()->findUniformLocationList(modelModuleVal(name).uniformList()));
     }
 
-    virtual void addModel(const char* name, const char* objectName)
-    {
-    Ellipse::ModelID id;
-    m_modelModule.addModel(id,
-                           objectName,
-                           Mat4{1.0f},
-                           Ellipse::UniformList{}
-                          );
+    virtual void addModel(const char* name, const char* objectName) {
+     Ellipse::ModelID id;
+     if(m_modelModule.isObjectInList(objectName)) {
+      m_modelModule.addModel(id,
+                             objectName,
+                             Mat4{1.0f},
+                             Ellipse::UniformList{}
+      );
 
-    if(id != -1)
-    {
-        ELLIPSE_APP_LOG_INFO("model {}", name);
-        m_nameIds[name] = id;
-        m_models[id] = ModelVal{};
-        m_modelIndicies[name] = m_modelModule.models().size() - 1;
-    }
-    if(id == -1)
-    {
-        ELLIPSE_APP_LOG_WARN("no object {}", name);
+      ELLIPSE_APP_LOG_INFO("model {}", name);
+      m_nameIds[name] = id;
+      m_models[id] = ModelVal{};
+      m_modelIndicies[name] = m_modelModule.models().size() - 1;
+      return;
+     } 
+
+     ELLIPSE_APP_LOG_WARN("no object was found for: {}. Did not add model", name);
     }
 
+    virtual void addModel(const char* name, const char* objectName, Vec2 position) {
+     addModel(name, objectName);
+     translate(name, position);
     }
 
-    void removeModel(const char* name)
-    {
-    m_modelModule.removeModel(m_nameIds[name]);
+    void removeModel(const char* name) {
+     m_modelModule.removeModel(m_nameIds[name]);
 
-    // Vector<Ellipse::ModelID> modelKeys = Ellipse::Utils::keyMap(m_models);
-    // m_models.erase(Ellipse::Utils::iteratorNext(m_models.begin(), Ellipse::Utils::indexAt(modelKeys.begin(), modelKeys.end(), m_nameIds[name])));
-    //
-    // Vector<const char*> nameIDsKeys= Ellipse::Utils::keyMap(m_nameIds);
-    // m_nameIds.erase(Ellipse::Utils::iteratorNext(m_nameIds.begin(), Ellipse::Utils::indexAt(nameIDsKeys.begin(), nameIDsKeys.end(), name)));
-      
-    erase_if(m_models, [&](Pair<const Ellipse::ModelID, ModelVal>& model){ return model.first == m_nameIds[name]; });
-    erase_if(m_nameIds, [&](Pair<const String, Ellipse::ModelID>& nameID){ return strcmp(nameID.first.c_str(), name) == 0; });
-    erase_if(m_modelIndicies, [&](Pair<const String, u64_t>& modelIndex){ return strcmp(modelIndex.first.c_str(), name) == 0; });
-    for(Pair<String, u64_t> index : m_modelIndicies)
-    {
-    m_modelIndicies[index.first] = m_modelModule.findModelIndex(m_nameIds[index.first]);
-    }
+     // Vector<Ellipse::ModelID> modelKeys = Ellipse::Utils::keyMap(m_models);
+     // m_models.erase(Ellipse::Utils::iteratorNext(m_models.begin(), Ellipse::Utils::indexAt(modelKeys.begin(), modelKeys.end(), m_nameIds[name])));
+     //
+     // Vector<const char*> nameIDsKeys= Ellipse::Utils::keyMap(m_nameIds);
+     // m_nameIds.erase(Ellipse::Utils::iteratorNext(m_nameIds.begin(), Ellipse::Utils::indexAt(nameIDsKeys.begin(), nameIDsKeys.end(), name)));
+       
+     erase_if(m_models, [&](Pair<const Ellipse::ModelID, ModelVal>& model){ return model.first == m_nameIds[name]; });
+     erase_if(m_nameIds, [&](Pair<const String, Ellipse::ModelID>& nameID){ return strcmp(nameID.first.c_str(), name) == 0; });
+     erase_if(m_modelIndicies, [&](Pair<const String, u64_t>& modelIndex){ return strcmp(modelIndex.first.c_str(), name) == 0; });
+     for(Pair<String, u64_t> index : m_modelIndicies) {
+      m_modelIndicies[index.first] = m_modelModule.findModelIndex(m_nameIds[index.first]);
+     }
 
     }
 
-    void translate(const char* name, Vec2 vec)
-    {
-        model(name).setTranslateAmount(Vec3{vec, 0.0f});
+    void translate(const char* name, Vec2 vec) {
+     model(name).setTranslateAmount(Vec3{vec, 0.0f});
     }
 
-    void rotate(const char* name,  float theta)
-    {
-        model(name).setRotateAmount(theta, Vec3{0.0f, 0.0f, 1.0f});
+    void rotate(const char* name,  float theta) {
+     model(name).setRotateAmount(theta, Vec3{0.0f, 0.0f, 1.0f});
     }
 
-    void scale(const char* name, Vec2 vec)
-    {
-        model(name).setScaleAmount(Vec3{vec, 1.0f});
+    void scale(const char* name, Vec2 vec) {
+     model(name).setScaleAmount(Vec3{vec, 1.0f});
     }
 
-    void setModelVal(const char* name)
-    {
-    m_modelModule.models()[m_modelModule.findModelIndex(m_nameIds[name])].model() = m_models[m_nameIds[name]].model();
+    void setModelVal(const char* name) {
+     m_modelModule.models()[m_modelModule.findModelIndex(m_nameIds[name])].model() = m_models[m_nameIds[name]].model();
     }
 
-    void setModelVal(Ellipse::ModelID id)
-    {
-    m_modelModule.models()[m_modelModule.findModelIndex(id)].model() = m_models[id].model();
+    void setModelVal(Ellipse::ModelID id) {
+     m_modelModule.models()[m_modelModule.findModelIndex(id)].model() = m_models[id].model();
     }
 
-    Ellipse::Model& modelModuleVal(const char* name)
-    {
-    if(!m_nameIds.contains(name))
-    {
-    ELLIPSE_APP_LOG_WARN("name does not contain id model");
-    }
-    
+    Ellipse::Model& modelModuleVal(const char* name) {
+     if(!m_nameIds.contains(name)) {
+      ELLIPSE_APP_LOG_WARN("name does not contain id model");
+     }
+     
 
-    return m_modelModule.models()[m_modelModule.findModelIndex(m_nameIds[name])];
+     return m_modelModule.models()[m_modelModule.findModelIndex(m_nameIds[name])];
     }
 
-    ModelVal& model(const char* name)
-    {
-    if(!m_nameIds.contains(name))
-    {
-    ELLIPSE_APP_LOG_WARN("name does not contain id, name: {}", name);
+    ModelVal& model(const char* name) {
+     if(!m_nameIds.contains(name)) {
+      ELLIPSE_APP_LOG_WARN("name to id list does not contain id for: {}", name);
+      return m_models.begin()->second;
+     }
+
+     return m_models[m_nameIds[name]];
     }
 
-    return m_models[m_nameIds[name]];
+    Map<Ellipse::ModelID, ModelVal>& models() {
+     return m_models;
     }
 
-    Map<Ellipse::ModelID, ModelVal>& models()
-    {
-    return m_models;
-    }
+    String findModelName(Ellipse::ModelID id) {
+     for(auto [key, val] : m_nameIds) {
+      if(id == val) {
+       return key;
+      }
+     }
 
-    String findModelName(Ellipse::ModelID id)
-    {
-    for(auto [key, val] : m_nameIds)
-    {
-    if(id == val)
-    {
-    return key;
-    }
-    }
-
-    return "No model found";
+     return "No model found";
     }
 
     CREATE_FUNC_CALLBACK(addModelDefinition, void(const char* objectName,

@@ -127,30 +127,21 @@ void addGlyphs(Vector<Glyph> glyphs,
                Func func,
                String vert,
                String frag
-              )
-{
-    for(Glyph glyph : glyphs)
-    {
-        Ellipse::RenderObjData data = Ellipse::createFontQuad(glyph, quad, timesTexture);
-        String name = String{glyph.m_character};
-        func(name.c_str(), vert, frag, data);
-        // ELLIPSE_ENGINE_LOG_INFO("{}", name.c_str());
-        // for(u64_t i=0;i<data.textureCoords().size();i+=2)
-        // {
-             // std::cout << data.textureCoords()[i] << ' ' << data.textureCoords()[i+1] << '\n';
-        // }
+              ) {
+    for(Glyph glyph : glyphs) {
+     Ellipse::RenderObjData data = Ellipse::createFontQuad(glyph, quad, timesTexture);
+     String name = String{glyph.m_character};
+     func(name.c_str(), vert, frag, data);
     }
 }
 
 class FontModule : public IModule
 {
    public:
-    FontModule()
-    {
-        m_name = "FontModule";
+    FontModule() {
+     m_name = "FontModule";
     }
-    virtual ~FontModule()
-    {
+    virtual ~FontModule() {
 
     }
 

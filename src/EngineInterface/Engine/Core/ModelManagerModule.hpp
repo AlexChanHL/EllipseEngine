@@ -372,6 +372,7 @@ class ModelManagerModule : public IModule
 
     virtual u64_t findModelIndex(ModelID modelID) const = 0;
     virtual i64_t findObjectIndex(const char* name) const = 0;
+    virtual bool isObjectInList(const char* name) const = 0;
 
     virtual void setDifferentInViewspace(float viewspaceWidth,
                                          float viewspaceHeight,

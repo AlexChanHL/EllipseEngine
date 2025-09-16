@@ -51,8 +51,12 @@ class OpenGLMesh : public RenderMesh
     if(texture.m_data != nullptr)
     {
         m_textures.push_back(Texture{});
+
+        // Scaling due to bad GPU, cannot handle NPOT 
+        String resizedFilePath = convertTextureToPower2(texture);
+        TextureData textureResized = loadTexture(resizedFilePath, true);
+
         glGenTextures(1, &m_textures[0].id());
-        ELLIPSE_ENGINE_LOG_INFO("{} {}", texture.m_width, texture.m_height);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_textures[0].id());
@@ -63,18 +67,10 @@ class OpenGLMesh : public RenderMesh
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.m_width, texture.m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.m_data);
-        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 512, 512, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.m_data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureResized.m_width, textureResized.m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureResized.m_data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
-       //  i32_t width = 0;
-       //  glGetTexLevelParameteriv(GL_TEXTURE_2D,
-       //                           0,
-       //                           GL_TEXTURE_WIDTH,
-       //                           &width
-       //                          );
-       // 
-       //  ELLIPSE_ENGINE_LOG_INFO("{}", width);
+        freeTexture(textureResized);
     }
 
     m_indicies = indicies;

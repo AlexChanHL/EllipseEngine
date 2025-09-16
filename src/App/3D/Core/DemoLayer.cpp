@@ -34,47 +34,46 @@ void DemoLayer::init()
 
 
    Ellipse::RenderObjData cube = m_objects["Cube"];
-   Ellipse::RenderObjData quad = m_objects["Quad"];
+   // Ellipse::RenderObjData quad = m_objects["Quad"];
+   //
+   // m_modelList.addModelDefinition("LightCube",
+   //                                "Assets/Shader/Light.vert.glsl",
+   //                                "Assets/Shader/Light.frag.glsl",
+   //                                cube
+   //                               );
+   m_modelList.defineCubeObject("Cube", "Assets/Fonts/Font.png", m_objects["Cube"]);
+   m_modelList.defineLightCubeObject("LightCube", "Assets/Fonts/Font.png", m_objects["Cube"]);
 
-   m_modelList.addModelDefinition("LightCube",
-                                  "Assets/Shader/Light.vert.glsl",
-                                  "Assets/Shader/Light.frag.glsl",
-                                  cube
-                                 );
-   m_modelList.addModelDefinition("Cube",
-                                  "Assets/Shader/Cube.vert.glsl",
-                                  "Assets/Shader/Cube.frag.glsl",
-                                  cube
-                                 );
+   m_modelList.addModel("L1 cube", "LightCube", Vec3{0.0f, 0.0f, -1.0f});
    // m_modelList.addModelDefinition("Cube",
    //                                "Assets/Shader/Cube.vert.glsl",
    //                                "Assets/Shader/Cube.frag.glsl",
-   //                                "Assets/Models/Cube.gtlf"
+   //                                cube
    //                               );
-   m_modelList.addModelDefinition("Quad",
-                                  "Assets/Shader/Quad.vert.glsl",
-                                  "Assets/Shader/Quad.frag.glsl",
-                                  quad
-                                 );
-
-   m_light.init(m_modelList, "LightCube");
-   m_light.setPosition(m_modelList, Vec3{1.0f, 2.0f, 1.0f});
-
-   m_modelList.addModel("Cube1",
-                        "Cube",
-                        m_renderModule.camera(),
-                        m_light.light()
-                       );
-
+   // m_modelList.addModelDefinition("Quad",
+   //                                "Assets/Shader/Quad.vert.glsl",
+   //                                "Assets/Shader/Quad.frag.glsl",
+   //                                quad
+   //                               );
+   //
+   // m_light.init(m_modelList, "LightCube");
+   // m_light.setPosition(m_modelList, Vec3{1.0f, 2.0f, 1.0f});
+   //
+   // m_modelList.addModel("Cube1",
+   //                      "Cube",
+   //                      m_renderModule.camera(),
+   //                      m_light.light()
+   //                     );
+   //
    m_cubeMadeCube.init();
-
-
-   m_modelList.addModel("Quad1",
-                        "Quad",
-                        m_renderModule.camera(),
-                        m_light.light()
-                       );
-   m_modelList.model("Cube1").setTranslateAmount(Vec3{0.0f, 0.5f, -0.5f});
+   //
+   //
+   // m_modelList.addModel("Quad1",
+   //                      "Quad",
+   //                      m_renderModule.camera(),
+   //                      m_light.light()
+   //                     );
+   // m_modelList.model("Cube1").setTranslateAmount(Vec3{0.0f, 0.5f, -0.5f});
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e)
@@ -105,41 +104,39 @@ void DemoLayer::onUpdate(float dt)
     //                                        Vec3{0.0f, 1.0f, 0.0f}
     //                                       );
 
-    // Ellipse::EllipseMath::rotate(Ellipse::EllipseMath::radians(static_cast<float>(m_timeModule.secAndNSec() * 16)), m_renderModule.camera().front(), Vec3(0);
-    m_modelList.model("Cube1").setRotateAmount(Ellipse::EllipseMath::radians(30.0f),
-                                               Vec3{0.0f, 1.0f, 0.0f}
-                                              );
+    // Ellipse::EllipseMath::rotate(Ellipse::EllipseMath::radians(static_cast<float>(m_timeModule.secAndNSec() * 16)), m_renderModule.camera().front(), Vec3(0));
+    // m_modelList.model("Cube1").setRotateAmount(Ellipse::EllipseMath::radians(30.0f),
+    //                                            Vec3{0.0f, 1.0f, 0.0f}
+    //                                           );
 
     m_modelList.onUpdate();
 
-    if((m_weapon.weaponType() == WeaponType::AssaultRifle) && Ellipse::Input::isMousePressed(ELLIPSE_MOUSE_BUTTON_LEFT))
-    {
-    m_weapon.fire();
+    if((m_weapon.weaponType() == WeaponType::AssaultRifle) && Ellipse::Input::isMousePressed(ELLIPSE_MOUSE_BUTTON_LEFT)) {
+     m_weapon.fire();
     }
 
     m_weapon.update();
 
 
-    m_cubeMadeCube.linearFunc([&](Pixel& pixel)
-    {
-    Vec3 position = pixel.worldPosition();
+    m_cubeMadeCube.linearFunc([&](Pixel& pixel) {
+     Vec3 position = pixel.worldPosition();
 
-    double time = m_timeModule.secAndNSec() * 16;
-    float radiansRotated = Ellipse::EllipseMath::radians(static_cast<float>(time));
+     double time = m_timeModule.secAndNSec() * 16;
+     float radiansRotated = Ellipse::EllipseMath::radians(static_cast<float>(time));
 
-    position = Ellipse::EllipseMath::rotateXAxis(position, radiansRotated);
+     position = Ellipse::EllipseMath::rotateXAxis(position, radiansRotated);
 
-    Mat3 yAxisMatrix{1.0f};
+     Mat3 yAxisMatrix{1.0f};
 
-    position = Ellipse::EllipseMath::rotateYAxis(position, radiansRotated);
+     position = Ellipse::EllipseMath::rotateYAxis(position, radiansRotated);
 
-    Mat3 zAxisMatrix{1.0f};
+     Mat3 zAxisMatrix{1.0f};
 
-    // position = Ellipse::EllipseMath::rotateZAxis(position, radiansRotated);
+     // position = Ellipse::EllipseMath::rotateZAxis(position, radiansRotated);
 
-    pixel.setPosition(position); 
+     pixel.setPosition(position); 
     }
-                             );
+    );
 
     // m_player->onUpdate(dt);
 

@@ -127,7 +127,6 @@ RenderModule3D::RenderModule3D(Engine& engine)
                                        1.0f, 1.0f,
                                       }
                                      );
-    cubeData.setTextureImgPath("Assets/Models/Textures/Message.png");
 
 
    Ellipse::RenderObjData quadData;

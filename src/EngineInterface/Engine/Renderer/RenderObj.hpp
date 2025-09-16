@@ -1,12 +1,15 @@
 #pragma once
 
-// #include "Core/ModelManagerModule.hpp"
-// #include "Core/.hpp"
 #include "Core/Base.hpp"
-
+#include "Core/Utils/FileHelper.hpp"
+#include "Math/Random/Random.hpp"
 #include "UniformVarible.hpp"
 
+#include <vips/vips8>
 #include <stb_image.h>
+#include <fmt/format.h>
+
+#define ELLIPSE_ALL_TEXTURE_EXT "jpeg", "jpg", "png"
 
 
 namespace Ellipse
@@ -66,6 +69,17 @@ class RenderMesh
    private:
 };
 
+inline bool isTextureExt(String ext) {
+    Vector<String> textureExts = {ELLIPSE_ALL_TEXTURE_EXT};
+    for(u64_t i=0;i<textureExts.size();i++) {
+     if(ext == textureExts[i]) {
+      return true;
+     }
+    }
+
+    return false;
+}
+
 class TextureData
 {
    public:
@@ -73,8 +87,27 @@ class TextureData
     : m_width{0},
       m_height{0},
       m_clrChannels{0},
+      m_fileName{},
+      m_ext{},
       m_data{nullptr}
     {
+
+    }
+    TextureData(i32_t width, i32_t height, i32_t clrChannels, String path, unsigned char* data)
+    : m_width{width},
+      m_height{height},
+      m_clrChannels{clrChannels},
+      m_fileName{},
+      m_ext{},
+      m_data{data}
+    {
+     String file = Utils::getFile(path);
+     m_ext = Utils::getExt(file);
+     m_fileName = Utils::getFileName(file);
+     if(!isTextureExt(m_ext)) {
+      ELLIPSE_ENGINE_LOG_WARN("Unknown texture extenstion");
+      m_ext = "unknown";
+     }
 
     }
     ~TextureData()
@@ -85,6 +118,8 @@ class TextureData
     : m_width{textureData.m_width},
       m_height{textureData.m_height},
       m_clrChannels{textureData.m_clrChannels},
+      m_fileName{textureData.m_fileName},
+      m_ext{textureData.m_ext},
       m_data{textureData.m_data}
     {
      
@@ -94,6 +129,8 @@ class TextureData
         m_width = textureData.m_width;
         m_height = textureData.m_height;
         m_clrChannels = textureData.m_clrChannels;
+        m_fileName = textureData.m_fileName;
+        m_ext = textureData.m_ext;
         m_data = textureData.m_data;
     }
 
@@ -102,56 +139,74 @@ class TextureData
     i32_t m_width;
     i32_t m_height;
     i32_t m_clrChannels;
+    String m_fileName;
+    String m_ext;
     unsigned char* m_data;
 
    private:
 };
 
-class TextureReminder
-{
-   public:
-    TextureReminder(String path)
-    : m_path{path},
-      m_isFulfilled{false}
-    {
-
-    }
-    ~TextureReminder()
-    {
-        if(!m_isFulfilled)
-        {
-            ELLIPSE_ENGINE_LOG_WARN("Did not fulfill {}", m_path);
-        }
-    }
-
-    void fulfill(TextureData& texture)
-    {
-        m_isFulfilled = true;
-        stbi_image_free(texture.m_data);
-    }
-
-    void load(String path)
-    {
-        m_path = path;
-        m_isFulfilled = false;
-    }
-
-   private:
-    String m_path;
-    bool m_isFulfilled;
-};
-
-inline void loadTexture(TextureReminder& reminder, TextureData& texture, String path)
-{
-    texture.m_path = path;
-    stbi_set_flip_vertically_on_load(true);
-    texture.m_data = stbi_load(path.c_str(), &texture.m_width, &texture.m_height, &texture.m_clrChannels, 0);
-    if(!texture.m_data)
+inline TextureData loadTexture(String path, bool flipTexture)
+{ 
+    stbi_set_flip_vertically_on_load(flipTexture);
+    i32_t width = 0; 
+    i32_t height = 0; 
+    i32_t clrChannels = 0; 
+    unsigned char* data = stbi_load(path.c_str(), &width, &height, &clrChannels, 0);
+    if(!data)
     {
         ELLIPSE_ENGINE_LOG_WARN("Error creating texture data");
     }
 
-    reminder.load(path);
+    return TextureData(width, height, clrChannels, path, data);
+}
+
+inline void freeTexture(TextureData& texture) {
+    stbi_image_free(texture.m_data);
+}
+
+inline String convertTextureToPower2(TextureData& texture) {
+    vips::VImage input = vips::VImage::new_from_memory(texture.m_data,
+     static_cast<u64_t>(texture.m_width * texture.m_height * texture.m_clrChannels),
+     texture.m_width,
+     texture.m_height,
+     texture.m_clrChannels,
+     VIPS_FORMAT_UCHAR
+    );
+
+    double nearestPower2 = 0;
+    for(double i=0;i<32;i++) {
+     if(input.width() <= pow(2, i)) {
+      double comp = pow(2, i);
+      double compPrev = pow(2, i-1);
+
+      double differenceNow = abs(comp - input.width());
+      double differencePrev = abs(compPrev - input.width());
+
+      if(differenceNow > differencePrev) {
+       nearestPower2 = i - 1;
+      }
+      if(differenceNow < differencePrev) {
+       nearestPower2 = i;
+      }
+      if(differenceNow == differencePrev) {
+       i32_t flip = EllipseMath::randIntDist(0, 1);
+       flip == 0 ? nearestPower2 = i : nearestPower2 = i - 1;
+      }
+
+      break;
+     }
+    }
+
+    double scaleFactor = pow(2, nearestPower2) / input.width();
+    input = input.resize(scaleFactor);
+    // ELLIPSE_ENGINE_LOG_INFO("{}", input.width());
+    // ELLIPSE_ENGINE_LOG_INFO(fmt::format("{}", texture.m_ext));
+    String resizedFilePath = fmt::format("Assets/Application/{}.{}", texture.m_fileName, texture.m_ext);
+    // ELLIPSE_ENGINE_LOG_INFO("{}", resizedFilePath);
+    input.write_to_file(resizedFilePath.c_str());
+
+    return resizedFilePath;
 }
 
 class RenderObjData
