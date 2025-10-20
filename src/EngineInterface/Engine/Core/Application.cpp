@@ -24,47 +24,42 @@ void Application::init(const ApplicationConfig& config)
 {
   m_engine = Engine::createEngine();
 
-  for(Pair<String, bool> pair : config.systems())
-  {
-  String key = pair.first;
-  bool value = pair.second;
-  if((key == "Logger") && (value))
-  {
-  Log::init();
-  }
-  if((key == "Time") && (value))
-  {
-  OSTime::init();
-  m_engine->addModule(TimeModule::createTimeModule());
-  }
-  if((key == "Window") && (value))
-  {
-  m_window = Window::createWindow(config.windowSettings());
-  m_window->setEventCallBack(BIND_EVENT_FN(Application::onEvent));
-  }
-  if((key == "Render") && (value))
-  {
-  auto renderPlugin = RenderPlugin::createRenderPlugin(config.graphicsSpec());
-   
-  m_renderer = Renderer::createRenderer(std::move(renderPlugin));
-  Pair<int, int> winSize = m_window->getWindowSize();
-  m_renderer->setWindowFrameSize(winSize);
-
-  m_engine->addSystem(m_renderer);
-  }
-  if((key == "Model") && (value))
-  {
-  m_engine->addModule(ModelManagerModule::createModelManagerModule(*m_engine));
-  }
-  if((key == "RenderModule") && (value))
-  {
-  m_engine->addModule(RenderModule::createRenderModule(*m_engine));
-  }
-  if((key == "FontModule") && (value))
-  {
-  m_engine->addModule(FontModule::createFontModule(*m_engine));
-  }
-
+  for(Pair<String, bool> pair : config.systems()) {
+   String key = pair.first;
+   bool value = pair.second;
+   if((key == "Logger") && (value)) {
+    Log::init();
+   }
+   if((key == "Time") && (value)) {
+    OSTime::init();
+    m_engine->addModule(TimeModule::createTimeModule());
+   }
+   if((key == "Window") && (value)) {
+    m_window = Window::createWindow(config.windowSettings());
+    m_window->setEventCallBack(BIND_EVENT_FN(Application::onEvent));
+   }
+   // if((key) == "Entity") && (value)) {
+   //  m_engine->addSystem(entity);
+   // }
+   if((key == "Render") && (value)) {
+    auto renderPlugin = RenderPlugin::createRenderPlugin(config.graphicsSpec());
+    
+    m_renderer = Renderer::createRenderer(std::move(renderPlugin));
+    Pair<int, int> winSize = m_window->getWindowSize();
+    m_renderer->setWindowFrameSize(winSize);
+ 
+    m_engine->addSystem(m_renderer);
+   }
+   if((key == "Model") && (value)) {
+    m_engine->addModule(ModelManagerModule::createModelManagerModule(*m_engine));
+   }
+   if((key == "RenderModule") && (value)) {
+    m_engine->addModule(RenderModule::createRenderModule(*m_engine));
+   }
+   if((key == "FontModule") && (value)) {
+    m_engine->addModule(FontModule::createFontModule(*m_engine));
+   }
+ 
   }
 
 
@@ -72,19 +67,16 @@ void Application::init(const ApplicationConfig& config)
 
   ForwardList<SharedPtr<Layer>> layers = createUserProcesses();
 
-  for(auto i = layers.begin(); i != layers.end(); i++)
-  {
-  pushLayer(*i);
+  for(auto i = layers.begin(); i != layers.end(); i++) {
+   pushLayer(*i);
   }
 
-  for(SharedPtr<IModule> module : m_engine->modules())
-  {
-  module->init();
+  for(SharedPtr<IModule> module : m_engine->modules()) {
+   module->init();
   }
 
-  for(auto i = layers.begin(); i != layers.end(); i++)
-  {
-  (*i)->init();
+  for(auto i = layers.begin(); i != layers.end(); i++) {
+   (*i)->init();
   }
 }
 
@@ -115,19 +107,17 @@ void Application::onEvent(Event& e)
 
 void Application::run()
 {
-  while(m_running)
-  {
-  m_renderer->clearColorBuffer();
-  m_renderer->clearDepthBuffer();
+  while(m_running) {
+   m_renderer->clearColorBuffer();
+   m_renderer->clearDepthBuffer();
 
-  float dt = 0.0f;
-  updateLayerStack(m_layerStack, dt);
-  for(SharedPtr<IModule> module : m_engine->modules())
-  {
-  module->onUpdate();
-  }
+   float dt = 0.0f;
+   updateLayerStack(m_layerStack, dt);
+   for(SharedPtr<IModule> module : m_engine->modules()) {
+    module->onUpdate();
+   }
 
-  m_window->updateWindow();
+   m_window->updateWindow();
   }
 }
 

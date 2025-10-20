@@ -368,6 +368,9 @@ class ModelManagerModule : public IModule
                                     RenderObjData renderObjData
                                     ) = 0;
 
+    // virtual void defineObject(ModelObject modelObject()) = 0;
+    // virtual void addModel(Model model) = 0;
+
     virtual void removeModel(ModelID modelID) = 0;
 
     virtual u64_t findModelIndex(ModelID modelID) const = 0;

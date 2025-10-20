@@ -23,13 +23,20 @@ class ModelList
     virtual void onUpdate() {
      addAmounts();
 
-     for(Pair<String, u64_t> index : m_modelIndicies) {
-      Ellipse::Model model = m_modelModule.models()[index.second];
+     // for(Pair<String, u64_t> index : m_modelIndicies) {
+     //  Ellipse::Model model = m_modelModule.models()[index.second];
+     //
+     //  String name = findModelName(model.id());
+     //  m_renderModule.render(model.renderObject().get(), model.shaderObject().get(), model.uniformList());
+     // }
 
-      String name = findModelName(model.id());
-      m_renderModule.render(model.renderObject().get(), model.shaderObject().get(), model.uniformList());
-     }
 
+     // for(auto e : m_entitySystem.entities()) {
+     //  RenderComponent& r = e.findComponent("Render"); 
+     //  if(e.finderComponent("Render")) {
+     //   m_renderModule.render(r.renderObject().get(), r.shaderObject().get(), r.uniformList());
+     //  }
+     // }
     }
 
     virtual void addAmounts() {

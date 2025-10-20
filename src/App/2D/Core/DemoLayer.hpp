@@ -38,5 +38,6 @@ class DemoLayer : public Ellipse::Layer
     Ellipse::Timer m_timer;
     Vector<String> m_names;
     Vec2 m_cursor;
+    Vec3 m_colorKey;
 };
 

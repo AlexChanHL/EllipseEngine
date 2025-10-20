@@ -13,7 +13,8 @@ DemoLayer::DemoLayer(Ellipse::Engine& engine)
    m_fontModule{static_cast<Ellipse::FontModule&>(engine.getModule("FontModule"))},
    m_modelList{engine},
    m_objects{m_renderModule.preDefinedObjects()},
-   m_cursor{-0.9f, 0.9f}
+   m_cursor{-0.9f, 0.9f},
+   m_colorKey{0.0f, 0.0f, 0.0f}
 {
    m_throughLayer = false;
 }
@@ -30,48 +31,60 @@ void DemoLayer::init()
                         );
 
       
-    m_modelList.defineObject("FontSheet", "Assets/Fonts/Font.png", m_objects["Quad"]);
-    m_modelList.defineObject("Message", "Assets/Images/Message.png", m_objects["Quad"]);
-    m_modelList.defineObject("Solar", "Assets/Images/Solar.jpeg", m_objects["Quad"]);
-    m_modelList.defineObject("Space", "Assets/Images/Space.jpeg", m_objects["Quad"]);
-    Ellipse::FontCollection times = m_fontModule.getFont("TimesNewRoman");
-    Ellipse::TextureData tex = Ellipse::loadTexture(times.sheetPath(), false);
-    Ellipse::addGlyphs(times.glyphs(),
-                       m_objects["Quad"],
-                       tex,
-                       m_modelList.addModelDefinitionCallBack(),
-                       "Assets/Shader/Quad.vert.glsl",
-                       "Assets/Shader/Quad.frag.glsl"
-    );
-    Ellipse::freeTexture(tex);
+    // m_modelList.defineObject("FontSheet", "Assets/Fonts/Font.png", m_objects["Quad"]);
+    // m_modelList.defineObject("Message", "Assets/Images/Message.png", m_objects["Quad"]);
+    // m_modelList.defineObject("Solar", "Assets/Images/Solar.jpeg", m_objects["Quad"]);
+    // m_modelList.defineObject("Space", "Assets/Images/Space.jpeg", m_objects["Quad"]);
+    // Ellipse::FontCollection times = m_fontModule.getFont("TimesNewRoman");
+    // Ellipse::TextureData tex = Ellipse::loadTexture(times.sheetPath(), false);
+    // Ellipse::addGlyphs(times.glyphs(),
+    //                    m_objects["Quad"],
+    //                    tex,
+    //                    m_modelList.addModelDefinitionCallBack(),
+    //                    "Assets/Shader/Quad.vert.glsl",
+    //                    "Assets/Shader/Quad.frag.glsl"
+    // );
+    // Ellipse::freeTexture(tex);
 
+    Ellipse::Entity quad = Ellipse::Entity();
 
-    auto rand = [](){ return Ellipse::EllipseMath::randRealDist(-1.0f,1.0f); };
+    // m_modelManagerLayerModule.defineObject("FontSheet", "Assets/Fonts/Font.png", m_objects["Quad"]);
+    // m_modelManagerLayerModule.createModel(quad.findComponent("Model"), "FontSheet");
+    // m_entitySystem.addEntity(quad);
+
+    // Entity entity = createEntity("Cube", "a");
+    // m_entitySystem.addEntity(entity);
+    
+    
+
+    // auto rand = [](){ return Ellipse::EllipseMath::randRealDist(-1.0f,1.0f); };
     // m_modelList.addModel("Font1", "FontSheet", Vec2{rand(), rand()});
     // m_modelList.addModel("Message1", "Message", Vec2{rand(), rand()});
     // m_modelList.addModel("Solar1", "Solar", Vec2{rand(), rand()});
     // m_modelList.addModel("Space1", "Space", Vec2{rand(), rand()});
 
-    for(u64_t i=0;i<100;i++) {
-     bool isNameFound = false;
-     String randomName;
-     while(!isNameFound) {
-      randomName = Ellipse::Utils::generateRandomString(6);
-      for(u64_t j=0;j<m_names.size();j++) {
-       if(randomName == m_names[j]) {
-        break;
-       }
-      }
-      isNameFound = true;
-      m_names.push_back(randomName);
-     }
+    // for(u64_t i=0;i<100;i++) {
+    //  bool isNameFound = false;
+    //  String randomName;
+    //  while(!isNameFound) {
+    //   randomName = Ellipse::Utils::generateRandomString(6);
+    //   for(u64_t j=0;j<m_names.size();j++) {
+    //    if(randomName == m_names[j]) {
+    //     break;
+    //    }
+    //   }
+    //   isNameFound = true;
+    //   m_names.push_back(randomName);
+    //  }
+    //
+    //  String randChar;
+    //  randChar.push_back(char(Ellipse::EllipseMath::randIntDist(65, 90)));
+    //
+    //  m_modelList.addModel(randomName.c_str(), randChar.c_str(), Vec2{rand(), rand()});
+    //  m_modelList.scale(randomName.c_str(), Vec2{0.1f, 0.1f});
+    // }
 
-     String randChar;
-     randChar.push_back(char(Ellipse::EllipseMath::randIntDist(65, 90)));
-
-     m_modelList.addModel(randomName.c_str(), randChar.c_str(), Vec2{rand(), rand()});
-     m_modelList.scale(randomName.c_str(), Vec2{0.1f, 0.1f});
-    }
+    // m_modelList.modelModuleVal("A").uniformList().addUniform(Ellipse::UniformVarible<Vec3>{"colorKey", &m_colorKey});
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e)
@@ -97,7 +110,7 @@ void DemoLayer::onEvent(Ellipse::Event& e)
 
 void DemoLayer::onUpdate(float dt)
 {
-    auto rand = [](){ return Ellipse::EllipseMath::randRealDist(-1.0f,1.0f); };
+    // auto rand = [](){ return Ellipse::EllipseMath::randRealDist(-1.0f,1.0f); };
     // for(float i=0;i<10;i++) {
      // String modelName = fmt::format("FrontQuad{}", i);
 
@@ -115,7 +128,7 @@ void DemoLayer::onUpdate(float dt)
     //  }
     // }
 
-    m_modelList.onUpdate();
+    // m_modelList.onUpdate();
 }
 
 bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e)

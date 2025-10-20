@@ -13,6 +13,7 @@
 #include "Core/GraphicsContext.hpp"
 #include "Core/Window.hpp"
 #include "Core/OSTime.hpp"
+#include "Core/EntitySystem.hpp"
 #include "Core/TimeModule.hpp"
 #include "Core/Utils/Miscellaneous.hpp"
 

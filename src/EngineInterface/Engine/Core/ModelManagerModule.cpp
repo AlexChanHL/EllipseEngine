@@ -4,6 +4,7 @@
 #include "Renderer/VerticiesData.hpp"
 #include "ModelManagerModule.hpp"
 
+
 namespace Ellipse
 {
 
@@ -23,17 +24,12 @@ class ModelManagerModuleImpl : public ModelManagerModule
 
     }
  
-    virtual void init() override
-    {
-    // m_modelWorldDrawOrder.initModelWorldDrawOrder();
-    // m_layerTracker.initLayer();
-    // m_modelWorlds.initLayer();
-    // m_userWorlds.initLayer();
+    virtual void init() override {
+
     }
 
 
-    virtual void onUpdate() override
-    {
+    virtual void onUpdate() override {
 
     }
 
