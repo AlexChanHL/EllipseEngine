@@ -6,6 +6,7 @@
 #include "Engine/Engine.hpp"
 #include "Engine/Module.hpp"
 #include "Core/Base.hpp"
+#include "Core/EntitySystem.hpp"
 
 
 namespace Ellipse
@@ -160,15 +161,36 @@ class Camera
     Vec3 m_upDirection;
 };
 
+class RenderComponent : public Component
+{
+   public:
+    RenderComponent() {
+
+    };
+    ~RenderComponent() {
+
+    };
+
+    virtual void update() override {
+
+    }
+
+    static String name() {
+     return "Render";
+    }
+    
+
+   private:
+};
+
+
 class RenderModule : public IModule
 {
    public:
-    RenderModule()
-    {
+    RenderModule() {
 
     }
-    virtual ~RenderModule()
-    {
+    virtual ~RenderModule() {
 
     }
 
@@ -184,37 +206,34 @@ class RenderModule : public IModule
     virtual void setCameraBackward(float amount) = 0;
     virtual void setCameraRight(float amount) = 0;
     virtual void setCameraLeft(float amount) = 0;
-    virtual void updateCamera(Pair<float, float> offsets)
-    {
-    camera().registerMouseUpdate(offsets);
-    updateView();
+    virtual void updateCamera(Pair<float, float> offsets) {
+     camera().registerMouseUpdate(offsets);
+     updateView();
     }
 
     virtual void setViewport(Viewspace viewspace) = 0;
     virtual void setClearColor(Vec4 col) = 0;
 
-    void setProjPerspective()
-    {
-    i32_t winWidth = renderer().getWindowFrameSize().first;
-    i32_t winHeight = renderer().getWindowFrameSize().second;
+    void setProjPerspective() {
+     i32_t winWidth = renderer().getWindowFrameSize().first;
+     i32_t winHeight = renderer().getWindowFrameSize().second;
  
-    float aspectRatio = float(winWidth) / float(winHeight);
+     float aspectRatio = float(winWidth) / float(winHeight);
  
-    m_proj = EllipseMath::perspective(EllipseMath::radians(45.0f),
-                                      aspectRatio,
-                                      0.1f,
-                                      100.0f
-                                     );
+     m_proj = EllipseMath::perspective(EllipseMath::radians(45.0f),
+                                       aspectRatio,
+                                       0.1f,
+                                       100.0f
+     );
     }
-    void setProjOrtho()
-    {
-    m_proj = EllipseMath::ortho(-1.0f,
-                                 1.0f,
-                                -1.0f,
-                                 1.0f,
-                                 0.1f,
-                                 100.0f
-                               );
+    void setProjOrtho() {
+     m_proj = EllipseMath::ortho(-1.0f,
+                                  1.0f,
+                                 -1.0f,
+                                  1.0f,
+                                  0.1f,
+                                  100.0f
+     );
     }
 
     virtual Renderer& renderer() = 0;
@@ -223,20 +242,18 @@ class RenderModule : public IModule
     virtual Mat4& view() = 0;
 
     virtual Camera& camera() = 0;
-    Map<String, RenderObjData>& preDefinedObjects()
-    {
-    return m_objects;
+    Map<String, RenderObjData>& preDefinedObjects() {
+     return m_objects;
     }
 
     static SharedPtr<RenderModule> createRenderModule(Engine& engine);
 
    protected:
-    void updateView()
-    {
-    m_view = EllipseMath::lookAt(camera().position(),
-                                 camera().front() + camera().position(),
-                                 camera().upDirection()
-                                );
+    void updateView() {
+     m_view = EllipseMath::lookAt(camera().position(),
+                                  camera().front() + camera().position(),
+                                  camera().upDirection()
+     );
     }
     virtual void configureCameras() = 0;
 

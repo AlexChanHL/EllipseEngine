@@ -17,8 +17,10 @@ option(DEBUG "Enable debug mode" ON)
 
 option(BUILD_OFFLINE "Building offline" ON)
 if(BUILD_OFFLINE)
-  message(STATUS "Building offline")
- endif()
+ message(STATUS "Building offline")
+else()
+ message(STATUS "Building online")
+endif()
 
 option(BUILD_ENGINE_2D "Building engine 2D" ON)
  if(BUILD_ENGINE_2D)

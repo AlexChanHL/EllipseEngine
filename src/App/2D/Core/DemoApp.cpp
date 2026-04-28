@@ -27,6 +27,7 @@ Ellipse::ApplicationConfig::ApplicationConfig()
    m_windowSettings.m_width = 649;
    m_windowSettings.m_height = 600;
 
+
    m_graphicsSpec = GraphicsSpec::OpenGL;
 
    m_systems.push_back(Pair<String, bool>{"Logger", true});
@@ -36,5 +37,7 @@ Ellipse::ApplicationConfig::ApplicationConfig()
    m_systems.push_back(Pair<String, bool>{"Model", true});
    m_systems.push_back(Pair<String, bool>{"RenderModule", true});
    m_systems.push_back(Pair<String, bool>{"FontModule", true});
+
+   m_systems.push_back(Pair<String, bool>{"Entity", true});
 }
 

@@ -19,6 +19,8 @@ class RenderModule2D : public RenderModule
                          RenderShaderObj* shaderObj,
                          const UniformList& uniformaList
                         );
+
+     // virtual void render(RenderCompnent);
  
      virtual void setViewCamera(Camera camera) override;
 

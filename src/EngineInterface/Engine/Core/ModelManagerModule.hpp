@@ -341,6 +341,7 @@ class Model
     SharedPtr<RenderShaderObj> m_shaderObject;
 };
 
+
 class ModelManagerModule : public IModule
 {
    public:

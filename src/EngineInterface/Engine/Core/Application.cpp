@@ -2,6 +2,7 @@
 #include "Application.hpp"
 #include "TimeModule.hpp"
 #include "ModelManagerModule.hpp"
+#include "EntitySystem.hpp"
 #include "FontModule.hpp"
 #include "Debug/Log.hpp"
 
@@ -38,9 +39,9 @@ void Application::init(const ApplicationConfig& config)
     m_window = Window::createWindow(config.windowSettings());
     m_window->setEventCallBack(BIND_EVENT_FN(Application::onEvent));
    }
-   // if((key) == "Entity") && (value)) {
-   //  m_engine->addSystem(entity);
-   // }
+   if((key) == "Entity" && (value)) {
+    m_engine->addSystem(EntitySystem::createEntitySystem());
+   }
    if((key == "Render") && (value)) {
     auto renderPlugin = RenderPlugin::createRenderPlugin(config.graphicsSpec());
     

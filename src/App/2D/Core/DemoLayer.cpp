@@ -11,6 +11,7 @@ DemoLayer::DemoLayer(Ellipse::Engine& engine)
    m_modelManagerLayerModule{static_cast<Ellipse::ModelManagerModule&>(engine.getModule("ModelModule"))},
    m_renderModule{static_cast<Ellipse::RenderModule&>(engine.getModule("RenderModule"))},
    m_fontModule{static_cast<Ellipse::FontModule&>(engine.getModule("FontModule"))},
+   m_entitySystem{static_cast<Ellipse::EntitySystem&>(engine.getSystem("Entity"))},
    m_modelList{engine},
    m_objects{m_renderModule.preDefinedObjects()},
    m_cursor{-0.9f, 0.9f},
@@ -30,6 +31,10 @@ void DemoLayer::init()
                                            }
                         );
 
+
+    Ellipse::Entity quad = Ellipse::Entity();
+    m_entitySystem.addEntity(quad);
+    // m_entitySystem.addComponent(RenderComponent);
       
     // m_modelList.defineObject("FontSheet", "Assets/Fonts/Font.png", m_objects["Quad"]);
     // m_modelList.defineObject("Message", "Assets/Images/Message.png", m_objects["Quad"]);
@@ -46,16 +51,15 @@ void DemoLayer::init()
     // );
     // Ellipse::freeTexture(tex);
 
-    Ellipse::Entity quad = Ellipse::Entity();
+    // Ellipse::Entity quad = Ellipse::RenderEntity("Cube1");
+    // quad->setObject("Object");
+    // m_renderModule->defineObject();
 
+    // Ellipse::RenderComponent rComp = Ellipse::RenderComponent{};
+    // quad.addComponent<Ellipse::RenderComponent>(rComp);
     // m_modelManagerLayerModule.defineObject("FontSheet", "Assets/Fonts/Font.png", m_objects["Quad"]);
-    // m_modelManagerLayerModule.createModel(quad.findComponent("Model"), "FontSheet");
-    // m_entitySystem.addEntity(quad);
-
-    // Entity entity = createEntity("Cube", "a");
-    // m_entitySystem.addEntity(entity);
-    
-    
+    // m_modelManagerLayerModule.createRenderModel(quad.findComponent("Model"), "FontSheet");
+  
 
     // auto rand = [](){ return Ellipse::EllipseMath::randRealDist(-1.0f,1.0f); };
     // m_modelList.addModel("Font1", "FontSheet", Vec2{rand(), rand()});
@@ -85,13 +89,32 @@ void DemoLayer::init()
     // }
 
     // m_modelList.modelModuleVal("A").uniformList().addUniform(Ellipse::UniformVarible<Vec3>{"colorKey", &m_colorKey});
+
+
+
+  // 
+  // RenderQuad quad = m_renderer->createQuad();
+  //
+  // [ Add entity ]
+  // RenderComponent comp = m_entitySystem->createComponent<RenderComponent>(quad);
+  //
+  // [ Reuse as many times possible ]
+  //
+  // [ To optimise, renderer must keep internal storage of the various
+  //   vertex array objects and shaders ]
+  //
+  // m_renderer->render(quad);
+  //
+  // [ Retreive from entity system ]
+  // comp = COMP_CAST(RenderComponent, m_entitySystem->getEntity(id)->getComponent("Render"));
+  // 
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e)
 {
     Ellipse::EventDispatcher dispatcher(e);
     dispatcher.dispatchEvent<Ellipse::KeyboardPressedEvent>(
-    KEYBOARD_PRESSED_EVENT,  
+    KEYBOARD_PRESSED_EVENT,
     BIND_EVENT_FN(onKeyPressed)
     );
     dispatcher.dispatchEvent<Ellipse::MouseMotionEvent>(
@@ -128,7 +151,7 @@ void DemoLayer::onUpdate(float dt)
     //  }
     // }
 
-    // m_modelList.onUpdate();
+    m_modelList.onUpdate();
 }
 
 bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e)

@@ -11,7 +11,8 @@ class ModelList
    public:
     ModelList(Ellipse::Engine& engine)
     : m_modelModule{static_cast<Ellipse::ModelManagerModule&>(engine.getModule("ModelModule"))},
-      m_renderModule{static_cast<Ellipse::RenderModule&>(engine.getModule("RenderModule"))}
+      m_renderModule{static_cast<Ellipse::RenderModule&>(engine.getModule("RenderModule"))},
+      m_entitySystem{static_cast<Ellipse::EntitySystem&>(engine.getSystem("Entity"))}
     {
 
     }
@@ -31,12 +32,16 @@ class ModelList
      // }
 
 
-     // for(auto e : m_entitySystem.entities()) {
-     //  RenderComponent& r = e.findComponent("Render"); 
-     //  if(e.finderComponent("Render")) {
+     // ELLIPSE_APP_LOG_INFO("{}", m_entitySystem.entities().size());
+     for(auto e : m_entitySystem.entities()) {
+			// Ellipse::RenderComponent& r = e.second.findComponent("Render"); 
+      
+
+     //  if(e.findComponent<"Render"()) {
      //   m_renderModule.render(r.renderObject().get(), r.shaderObject().get(), r.uniformList());
      //  }
-     // }
+      ELLIPSE_APP_LOG_INFO("{}", e.first);
+     }
     }
 
     virtual void addAmounts() {
@@ -202,6 +207,7 @@ class ModelList
    protected:
     Ellipse::ModelManagerModule& m_modelModule;
     Ellipse::RenderModule& m_renderModule;
+    Ellipse::EntitySystem& m_entitySystem;
 
     Map<String, Ellipse::ModelID> m_nameIds;
     Map<Ellipse::ModelID, ModelVal> m_models;

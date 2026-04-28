@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/System.hpp"
 #include "Base.hpp"
 
 
@@ -75,13 +76,19 @@ class Entity {
      std::map<String, std::shared_ptr<Component>> m_components;
 };
 
-class EntitySystem {
+class EntitySystem : public ISystem {
     public:
      EntitySystem() {
 
      }
      ~EntitySystem() {
 
+     }
+
+     virtual String name() override {
+      return "Entity";
+     }
+     virtual void setName(const char* name) override {
      }
 
      void update() {
@@ -105,6 +112,14 @@ class EntitySystem {
 
      uint64_t entityAmount() {
       return m_entities.size();
+     }
+
+	   std::unordered_map<i32_t, SharedPtr<Entity>> entities() {
+      return m_entities;
+     }
+
+     static SharedPtr<EntitySystem> createEntitySystem() {
+      return createShared<EntitySystem>(); 
      }
 
     private:

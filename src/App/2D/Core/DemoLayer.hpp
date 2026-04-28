@@ -31,6 +31,7 @@ class DemoLayer : public Ellipse::Layer
     Ellipse::ModelManagerModule& m_modelManagerLayerModule;
     Ellipse::RenderModule& m_renderModule;
     Ellipse::FontModule& m_fontModule;
+    Ellipse::EntitySystem& m_entitySystem;
 
     ModelList m_modelList;
     Ellipse::PreDefinedObjects& m_objects;

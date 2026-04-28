@@ -50,7 +50,7 @@ file(GLOB_RECURSE PLATFORM_RENDER
     )
  
 file(GLOB_RECURSE LOG
-     Debug/Log.cpp
+     # Debug/Log.cpp
      Debug/Log.hpp
     )
 
@@ -68,7 +68,7 @@ add_custom_target(CopyAssets ALL
 add_dependencies(${NAME} CopyAssets)
 
 target_link_libraries(${NAME} PUBLIC glm sglLogger stb_image vips)
-target_link_libraries(${NAME} PRIVATE EngineVendor)
+target_link_libraries(${NAME} PUBLIC EngineVendor)
 
 
 include("${CMAKE_SOURCE_DIR}/CMake/ProjectWarnings.cmake")
@@ -82,6 +82,6 @@ if(BUILD_ENGINE_WITH_PRECOMPILED_HEADERS)
  target_precompile_headers(${NAME} PUBLIC EllipsePCH.hpp)
  set(CMAKE_PCH_INSTANIATE_TEMPLATES ON)
 endif()
-  
+
 target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
