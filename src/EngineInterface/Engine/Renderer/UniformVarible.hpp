@@ -7,11 +7,11 @@ namespace Ellipse
 {
 
 template<typename T>
-class UniformVarible
+class UniformVariable
 {
    public:
     template<typename... Args>
-    UniformVarible(const char* name, Args... args)
+    UniformVariable(const char* name, Args... args)
     {
     m_size = sizeof...(args);
     m_name = name;
@@ -26,7 +26,7 @@ class UniformVarible
     }
    
     template<typename... Args>
-    UniformVarible(const char* name, std::vector<T>& userUniform, Args... args)
+    UniformVariable(const char* name, std::vector<T>& userUniform, Args... args)
     {
     m_size = sizeof...(args);
     m_name = name;
@@ -98,51 +98,51 @@ class UniformList
     UniformList() = default;
     ~UniformList() = default;
 
-    void addUniform(const UniformVarible<bool>& uniform)
+    void addUniform(const UniformVariable<bool>& uniform)
     {
     m_boolUniforms.push_back(uniform);
     }
 
-    void addUniform(const UniformVarible<i32_t>& uniform)
+    void addUniform(const UniformVariable<i32_t>& uniform)
     {
     m_intUniforms.push_back(uniform);
     }
-    void addUniform(const UniformVarible<float>& uniform)
+    void addUniform(const UniformVariable<float>& uniform)
     {
     m_floatUniforms.push_back(uniform);
     }
-    void addUniform(const UniformVarible<u32_t>& uniform)
+    void addUniform(const UniformVariable<u32_t>& uniform)
     {
     m_unsignedIntUniforms.push_back(uniform);
     }
-    void addUniform(const UniformVarible<Vec2>& uniform)
+    void addUniform(const UniformVariable<EllipseMath::Vec2>& uniform)
     {
     m_vec2Uniforms.push_back(uniform);
     }
-    void addUniform(const UniformVarible<Vec3>& uniform)
+    void addUniform(const UniformVariable<EllipseMath::Vec3>& uniform)
     {
     m_vec3Uniforms.push_back(uniform);
     }
-    void addUniform(const UniformVarible<Vec4>& uniform)
+    void addUniform(const UniformVariable<EllipseMath::Vec4>& uniform)
     {
     m_vec4Uniforms.push_back(uniform);
     }
-    void addUniform(const UniformVarible<Mat2>& uniform)
+    void addUniform(const UniformVariable<EllipseMath::Mat2>& uniform)
     {
     m_mat2Uniforms.push_back(uniform);
     }
-    void addUniform(const UniformVarible<Mat3>& uniform)
+    void addUniform(const UniformVariable<EllipseMath::Mat3>& uniform)
     {
     m_mat3Uniforms.push_back(uniform);
     }
-    void addUniform(const UniformVarible<Mat4>& uniform)
+    void addUniform(const UniformVariable<EllipseMath::Mat4>& uniform)
     {
     m_mat4Uniforms.push_back(uniform);
     }
 
-    void setUniform(const UniformVarible<i32_t>& uniform)
+    void setUniform(const UniformVariable<i32_t>& uniform)
     {
-    for(UniformVarible<int32_t>& a : m_intUniforms)
+    for(UniformVariable<int32_t>& a : m_intUniforms)
     {
     if(strcmp(a.name(), uniform.name()) == 0)
     {
@@ -158,9 +158,9 @@ class UniformList
 
     ELLIPSE_ENGINE_LOG_WARN("Couldn't find uniform when setting");
     }
-    void setUniform(const UniformVarible<float>& uniform)
+    void setUniform(const UniformVariable<float>& uniform)
     {
-    for(UniformVarible<float>& a : m_floatUniforms)
+    for(UniformVariable<float>& a : m_floatUniforms)
     {
     if(strcmp(a.name(), uniform.name()) == 0)
     {
@@ -177,9 +177,9 @@ class UniformList
 
     ELLIPSE_ENGINE_LOG_WARN("Couldn't find uniform when setting");
     }
-    void setUniform(const UniformVarible<u32_t>& uniform)
+    void setUniform(const UniformVariable<u32_t>& uniform)
     {
-    for(UniformVarible<uint32_t>& a : m_unsignedIntUniforms)
+    for(UniformVariable<uint32_t>& a : m_unsignedIntUniforms)
     {
     if(strcmp(a.name(), uniform.name()) == 0)
     {
@@ -194,65 +194,65 @@ class UniformList
     }
     }
     }
-    void setUniform(const UniformVarible<Mat4>& uniform)
+    void setUniform(const UniformVariable<EllipseMath::Mat4>& uniform)
     {
-    for(UniformVarible<Mat4>& a : m_mat4Uniforms)
+    for(UniformVariable<EllipseMath::Mat4>& a : m_mat4Uniforms)
     {
     if(strcmp(a.name(), uniform.name()) == 0)
     {
-    Mat4** aPtr = a.getUniformData();
-    Mat4* uPtr = uniform.uniformPtr(0);
+    EllipseMath::Mat4** aPtr = a.getUniformData();
+    EllipseMath::Mat4* uPtr = uniform.uniformPtr(0);
     aPtr[0] = uPtr;
     return;
     }
     }
     }
 
-    Vector<UniformVarible<bool>> getBoolUniforms()
+    Vector<UniformVariable<bool>> getBoolUniforms()
     {
     return m_boolUniforms;
     }
     
-    Vector<UniformVarible<i32_t>> getIntUniforms()
+    Vector<UniformVariable<i32_t>> getIntUniforms()
     {
     return m_intUniforms;
     }
-    Vector<UniformVarible<float>> getFloatUniforms()
+    Vector<UniformVariable<float>> getFloatUniforms()
     {
     return m_floatUniforms;
     }
-    Vector<UniformVarible<u32_t>> getUnsignedIntUniforms()
+    Vector<UniformVariable<u32_t>> getUnsignedIntUniforms()
     {
     return m_unsignedIntUniforms;
     }
-    Vector<UniformVarible<Vec2>> getVec2Uniforms()
+    Vector<UniformVariable<EllipseMath::Vec2>> getVec2Uniforms()
     {
     return m_vec2Uniforms;
     }
-    Vector<UniformVarible<Vec3>> getVec3Uniforms()
+    Vector<UniformVariable<EllipseMath::Vec3>> getVec3Uniforms()
     {
     return m_vec3Uniforms;
     }
-    Vector<UniformVarible<Vec4>> getVec4Uniforms()
+    Vector<UniformVariable<EllipseMath::Vec4>> getVec4Uniforms()
     {
     return m_vec4Uniforms;
     }
-    Vector<UniformVarible<Mat2>> getMat2Uniforms()
+    Vector<UniformVariable<EllipseMath::Mat2>> getMat2Uniforms()
     {
     return m_mat2Uniforms;
     }
-    Vector<UniformVarible<Mat3>> getMat3Uniforms()
+    Vector<UniformVariable<EllipseMath::Mat3>> getMat3Uniforms()
     {
     return m_mat3Uniforms;
     }
-    Vector<UniformVarible<Mat4>> getMat4Uniforms()
+    Vector<UniformVariable<EllipseMath::Mat4>> getMat4Uniforms()
     {
     return m_mat4Uniforms;
     }
 
-    UniformVarible<Mat4> getMat4UniformFromListByName(const char* name)
+    UniformVariable<EllipseMath::Mat4> getMat4UniformFromListByName(const char* name)
     {
-    for(const UniformVarible<Mat4>& uniform : m_mat4Uniforms)
+    for(const UniformVariable<EllipseMath::Mat4>& uniform : m_mat4Uniforms)
     {
     if(strcmp(uniform.name(), name) == 0)
     {
@@ -264,12 +264,12 @@ class UniformList
     // Returning a null mat4, maybe creating shared a getting
     // underlying ptr will cause bugs
     ELLIPSE_ENGINE_LOG_WARN("Couldn't find uniform, returing invalid mat");
-    return UniformVarible<Mat4>{"Null", createShared<Mat4>().get()};
+    return UniformVariable<EllipseMath::Mat4>{"Null", createShared<EllipseMath::Mat4>().get()};
     }
     
     void printMat4UniformList()
     {
-    for(const UniformVarible<Mat4>& uniform : m_mat4Uniforms)
+    for(const UniformVariable<EllipseMath::Mat4>& uniform : m_mat4Uniforms)
     {
     const char* uniformName = uniform.name();
 
@@ -378,22 +378,22 @@ class UniformList
 
 
    private:
-    Vector<UniformVarible<bool>> m_boolUniforms;
+    Vector<UniformVariable<bool>> m_boolUniforms;
 
-    Vector<UniformVarible<i32_t>> m_intUniforms;
-    Vector<UniformVarible<float>> m_floatUniforms;
-    Vector<UniformVarible<u32_t>> m_unsignedIntUniforms;
+    Vector<UniformVariable<i32_t>> m_intUniforms;
+    Vector<UniformVariable<float>> m_floatUniforms;
+    Vector<UniformVariable<u32_t>> m_unsignedIntUniforms;
 
     // [ Only taking into account float vectors
     //   and matricies, should be aware user
     //   may want to pass in other types ]
 
-    Vector<UniformVarible<Vec2>> m_vec2Uniforms;
-    Vector<UniformVarible<Vec3>> m_vec3Uniforms;
-    Vector<UniformVarible<Vec4>> m_vec4Uniforms;
-    Vector<UniformVarible<Mat2>> m_mat2Uniforms;
-    Vector<UniformVarible<Mat3>> m_mat3Uniforms;
-    Vector<UniformVarible<Mat4>> m_mat4Uniforms;
+    Vector<UniformVariable<EllipseMath::Vec2>> m_vec2Uniforms;
+    Vector<UniformVariable<EllipseMath::Vec3>> m_vec3Uniforms;
+    Vector<UniformVariable<EllipseMath::Vec4>> m_vec4Uniforms;
+    Vector<UniformVariable<EllipseMath::Mat2>> m_mat2Uniforms;
+    Vector<UniformVariable<EllipseMath::Mat3>> m_mat3Uniforms;
+    Vector<UniformVariable<EllipseMath::Mat4>> m_mat4Uniforms;
 
     Map<const char*, i32_t> m_uniformLocations;
 };

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Renderer.hpp"
-#include "Core/ModelManagerModule.hpp"
 #include "Math/Matrix.hpp"
 #include "Engine/Engine.hpp"
 #include "Engine/Module.hpp"
@@ -16,7 +15,7 @@ struct RotationAmount
 {
     public:
      float m_radians;
-     Vec3 m_vec3;
+     EllipseMath::Vec3 m_vec3;
 };
 
 class Camera
@@ -30,9 +29,9 @@ class Camera
       m_roll{0},
       m_cameraSpeed{0.025f},
       m_sensitivity{0.25f},
-      m_position{Vec3{0.0f, 0.0f, 3.0f}},
-      m_front{Vec3{0.0f, 0.0f, -1.0f}},
-      m_upDirection{Vec3{0.0f, 1.0f, 0.0f}}
+      m_position{EllipseMath::Vec3{0.0f, 0.0f, 3.0f}},
+      m_front{EllipseMath::Vec3{0.0f, 0.0f, -1.0f}},
+      m_upDirection{EllipseMath::Vec3{0.0f, 1.0f, 0.0f}}
     {
 
     }
@@ -44,12 +43,12 @@ class Camera
       m_roll{0},
       m_cameraSpeed{0.025f},
       m_sensitivity{0.25f},
-      m_position{Vec3{0.0f, 0.0f, 1.0f}},
-      m_front{Vec3{1.0f, 1.0f, 1.0f}},
-      m_upDirection{Vec3{1.0f, 1.0f, 1.0f}}
+      m_position{EllipseMath::Vec3{0.0f, 0.0f, 1.0f}},
+      m_front{EllipseMath::Vec3{1.0f, 1.0f, 1.0f}},
+      m_upDirection{EllipseMath::Vec3{1.0f, 1.0f, 1.0f}}
     {
-      m_front = Vec3{0.0f, 0.0f, -1.0f};
-      m_upDirection = Vec3{0.0f, 1.0f, 0.0f};
+      m_front = EllipseMath::Vec3{0.0f, 0.0f, -1.0f};
+      m_upDirection = EllipseMath::Vec3{0.0f, 1.0f, 0.0f};
     }
     ~Camera()
     {
@@ -86,7 +85,7 @@ class Camera
     //   the window will use the new position and calculate a large offset ]
     void setCameraFront()
     {
-    Vec3 cameraDirection = Vec3{1.0f};
+    EllipseMath::Vec3 cameraDirection = EllipseMath::Vec3{1.0f};
       
     float yawRadians = EllipseMath::radians(m_yaw);
     float pitchRadians = EllipseMath::radians(m_pitch);
@@ -105,12 +104,12 @@ class Camera
     m_cameraSpeed = cameraSpeed;
     }
 
-    void setPosition(Vec3 position)
+    void setPosition(EllipseMath::Vec3 position)
     {
     m_position = position;
     }
 
-    void setFront(Vec3 front)
+    void setFront(EllipseMath::Vec3 front)
     {
     m_front = front;
     }
@@ -120,22 +119,21 @@ class Camera
     return m_cameraSpeed;
     }
 
-    Vec3 position() const
+    EllipseMath::Vec3 position() const {
+     return m_position;
+    }
+
+    EllipseMath::Vec3& position()
     {
     return m_position;
     }
 
-    Vec3& position()
-    {
-    return m_position;
-    }
-
-    Vec3 front() const
+    EllipseMath::Vec3 front() const
     {
     return m_front;
     }
 
-    Vec3 upDirection() const
+    EllipseMath::Vec3 upDirection() const
     {
     return m_upDirection;
     }
@@ -156,9 +154,9 @@ class Camera
     float m_cameraSpeed;
     float m_sensitivity;
 
-    Vec3 m_position;
-    Vec3 m_front;
-    Vec3 m_upDirection;
+    EllipseMath::Vec3 m_position;
+    EllipseMath::Vec3 m_front;
+    EllipseMath::Vec3 m_upDirection;
 };
 
 class RenderComponent : public Component
@@ -171,6 +169,10 @@ class RenderComponent : public Component
 
     };
 
+    virtual void init() {
+     // m_shaderObj.addUniform<Ellipsemath::Mat4>("Model", &m_model);
+    }
+
     virtual void update() override {
 
     }
@@ -178,11 +180,19 @@ class RenderComponent : public Component
     static String name() {
      return "Render";
     }
+
+    void translate(EllipseMath::Vec4 pos) {
+     // EllipseMath::Mat4& model = m_shaderObj.findUniform<EllipseMath::Mat4>("Model");
+     // EllipseMath::translate(model, pos);
+     // m_renderObj;
+    }
     
 
    private:
+    UniquePtr<RenderObj> m_renderObj;
+    UniquePtr<RenderShaderObj> m_shaderObj;
+    // UniformData m_uniformData;
 };
-
 
 class RenderModule : public IModule
 {
@@ -199,6 +209,8 @@ class RenderModule : public IModule
     virtual void onUpdate() override = 0;
 
     virtual void render(RenderObj* renderObj, RenderShaderObj* shaderObj, const UniformList& uniformList) = 0;
+    // virtual void render(RenderComponent& renderComponent) = 0;
+    virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) = 0;
     
     virtual void setViewCamera(Camera camera) = 0;
 
@@ -211,8 +223,7 @@ class RenderModule : public IModule
      updateView();
     }
 
-    virtual void setViewport(Viewspace viewspace) = 0;
-    virtual void setClearColor(Vec4 col) = 0;
+    virtual void setClearColor(EllipseMath::Vec4 col) = 0;
 
     void setProjPerspective() {
      i32_t winWidth = renderer().getWindowFrameSize().first;
@@ -238,8 +249,8 @@ class RenderModule : public IModule
 
     virtual Renderer& renderer() = 0;
 
-    virtual Mat4& proj() = 0;
-    virtual Mat4& view() = 0;
+    virtual EllipseMath::Mat4& proj() = 0;
+    virtual EllipseMath::Mat4& view() = 0;
 
     virtual Camera& camera() = 0;
     Map<String, RenderObjData>& preDefinedObjects() {
@@ -258,8 +269,8 @@ class RenderModule : public IModule
     virtual void configureCameras() = 0;
 
    protected:
-    Mat4 m_proj;
-    Mat4 m_view;
+    EllipseMath::Mat4 m_proj;
+    EllipseMath::Mat4 m_view;
     Map<String, RenderObjData> m_objects;
 };
 

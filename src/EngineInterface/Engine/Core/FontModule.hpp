@@ -20,7 +20,7 @@ struct Glyph
     {
 
     }
-    Glyph(Vec2 pos, Vec2 xMax, Vec2 yMax, char ch)
+    Glyph(EllipseMath::Vec2 pos, EllipseMath::Vec2 xMax, EllipseMath::Vec2 yMax, char ch)
     : m_pos{pos},
       m_xMax{xMax},
       m_yMax{yMax},
@@ -34,9 +34,9 @@ struct Glyph
     }
 
    public:
-    Vec2 m_pos;
-    Vec2 m_xMax;
-    Vec2 m_yMax;
+    EllipseMath::Vec2 m_pos;
+    EllipseMath::Vec2 m_xMax;
+    EllipseMath::Vec2 m_yMax;
     char m_character;
 
    private:
@@ -49,7 +49,7 @@ struct FontCollection
     {
 
     }
-    FontCollection(String sheetPath, Vec2 pos, float hort, float vert, Vector<char> glyphs)
+    FontCollection(String sheetPath, EllipseMath::Vec2 pos, float hort, float vert, Vector<char> glyphs)
     : m_sheetPath{sheetPath}
     {
         float hortTotal = hort;
@@ -67,7 +67,7 @@ struct FontCollection
                 }
                 #endif
             }
-            m_glyphs[ch] = Glyph{Vec2{hortTotal - hort, vertTotal - vert}, Vec2{hort, 0.0f}, Vec2{0.0f, vert}, ch};
+            m_glyphs[ch] = Glyph{EllipseMath::Vec2{hortTotal - hort, vertTotal - vert}, EllipseMath::Vec2{hort, 0.0f}, EllipseMath::Vec2{0.0f, vert}, ch};
             hortTotal += hort;
         }
     }
@@ -104,9 +104,9 @@ inline RenderObjData createFontQuad(Glyph glyph,
                                    )
 {
     RenderObjData fontQuad = renderObjData;
-    Vec2 posRight = glyph.m_pos + glyph.m_xMax;
-    Vec2 posTop = glyph.m_pos + glyph.m_yMax;
-    Vec2 posTopRight = glyph.m_pos + glyph.m_xMax + glyph.m_yMax;
+    EllipseMath::Vec2 posRight = glyph.m_pos + glyph.m_xMax;
+    EllipseMath::Vec2 posTop = glyph.m_pos + glyph.m_yMax;
+    EllipseMath::Vec2 posTopRight = glyph.m_pos + glyph.m_xMax + glyph.m_yMax;
     fontQuad.setTexCoords(Vector<float>{
                                         posTop.x, posTop.y, 
                                         posTopRight.x, posTopRight.y,

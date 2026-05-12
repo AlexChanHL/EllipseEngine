@@ -13,7 +13,7 @@ class RendererImpl final : public Renderer
     void render(const RenderObj& rObj, const RenderShaderObj& sObj, const UniformList& uniforms) override;
     virtual void clearColorBuffer() override;
     virtual void clearDepthBuffer() override;
-    void setClearColor(const Vec4& col) override;
+    void setClearColor(const EllipseMath::Vec4& col) override;
     virtual void setWindowFrameSize(Pair<int, int> winSize) override;
     void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
 
@@ -65,6 +65,7 @@ void RendererImpl::render(const RenderObj& rObj, const RenderShaderObj& sObj, co
 
     m_plugin->setUniforms(uniforms);
 
+   // m_plugin->prepare(sobj);
     m_plugin->render(rObj);
 }
 
@@ -78,7 +79,7 @@ void RendererImpl::clearDepthBuffer()
     m_plugin->clearDepthBuffer();
 }
 
-void RendererImpl::setClearColor(const Vec4& col)
+void RendererImpl::setClearColor(const EllipseMath::Vec4& col)
 {
     m_plugin->setClearColor(col);
 }

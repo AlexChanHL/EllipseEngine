@@ -54,116 +54,93 @@ using EntityRef = uLong_t;
 // std::function<T> std::function<
 
 
-namespace Ellipse
-{
-
-// using ModelID = i64_t;
-
-};     // namespace Ellipse
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 
-using Vec2 = glm::vec2;
-using Vec3 = glm::vec3;
-using Vec4 = glm::vec4;
 
-using Mat2 = glm::mat2;
-using Mat3 = glm::mat3;
-using Mat4 = glm::mat4;
+namespace Ellipse {
+ namespace EllipseMath {
+  using namespace glm;
+  using Vec2 = vec2;
+  using Vec3 = vec3;
+  using Vec4 = vec4;
+ 
+  using Mat2 = mat2;
+  using Mat3 = mat3;
+  using Mat4 = mat4;
+ 
+  using Radians = float;
+  
+  inline Mat4 scale(Mat4 model, Vec3 scalerAmount) {
+     return glm::scale(model, scalerAmount);
+  }
+  
+  inline Mat4 rotate(Mat4 model, float radians, Vec3 rotationAxis) {
+     return glm::rotate(model, radians, rotationAxis);
+  }
+  
+  inline Vec3 rotate(Vec3 vec, float radians, Vec3 normal) {
+     return glm::rotate(vec, radians, normal);
+  }
+  
+  inline Mat4 translate(Mat4 model, Vec3 translateAmount) {
+     return glm::translate(model, translateAmount);
+  }
+  
+  inline Mat3 inverse(Mat3 model) {
+     return glm::inverse(model);
+  }
+  
+  inline Mat3 transpose(Mat3 model) {
+     return glm::transpose(model);
+  }
+  
+  inline Mat4 lookAt(Vec3 camPos, Vec3 camDir, Vec3 camUp) {
+     return glm::lookAt(camPos, camDir, camUp);
+  }
+  
+  inline Mat4 ortho(float left,
+                    float right,
+                    float top,
+                    float bottom,
+                    float near,
+                    float far
+                   ) {
+      return glm::ortho(left, right, top, bottom, near, far);
+  }
+  
+  inline Mat4 perspective(float fov,
+                          float aspectRatio,
+                          float near,
+                          float far) {
+      return glm::perspective(fov, aspectRatio, near, far);
+  }
+  
+  inline float length(Vec3 vec) {
+      return glm::length(vec);
+  }
+  
+  inline Vec3 normalize(Vec3 vec) {
+     return glm::normalize(vec);
+  }
+  
+  inline Vec3 cross(Vec3 vec1, Vec3 vec2) {
+     return glm::cross(vec1, vec2);
+  }
+  
+  inline double dot(Vec3 vec1, Vec3 vec2) {
+     return glm::dot(vec1, vec2);
+  }
+  
+ };    // namespace ElipseMath
+};
 
-using Radians = float;
-
-namespace Ellipse
-{
-
-namespace EllipseMath
-{
-
-inline Mat4 scale(Mat4 model, Vec3 scalerAmount)
-{
-   return glm::scale(model, scalerAmount);
-}
-
-inline Mat4 rotate(Mat4 model, float radians, Vec3 rotationAxis)
-{
-   return glm::rotate(model, radians, rotationAxis);
-}
-
-inline Vec3 rotate(Vec3 vec, float radians, Vec3 normal)
-{
-   return glm::rotate(vec, radians, normal);
-}
-
-inline Mat4 translate(Mat4 model, Vec3 translateAmount)
-{
-   return glm::translate(model, translateAmount);
-}
-
-inline Mat3 inverse(Mat3 model)
-{
-   return glm::inverse(model);
-}
-
-inline Mat3 transpose(Mat3 model)
-{
-   return glm::transpose(model);
-}
-
-inline Mat4 lookAt(Vec3 camPos, Vec3 camDir, Vec3 camUp)
-{
-   return glm::lookAt(camPos, camDir, camUp);
-}
-
-inline Mat4 ortho(float left,
-                  float right,
-                  float top,
-                  float bottom,
-                  float near,
-                  float far
-                 )
-{
-    return glm::ortho(left, right, top, bottom, near, far);
-}
-
-inline Mat4 perspective(float fov,
-                        float aspectRatio,
-                        float near,
-                        float far)
-{
-    return glm::perspective(fov, aspectRatio, near, far);
-}
-
-inline float length(Vec3 vec)
-{
-    return glm::length(vec);
-}
-
-
-inline Vec3 normalize(Vec3 vec)
-{
-   return glm::normalize(vec);
-}
-
-inline Vec3 cross(Vec3 vec1, Vec3 vec2)
-{
-   return glm::cross(vec1, vec2);
-}
-
-inline double dot(Vec3 vec1, Vec3 vec2)
-{
-   return glm::dot(vec1, vec2);
-}
-
-}    // namespace ElipseMath
-
+namespace EllipseMath = Ellipse::EllipseMath;
 
 // #endif
-
-}     // namespace Ellipse
 
 template<typename T, typename D, typename Func>
 void erase_if(Map<T, D>& map, Func func)

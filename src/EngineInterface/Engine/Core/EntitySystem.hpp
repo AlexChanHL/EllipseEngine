@@ -38,6 +38,7 @@ class Component {
 //     private:
 // };
 
+// [ Derive entities form this class ]
 class Entity {
     public:
      Entity() {
@@ -55,7 +56,20 @@ class Entity {
 
      template<typename T>
      void addComponent(Component& component) {
+      if(m_components.contains(T::name())) {
+       // Log component is in list 
+       return;
+      }
       m_components[T::name()] = std::make_shared<T>(static_cast<T&>(component));
+     }
+
+     template<typename T>
+     void addComponent() {
+      if(m_components.contains(T::name())) {
+       // Log component is in list 
+       return;
+      }
+      m_components[T::name()] = std::make_shared<T>();
      }
 
      template<typename T>

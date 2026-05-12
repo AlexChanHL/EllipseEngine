@@ -19,6 +19,8 @@ class RenderModule3D : public RenderModule
      
      void render(RenderObj* renderObj, RenderShaderObj* shaderObj, const UniformList& uniformList) override;
 
+     virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
+
      virtual void setViewCamera(Ellipse::Camera camera) override;
 
      virtual void setCameraFront(float amount) override;

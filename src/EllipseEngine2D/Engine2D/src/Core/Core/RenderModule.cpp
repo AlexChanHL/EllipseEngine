@@ -7,7 +7,6 @@ namespace Ellipse
 
 RenderModule2D::RenderModule2D(Engine& engine)
 : m_renderer{static_cast<Renderer&>(engine.getSystem("Renderer"))},
-  m_modelManager{static_cast<ModelManagerModule&>(engine.getModule("ModelModule"))},
   m_camera{Camera{}}
 {
     m_name = "RenderModule";
@@ -61,7 +60,7 @@ void RenderModule2D::init()
 
     m_objects["Quad"] = quadData;
 
-    setClearColor(Vec4{1.0f, 1.0f, 0.0f, 1.0f});
+    setClearColor(EllipseMath::Vec4{1.0f, 1.0f, 0.0f, 1.0f});
 }
 
 void RenderModule2D::onUpdate()
@@ -72,9 +71,13 @@ void RenderModule2D::onUpdate()
 void RenderModule2D::render(RenderObj* renderObj,
                             RenderShaderObj* shaderObj,
                             const UniformList& uniformList
-                           ) 
+                           )
 {
     m_renderer.render(*renderObj, *shaderObj, uniformList);
+}
+
+void RenderModule2D::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) {
+ m_renderer.setViewport(posX, posY, width, height);
 }
 
 void RenderModule2D::setViewCamera(Ellipse::Camera camera) 
@@ -100,11 +103,7 @@ void RenderModule2D::setCameraLeft(float amount)
 
 }
 
-void RenderModule2D::setViewport(Ellipse::Viewspace viewspace) 
-{
-
-}
-void RenderModule2D::setClearColor(Vec4 col) 
+void RenderModule2D::setClearColor(EllipseMath::Vec4 col) 
 {
     m_renderer.setClearColor(col);
 }

@@ -8,11 +8,9 @@ DemoLayer::DemoLayer(Ellipse::Engine& engine)
  : Layer{engine},
    m_engine{engine},
    m_timeModule{static_cast<Ellipse::TimeModule&>(engine.getModule("TimeModule"))},
-   m_modelManagerLayerModule{static_cast<Ellipse::ModelManagerModule&>(engine.getModule("ModelModule"))},
    m_renderModule{static_cast<Ellipse::RenderModule&>(engine.getModule("RenderModule"))},
    m_fontModule{static_cast<Ellipse::FontModule&>(engine.getModule("FontModule"))},
    m_entitySystem{static_cast<Ellipse::EntitySystem&>(engine.getSystem("Entity"))},
-   m_modelList{engine},
    m_objects{m_renderModule.preDefinedObjects()},
    m_cursor{-0.9f, 0.9f},
    m_colorKey{0.0f, 0.0f, 0.0f}
@@ -24,18 +22,20 @@ void DemoLayer::init()
 {
     Ellipse::RenderModule& renderer = static_cast<Ellipse::RenderModule&>(m_engine.getModule("RenderModule"));
     Pair<i32_t, i32_t> size = Ellipse::Application::get().getWindow().getWindowSize();
-    renderer.setViewport(Ellipse::Viewspace{0,
-                                            0,
-                                            size.first,
-                                            size.second
-                                           }
-                        );
+    renderer.setViewport(0, 0, size.first, size.second);
 
 
     Ellipse::Entity quad = Ellipse::Entity();
+    // Ellipse::Entity quad = Ellipse::Entity("Quad");
     m_entitySystem.addEntity(quad);
-    // m_entitySystem.addComponent(RenderComponent);
+    quad.addComponent<Ellipse::RenderComponent>();
+    quad.findComponent<Ellipse::RenderComponent>();
+    // m_renderModule.render(m_entitySystem.getFromID(id, "Render"));
       
+    // void PlayerEntity::move() {
+    //   m_components['render'].setMat(m_components['player'].pos());
+    // }
+  //
     // m_modelList.defineObject("FontSheet", "Assets/Fonts/Font.png", m_objects["Quad"]);
     // m_modelList.defineObject("Message", "Assets/Images/Message.png", m_objects["Quad"]);
     // m_modelList.defineObject("Solar", "Assets/Images/Solar.jpeg", m_objects["Quad"]);
@@ -150,8 +150,6 @@ void DemoLayer::onUpdate(float dt)
     //   m_modelList.translate(m_names[i].c_str(), Vec2{rand(), rand()});
     //  }
     // }
-
-    m_modelList.onUpdate();
 }
 
 bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e)
@@ -178,13 +176,11 @@ bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e)
       }
       m_names.push_back(randomName);
 
-      m_modelList.addModel(randomName.c_str(), "A", m_cursor);
-      m_modelList.scale(randomName.c_str(), Vec2(0.1f, 0.1f));
       if(m_cursor.x >= 0.9f) {
-       m_cursor = Vec2(-1.0f, m_cursor.y - 0.1f);
+       m_cursor = EllipseMath::Vec2(-1.0f, m_cursor.y - 0.1f);
       }
 
-      m_cursor += Vec2(0.1f, 0.0f);
+      m_cursor += EllipseMath::Vec2(0.1f, 0.0f);
      }
      break;
      case ELLIPSE_KEY_d:

@@ -195,6 +195,10 @@ void RenderModule3D::onUpdate()
                                 );
 }
 
+void RenderModule3D::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) {
+ m_renderer.setViewport(posX, posY, width, height);
+}
+
 void RenderModule3D::setViewCamera(Camera camera)
 {
     m_view = EllipseMath::lookAt(camera.position(),

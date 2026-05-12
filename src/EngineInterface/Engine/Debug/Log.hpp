@@ -36,9 +36,7 @@ namespace Ellipse {
    // static Map<String, SharedPtr<sglLogger::Logger>> m_loggers;
  };
 
-}
-
-inline std::ostream& operator<<(std::ostream& os, Mat4 mat) {
+inline std::ostream& operator<<(std::ostream& os, EllipseMath::Mat4 mat) {
  for(i32_t i=0;i<4;i++) {
   for(i32_t j=0;j<4;j++) {
    os << mat[j][i] << ' ';
@@ -46,6 +44,8 @@ inline std::ostream& operator<<(std::ostream& os, Mat4 mat) {
   os << '\n';
  }
  return os;
+}
+
 }
 
 

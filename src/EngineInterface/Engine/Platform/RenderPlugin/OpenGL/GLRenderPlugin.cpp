@@ -111,7 +111,7 @@ void OpenGLRenderPlugin::setUniforms(UniformList uniforms)
    // ELLIPSE_ENGINE_LOG_ERROR("Uniform couldn't be found in list");
    // }
   
-   for(UniformVarible<i32_t>& uniform : uniforms.getIntUniforms())
+   for(UniformVariable<i32_t>& uniform : uniforms.getIntUniforms())
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    switch(uniform.size())
@@ -133,7 +133,7 @@ void OpenGLRenderPlugin::setUniforms(UniformList uniforms)
    }
    }
 
-   for(UniformVarible<float>& uniform : uniforms.getFloatUniforms())
+   for(UniformVariable<float>& uniform : uniforms.getFloatUniforms())
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    switch(uniform.size())
@@ -156,7 +156,7 @@ void OpenGLRenderPlugin::setUniforms(UniformList uniforms)
    }
 
 
-   for(UniformVarible<u32_t>& uniform : uniforms.getUnsignedIntUniforms())
+   for(UniformVariable<u32_t>& uniform : uniforms.getUnsignedIntUniforms())
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    switch(uniform.size())
@@ -178,45 +178,45 @@ void OpenGLRenderPlugin::setUniforms(UniformList uniforms)
 
    // // [ Setting vectors and matricies one at a time, maybe have
    //      a single list of all ]
-   for(UniformVarible<Vec2>& uniform : uniforms.getVec2Uniforms())
+   for(UniformVariable<EllipseMath::Vec2>& uniform : uniforms.getVec2Uniforms())
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    glUniform2f(loc, uniform.uniformAt(0).x, uniform.uniformAt(0).y);
    }
 
-   for(UniformVarible<Vec3>& uniform : uniforms.getVec3Uniforms())
+   for(UniformVariable<EllipseMath::Vec3>& uniform : uniforms.getVec3Uniforms())
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    glUniform3f(loc, uniform.uniformAt(0).x, uniform.uniformAt(0).y, uniform.uniformAt(0).z);
    // ELLIPSE_ENGINE_LOG_INFO("{}, {}, {}", uniform.uniformAt(0).x, uniform.uniformAt(0).y, uniform.uniformAt(0).z);
    }
 
-   for(UniformVarible<Vec4>& uniform : uniforms.getVec4Uniforms())
+   for(UniformVariable<EllipseMath::Vec4>& uniform : uniforms.getVec4Uniforms())
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    glUniform4f(loc, uniform.uniformAt(0).x, uniform.uniformAt(0).y, uniform.uniformAt(0).z, uniform.uniformAt(0).w);
    }
 
-   for(UniformVarible<Mat2>& uniform : uniforms.getMat2Uniforms())
+   for(UniformVariable<EllipseMath::Mat2>& uniform : uniforms.getMat2Uniforms())
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    glUniformMatrix2fv(loc, 1, GL_FALSE, &(uniform.uniformAt(0)[0][0]));
    }
 
-   for(UniformVarible<Mat3>& uniform : uniforms.getMat3Uniforms())
+   for(UniformVariable<EllipseMath::Mat3>& uniform : uniforms.getMat3Uniforms())
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    glUniformMatrix3fv(loc, 1, GL_FALSE, &(uniform.uniformAt(0)[0][0]));
    }
 
-   for(UniformVarible<Mat4>& uniform : uniforms.getMat4Uniforms())
+   for(UniformVariable<EllipseMath::Mat4>& uniform : uniforms.getMat4Uniforms())
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    glUniformMatrix4fv(loc, 1, GL_FALSE, &(uniform.uniformAt(0)[0][0]));
    // std::cout << loc << '\n';
    }
 
-   for(UniformVarible<bool>& uniform : uniforms.getBoolUniforms())
+   for(UniformVariable<bool>& uniform : uniforms.getBoolUniforms())
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    glUniform1i(loc, uniform.uniformAt(0));

@@ -327,6 +327,13 @@ class RenderShaderObj
 
      virtual i32_t findUniformLocation(const char* name) = 0;
      virtual Map<const char*, i32_t> findUniformLocationList(UniformList uniformList) = 0;
+  
+     template<typename T>
+     void addUniform(String name, const UniformVariable<T>& t) {
+      m_uniformList.addUniform(name, t);
+     }
+    protected:
+     UniformList m_uniformList;
 
     private:
 };

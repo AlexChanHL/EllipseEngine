@@ -26,7 +26,7 @@ class FontModuleImpl : public FontModule
           commonGlyphs.push_back(ch);
      }
 
-     m_fonts["TimesNewRoman"] = FontCollection{"Assets/Fonts/Font.png", Vec2{0.0f}, 0.1f, 0.1f, commonGlyphs}; 
+     m_fonts["TimesNewRoman"] = FontCollection{"Assets/Fonts/Font.png", EllipseMath::Vec2{0.0f}, 0.1f, 0.1f, commonGlyphs}; 
     }
     virtual void onUpdate() override {
 

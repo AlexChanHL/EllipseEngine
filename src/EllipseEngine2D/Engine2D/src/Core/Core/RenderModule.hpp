@@ -19,6 +19,7 @@ class RenderModule2D : public RenderModule
                          RenderShaderObj* shaderObj,
                          const UniformList& uniformaList
                         );
+     virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
 
      // virtual void render(RenderCompnent);
  
@@ -29,19 +30,18 @@ class RenderModule2D : public RenderModule
      virtual void setCameraRight(float amount) override;
      virtual void setCameraLeft(float amount) override;
 
-     virtual void setViewport(Viewspace viewspace) override;
-     virtual void setClearColor(Vec4 col) override;
+     virtual void setClearColor(EllipseMath::Vec4 col) override;
 
      virtual Renderer& renderer() override
      {
          return m_renderer;
      }
 
-     virtual Mat4& proj() override
+     virtual EllipseMath::Mat4& proj() override
      {
          return m_proj;
      }
-     virtual Mat4& view() override
+     virtual EllipseMath::Mat4& view() override
      {
          return m_view;
      }
@@ -52,8 +52,6 @@ class RenderModule2D : public RenderModule
    
     private:
      Renderer& m_renderer;
-     ModelManagerModule& m_modelManager;
-
      Camera m_camera;
 };
 

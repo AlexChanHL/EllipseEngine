@@ -120,21 +120,21 @@ i32_t OpenGLShaderObj::findUniformLocation(const char* name)
 Map<const char*, i32_t> OpenGLShaderObj::findUniformLocationList(UniformList uniformList)
 {
     Map<const char*, i32_t> uniformLocations;
-    for(UniformVarible<i32_t>& uniform : uniformList.getIntUniforms())
+    for(UniformVariable<i32_t>& uniform : uniformList.getIntUniforms())
     {
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
     }
 
-    for(UniformVarible<float>& uniform : uniformList.getFloatUniforms())
+    for(UniformVariable<float>& uniform : uniformList.getFloatUniforms())
     {
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
     }
 
-    for(UniformVarible<u32_t>& uniform : uniformList.getUnsignedIntUniforms())
+    for(UniformVariable<u32_t>& uniform : uniformList.getUnsignedIntUniforms())
     {
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
@@ -143,42 +143,42 @@ Map<const char*, i32_t> OpenGLShaderObj::findUniformLocationList(UniformList uni
 
     // // [ Setting vectors and matricies one at a time, maybe have
     //      a single list of all ]
-    for(UniformVarible<Vec2>& uniform : uniformList.getVec2Uniforms())
+    for(UniformVariable<EllipseMath::Vec2>& uniform : uniformList.getVec2Uniforms())
     {
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
     }
 
-    for(UniformVarible<Vec3>& uniform : uniformList.getVec3Uniforms())
+    for(UniformVariable<EllipseMath::Vec3>& uniform : uniformList.getVec3Uniforms())
     {
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
     }
 
-    for(UniformVarible<Vec4>& uniform : uniformList.getVec4Uniforms())
+    for(UniformVariable<EllipseMath::Vec4>& uniform : uniformList.getVec4Uniforms())
     {
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
     }
 
-    for(UniformVarible<Mat2>& uniform : uniformList.getMat2Uniforms())
+    for(UniformVariable<EllipseMath::Mat2>& uniform : uniformList.getMat2Uniforms())
     {
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
     }
 
-    for(UniformVarible<Mat3>& uniform : uniformList.getMat3Uniforms())
+    for(UniformVariable<EllipseMath::Mat3>& uniform : uniformList.getMat3Uniforms())
     {
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);
     uniformLocations[uniformName] = loc;
     }
 
-    for(UniformVarible<Mat4>& uniform : uniformList.getMat4Uniforms())
+    for(UniformVariable<EllipseMath::Mat4>& uniform : uniformList.getMat4Uniforms())
     {
     const char* uniformName = uniform.name();
     i32_t loc = findUniformLocation(uniformName);

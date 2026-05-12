@@ -1,7 +1,6 @@
 
 #include "Application.hpp"
 #include "TimeModule.hpp"
-#include "ModelManagerModule.hpp"
 #include "EntitySystem.hpp"
 #include "FontModule.hpp"
 #include "Debug/Log.hpp"
@@ -50,9 +49,6 @@ void Application::init(const ApplicationConfig& config)
     m_renderer->setWindowFrameSize(winSize);
  
     m_engine->addSystem(m_renderer);
-   }
-   if((key == "Model") && (value)) {
-    m_engine->addModule(ModelManagerModule::createModelManagerModule(*m_engine));
    }
    if((key == "RenderModule") && (value)) {
     m_engine->addModule(RenderModule::createRenderModule(*m_engine));
@@ -150,8 +146,6 @@ bool Application::onWindowResize(WindowResizeEvent& resizeEvent)
 
   i32_t viewspaceDiffernceWidth = newSizeWidth - windowSize.first;
   i32_t viewspaceDiffernceHeight = newSizeHeight - windowSize.second;
-
-  ModelManagerModule& modelManagerModule = static_cast<ModelManagerModule&>(m_engine->getModule("ModelModule"));
 
   // modelManagerModule.setDifferentInViewspace(
   //   static_cast<float>(viewspaceDiffernceWidth),
