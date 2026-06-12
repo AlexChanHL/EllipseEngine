@@ -16,19 +16,16 @@ void OpenGLRenderPlugin::render(const RenderObj& rObj)
 
 void OpenGLRenderPlugin::renderGL(const OpenGLRenderObj& rObj)
 {
-    for(u32_t i = 0; i < rObj.meshes().size(); i++)
-    {
-        if(rObj.meshes()[i]->isTextured())
-        {
-            glActiveTexture(GL_TEXTURE0);
-            for(u32_t j=0;j<rObj.meshes()[i]->textures().size();j++)
-            {
-                // ELLIPSE_ENGINE_LOG_INFO("Bind texture");
-                glBindTexture(GL_TEXTURE_2D, rObj.meshes()[i]->textures()[j].id());
-            }
-        }
+    for(u32_t i = 0; i < rObj.meshes().size(); i++) {
+     if(rObj.meshes()[i]->isTextured()) {
+      glActiveTexture(GL_TEXTURE0);
+      for(u32_t j=0;j<rObj.meshes()[i]->textures().size();j++) {
+          // ELLIPSE_ENGINE_LOG_INFO("Bind texture");
+          glBindTexture(GL_TEXTURE_2D, rObj.meshes()[i]->textures()[j].id());
+      }
+     }
 
-        renderGLMesh(static_cast<OpenGLMesh&>(*rObj.meshes()[i]));
+     renderGLMesh(static_cast<OpenGLMesh&>(*rObj.meshes()[i]));
     }
 
 }
@@ -213,7 +210,7 @@ void OpenGLRenderPlugin::setUniforms(UniformList uniforms)
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    glUniformMatrix4fv(loc, 1, GL_FALSE, &(uniform.uniformAt(0)[0][0]));
-   // std::cout << loc << '\n';
+   std::cout << loc << '\n';
    }
 
    for(UniformVariable<bool>& uniform : uniforms.getBoolUniforms())

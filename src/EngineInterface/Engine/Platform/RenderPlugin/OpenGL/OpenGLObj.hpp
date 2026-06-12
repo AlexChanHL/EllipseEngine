@@ -217,17 +217,16 @@ struct OpenGLRenderObj : public RenderObj
 
     }
 
-    virtual void initializeFromResources(RenderObjData& data) override
-    {
-    OpenGLMesh openGLMesh;
-    openGLMesh.initializeMesh(data.indicies(),
+    virtual void initializeFromResources(RenderObjData& data) override {
+     OpenGLMesh openGLMesh;
+     openGLMesh.initializeMesh(data.indicies(),
                               data.positions(),
                               data.normals(),
                               data.textureCoords(),
                               data.textureData()
                              );
 
-    m_meshes.push_back(openGLMesh);
+     m_meshes.push_back(openGLMesh);
     }
 
 

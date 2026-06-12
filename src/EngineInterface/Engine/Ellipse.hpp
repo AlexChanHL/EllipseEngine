@@ -12,9 +12,12 @@
 #include "Core/GraphicsContext.hpp"
 #include "Core/Window.hpp"
 #include "Core/OSTime.hpp"
-#include "Core/EntitySystem.hpp"
 #include "Core/TimeModule.hpp"
 #include "Core/Utils/Miscellaneous.hpp"
+
+#include "EntitySystem/EntitySystem.hpp"
+#include "EntitySystem/RenderEntity.hpp"
+#include "EntitySystem/RenderComponent.hpp"
 
 #include "Renderer/Renderer.hpp"
 #include "Renderer/RenderModule.hpp"

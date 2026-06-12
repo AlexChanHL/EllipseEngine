@@ -16,6 +16,9 @@ class ISystem
    virtual String name() = 0;
    virtual void setName(const char* name) = 0;
 
+   virtual void onInit() = 0;
+   virtual void onUpdate() = 0;
+
   protected:
    String m_name;
 

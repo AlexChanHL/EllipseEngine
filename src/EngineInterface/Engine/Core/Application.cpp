@@ -1,7 +1,7 @@
 
 #include "Application.hpp"
 #include "TimeModule.hpp"
-#include "EntitySystem.hpp"
+#include "EntitySystem/EntitySystem.hpp"
 #include "FontModule.hpp"
 #include "Debug/Log.hpp"
 
@@ -68,6 +68,10 @@ void Application::init(const ApplicationConfig& config)
    pushLayer(*i);
   }
 
+  for(SharedPtr<ISystem> system : m_engine->systems()) {
+   system->onInit();
+  }
+
   for(SharedPtr<IModule> module : m_engine->modules()) {
    module->init();
   }
@@ -110,6 +114,9 @@ void Application::run()
 
    float dt = 0.0f;
    updateLayerStack(m_layerStack, dt);
+   for(SharedPtr<ISystem> system : m_engine->systems()) {
+    system->onUpdate();
+   }
    for(SharedPtr<IModule> module : m_engine->modules()) {
     module->onUpdate();
    }

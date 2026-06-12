@@ -14,10 +14,8 @@ class EngineImpl final : public Engine
     virtual void addModule(SharedPtr<IModule> module) override;
     virtual IModule& getModule(const char* name) override;
 
-    virtual Vector<SharedPtr<IModule>>& modules() override
-    {
-    return m_modules;
-    }
+    virtual Vector<SharedPtr<IModule>>& modules() override { return m_modules; }
+    virtual Vector<SharedPtr<ISystem>>& systems() override { return m_systems; }
 
    private:
     Vector<SharedPtr<ISystem>> m_systems;
@@ -52,12 +50,10 @@ void EngineImpl::addModule(SharedPtr<IModule> module)
 }
 IModule& EngineImpl::getModule(const char* name)
 {
-    for(const auto& a : m_modules)
-    {
-    if(strcmp(a->name().c_str(), name) == 0)
-    {
-    return *a;
-    }
+    for(const auto& a : m_modules) {
+     if(strcmp(a->name().c_str(), name) == 0) {
+      return *a;
+     }
     }
 
     // [ Have module manager ]

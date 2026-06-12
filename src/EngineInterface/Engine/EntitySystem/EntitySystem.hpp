@@ -14,29 +14,11 @@ class Component {
      virtual ~Component() {
 
      }
-     virtual void update() = 0;
+     virtual void onInit() = 0;
+     virtual void onUpdate() = 0;
      
     private:
 };
-
-// class AComponent : public Component {
-//     public:
-//      AComponent() {
-//
-//      }
-//      ~AComponent() {
-//
-//      }
-//      virtual void update() override {
-//       std::cout << "A component\n";
-//      }
-//
-//      static String name() {
-//       return "AComponent";
-//      }
-//      
-//     private:
-// };
 
 // [ Derive entities form this class ]
 class Entity {
@@ -44,13 +26,29 @@ class Entity {
      Entity() {
 
      }
-     ~Entity() {
+     virtual ~Entity() {
 
      }
 
-     void update() {
+     Entity(const Entity& e) 
+     : m_components{e.components()} {
+     }
+
+     void onInit() {
+      initOverride();
+
       for(auto [key, value] : m_components) {
-       value->update();
+       value->onInit();
+      }
+     }
+
+     virtual void onUpdate() {
+      
+     }
+
+     void updateComponents() {
+      for(auto [key, value] : m_components) {
+       value->onUpdate();
       }
      }
 
@@ -72,6 +70,15 @@ class Entity {
       m_components[T::name()] = std::make_shared<T>();
      }
 
+     // template<typename T>
+     // void addComponent(const T& t) {
+     //  if(m_components.contains(T::name())) {
+     //   // Log component is in list 
+     //   return;
+     //  }
+     //  m_components[T::name()] = std::make_shared<T>(t);
+     // }
+
      template<typename T>
      T& findComponent() {
       return static_cast<T&>(*m_components[T::name()]);
@@ -85,6 +92,11 @@ class Entity {
      uint64_t componentAmount() {
       return m_components.size();
      }
+
+     std::map<String, std::shared_ptr<Component>> components() const { return m_components; }
+
+    protected:
+     virtual void initOverride() = 0;
 
     private:
      std::map<String, std::shared_ptr<Component>> m_components;
@@ -105,15 +117,21 @@ class EntitySystem : public ISystem {
      virtual void setName(const char* name) override {
      }
 
-     void update() {
-      for(auto [key, value] : m_entities) {
-       value->update();
-      }
+     virtual void onInit() override {
+
      }
+
+     virtual void onUpdate() override {
+      for(auto [key, value] : m_entities) {
+       value->onUpdate();
+       value->updateComponents();
+    }
+      }
      
+     template<typename T>
      void addEntity(Entity& entity) {
       i32_t id = 1;
-      m_entities[id] = std::make_shared<Entity>(entity);
+      m_entities[id] = createShared<T>(static_cast<T&>(entity));
      }
 
      Entity& findEntity(i32_t id) {

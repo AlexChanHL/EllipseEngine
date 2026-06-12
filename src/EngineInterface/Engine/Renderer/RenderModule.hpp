@@ -5,7 +5,7 @@
 #include "Engine/Engine.hpp"
 #include "Engine/Module.hpp"
 #include "Core/Base.hpp"
-#include "Core/EntitySystem.hpp"
+#include "EntitySystem/EntitySystem.hpp"
 
 
 namespace Ellipse
@@ -159,41 +159,6 @@ class Camera
     EllipseMath::Vec3 m_upDirection;
 };
 
-class RenderComponent : public Component
-{
-   public:
-    RenderComponent() {
-
-    };
-    ~RenderComponent() {
-
-    };
-
-    virtual void init() {
-     // m_shaderObj.addUniform<Ellipsemath::Mat4>("Model", &m_model);
-    }
-
-    virtual void update() override {
-
-    }
-
-    static String name() {
-     return "Render";
-    }
-
-    void translate(EllipseMath::Vec4 pos) {
-     // EllipseMath::Mat4& model = m_shaderObj.findUniform<EllipseMath::Mat4>("Model");
-     // EllipseMath::translate(model, pos);
-     // m_renderObj;
-    }
-    
-
-   private:
-    UniquePtr<RenderObj> m_renderObj;
-    UniquePtr<RenderShaderObj> m_shaderObj;
-    // UniformData m_uniformData;
-};
-
 class RenderModule : public IModule
 {
    public:
@@ -210,6 +175,7 @@ class RenderModule : public IModule
 
     virtual void render(RenderObj* renderObj, RenderShaderObj* shaderObj, const UniformList& uniformList) = 0;
     // virtual void render(RenderComponent& renderComponent) = 0;
+  
     virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) = 0;
     
     virtual void setViewCamera(Camera camera) = 0;

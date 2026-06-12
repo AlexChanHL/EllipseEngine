@@ -10,6 +10,9 @@ class RendererImpl final : public Renderer
     explicit RendererImpl(UniquePtr<RenderPlugin> plugin);
     ~RendererImpl();
 
+    virtual void onInit() override;
+    virtual void onUpdate() override;
+
     void render(const RenderObj& rObj, const RenderShaderObj& sObj, const UniformList& uniforms) override;
     virtual void clearColorBuffer() override;
     virtual void clearDepthBuffer() override;
@@ -59,8 +62,15 @@ void RendererImpl::setName(const char* name)
     m_name = name;
 }
 
-void RendererImpl::render(const RenderObj& rObj, const RenderShaderObj& sObj, const UniformList& uniforms)
-{
+void RendererImpl::onInit() {
+
+}
+
+void RendererImpl::onUpdate() {
+
+}
+
+void RendererImpl::render(const RenderObj& rObj, const RenderShaderObj& sObj, const UniformList& uniforms) {
     sObj.use();
 
     m_plugin->setUniforms(uniforms);

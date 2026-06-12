@@ -32,19 +32,12 @@ class RenderModule2D : public RenderModule
 
      virtual void setClearColor(EllipseMath::Vec4 col) override;
 
-     virtual Renderer& renderer() override
-     {
+     virtual Renderer& renderer() override {
          return m_renderer;
      }
 
-     virtual EllipseMath::Mat4& proj() override
-     {
-         return m_proj;
-     }
-     virtual EllipseMath::Mat4& view() override
-     {
-         return m_view;
-     }
+     virtual EllipseMath::Mat4& proj() override { return m_proj; }
+     virtual EllipseMath::Mat4& view() override { return m_view; }
 
      virtual Ellipse::Camera& camera() override;
 

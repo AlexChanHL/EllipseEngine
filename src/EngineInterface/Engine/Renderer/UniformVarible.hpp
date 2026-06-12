@@ -360,7 +360,8 @@ class UniformList
 
     for(const auto& uniform : m_mat4Uniforms)
     {
-    ELLIPSE_ENGINE_LOG_INFO("Uniform name: {}", uniform.name());
+    // ELLIPSE_ENGINE_LOG_INFO("Uniform name: {}", uniform.name());
+    std::cout << "Uniform name: " << uniform.name() << '\n';
     uniform.printUniforms();
     }
 

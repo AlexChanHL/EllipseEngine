@@ -35,6 +35,8 @@ void RenderModule2D::init()
     // setProjPerspective();
 
     Ellipse::RenderObjData quadData;
+    quadData.textureData() = loadTexture("Assets/Images/Solar.jpeg", false);
+
     quadData.setIndicies(Vector<u32_t>{0, 1, 2,
                                        1, 2, 3 
                                        }
@@ -121,8 +123,7 @@ void RenderModule2D::configureCameras()
 }       // namespace Ellipse
 
 
-SharedPtr<Ellipse::RenderModule> Ellipse::RenderModule::createRenderModule(Ellipse::Engine& engine)
-{
+SharedPtr<Ellipse::RenderModule> Ellipse::RenderModule::createRenderModule(Ellipse::Engine& engine) {
   	return createShared<Ellipse::RenderModule2D>(engine);
 }
 

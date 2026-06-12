@@ -229,42 +229,33 @@ class RenderObjData
 
     }
 
-    void setIndicies(Vector<u32_t> indicies)
-    {
-    m_indicies = indicies;
+    void setIndicies(Vector<u32_t> indicies) {
+     m_indicies = indicies;
     }
-    void setPositions(Vector<float> positions)
-    {
-    m_positions = positions;
+    void setPositions(Vector<float> positions) {
+     m_positions = positions;
     }
-    void setNormals(Vector<float> normals)
-    {
-    m_normals = normals;
+    void setNormals(Vector<float> normals) {
+     m_normals = normals;
     }
-    void setTexCoords(Vector<float> textureCoords)
-    {
-    m_textureCoords = textureCoords;
+    void setTexCoords(Vector<float> textureCoords) {
+     m_textureCoords = textureCoords;
     }
 
-    Vector<u32_t> indicies()
-    {
-    return m_indicies;
+    Vector<u32_t> indicies() {
+     return m_indicies;
     }
-    Vector<float> positions()
-    {
-    return m_positions;
+    Vector<float> positions() {
+     return m_positions;
     }
-    Vector<float> normals()
-    {
-    return m_normals;
+    Vector<float> normals() {
+     return m_normals;
     }
-    Vector<float> textureCoords()
-    {
-    return m_textureCoords;
+    Vector<float> textureCoords() {
+     return m_textureCoords;
     }
-    TextureData& textureData()
-    {
-        return m_textureData;
+    TextureData& textureData() {
+     return m_textureData;
     }
 
    private:
@@ -329,9 +320,15 @@ class RenderShaderObj
      virtual Map<const char*, i32_t> findUniformLocationList(UniformList uniformList) = 0;
   
      template<typename T>
-     void addUniform(String name, const UniformVariable<T>& t) {
-      m_uniformList.addUniform(name, t);
+     void addUniform(const UniformVariable<T>& t) {
+      m_uniformList.addUniform(t);
+      m_uniformList.setUniformLocations(findUniformLocationList(m_uniformList));
      }
+
+     UniformList uniformList() {
+      return m_uniformList;
+     }
+
     protected:
      UniformList m_uniformList;
 

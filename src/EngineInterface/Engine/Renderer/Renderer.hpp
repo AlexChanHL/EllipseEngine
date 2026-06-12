@@ -16,6 +16,9 @@ namespace Ellipse {
      explicit Renderer(ISystem& system);
      virtual ~Renderer() = default; 
 
+     virtual void onInit() = 0;
+     virtual void onUpdate() = 0;
+
      virtual void render(const RenderObj& rObj, const RenderShaderObj& sObj, const UniformList& uniforms) = 0;
      virtual void clearColorBuffer() = 0;
      virtual void clearDepthBuffer() = 0;

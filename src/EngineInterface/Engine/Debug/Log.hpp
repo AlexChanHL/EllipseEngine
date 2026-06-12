@@ -48,7 +48,6 @@ inline std::ostream& operator<<(std::ostream& os, EllipseMath::Mat4 mat) {
 
 }
 
-
 // namespace Ellipse {
 //  class Log {
 //   public:

@@ -18,23 +18,31 @@ DemoLayer::DemoLayer(Ellipse::Engine& engine)
    m_throughLayer = false;
 }
 
-void DemoLayer::init()
-{
+void DemoLayer::init() {
     Ellipse::RenderModule& renderer = static_cast<Ellipse::RenderModule&>(m_engine.getModule("RenderModule"));
     Pair<i32_t, i32_t> size = Ellipse::Application::get().getWindow().getWindowSize();
     renderer.setViewport(0, 0, size.first, size.second);
 
 
-    Ellipse::Entity quad = Ellipse::Entity();
-    // Ellipse::Entity quad = Ellipse::Entity("Quad");
-    m_entitySystem.addEntity(quad);
-    quad.addComponent<Ellipse::RenderComponent>();
-    quad.findComponent<Ellipse::RenderComponent>();
+    auto quad = Ellipse::RenderEntity(m_engine);
+    quad.onInit();
+    // std::cout << quad.renderModule() << '\n';
+    m_entitySystem.addEntity<Ellipse::RenderEntity>(quad);
+
+    auto r = static_cast<Ellipse::RenderEntity&>(m_entitySystem.findEntity(1));
+    // std::cout << r.componentAmount() << "\n";
+
+    // auto rComp = quad.findComponent<Ellipse::RenderComponent>();
+    // Ellipse::EllipseMath::translate(rComp.model(), Ellipse::EllipseMath::Vec2(0, 0));
+  
     // m_renderModule.render(m_entitySystem.getFromID(id, "Render"));
-      
+  
+
     // void PlayerEntity::move() {
     //   m_components['render'].setMat(m_components['player'].pos());
     // }
+    //
+  //
   //
     // m_modelList.defineObject("FontSheet", "Assets/Fonts/Font.png", m_objects["Quad"]);
     // m_modelList.defineObject("Message", "Assets/Images/Message.png", m_objects["Quad"]);
@@ -63,51 +71,6 @@ void DemoLayer::init()
 
     // auto rand = [](){ return Ellipse::EllipseMath::randRealDist(-1.0f,1.0f); };
     // m_modelList.addModel("Font1", "FontSheet", Vec2{rand(), rand()});
-    // m_modelList.addModel("Message1", "Message", Vec2{rand(), rand()});
-    // m_modelList.addModel("Solar1", "Solar", Vec2{rand(), rand()});
-    // m_modelList.addModel("Space1", "Space", Vec2{rand(), rand()});
-
-    // for(u64_t i=0;i<100;i++) {
-    //  bool isNameFound = false;
-    //  String randomName;
-    //  while(!isNameFound) {
-    //   randomName = Ellipse::Utils::generateRandomString(6);
-    //   for(u64_t j=0;j<m_names.size();j++) {
-    //    if(randomName == m_names[j]) {
-    //     break;
-    //    }
-    //   }
-    //   isNameFound = true;
-    //   m_names.push_back(randomName);
-    //  }
-    //
-    //  String randChar;
-    //  randChar.push_back(char(Ellipse::EllipseMath::randIntDist(65, 90)));
-    //
-    //  m_modelList.addModel(randomName.c_str(), randChar.c_str(), Vec2{rand(), rand()});
-    //  m_modelList.scale(randomName.c_str(), Vec2{0.1f, 0.1f});
-    // }
-
-    // m_modelList.modelModuleVal("A").uniformList().addUniform(Ellipse::UniformVarible<Vec3>{"colorKey", &m_colorKey});
-
-
-
-  // 
-  // RenderQuad quad = m_renderer->createQuad();
-  //
-  // [ Add entity ]
-  // RenderComponent comp = m_entitySystem->createComponent<RenderComponent>(quad);
-  //
-  // [ Reuse as many times possible ]
-  //
-  // [ To optimise, renderer must keep internal storage of the various
-  //   vertex array objects and shaders ]
-  //
-  // m_renderer->render(quad);
-  //
-  // [ Retreive from entity system ]
-  // comp = COMP_CAST(RenderComponent, m_entitySystem->getEntity(id)->getComponent("Render"));
-  // 
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e)
@@ -131,25 +94,9 @@ void DemoLayer::onEvent(Ellipse::Event& e)
     );
 }
 
-void DemoLayer::onUpdate(float dt)
-{
-    // auto rand = [](){ return Ellipse::EllipseMath::randRealDist(-1.0f,1.0f); };
-    // for(float i=0;i<10;i++) {
-     // String modelName = fmt::format("FrontQuad{}", i);
-
-     // float theta = Ellipse::EllipseMath::radians(static_cast<float>(m_timeModule.secAndNSec()) * 100 + i * 10);
-     // double x = sin(theta) / 2;
-     // double y = cos(theta) / 2;
-     // ELLIPSE_APP_LOG_INFO("theta {}", theta);
-     // m_modelList.translate(modelName.c_str(), Vec2{x, y});
-     // m_modelList.rotate(modelName.c_str(), theta);
-    // }
-
-    // if(m_timeModule.setTimer(m_timer, 0.1f)) {
-    //  for(u64_t i=0;i<m_names.size();i++) {
-    //   m_modelList.translate(m_names[i].c_str(), Vec2{rand(), rand()});
-    //  }
-    // }
+void DemoLayer::onUpdate(float dt) {
+    auto r = static_cast<Ellipse::RenderEntity&>(m_entitySystem.findEntity(1));
+    static_cast<Ellipse::RenderEntity&>(m_entitySystem.findEntity(1)).render();
 }
 
 bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e)

@@ -25,7 +25,12 @@ file(GLOB_RECURSE MATH
     Math/*.hpp
     Math/Random/*.cpp
     Math/Random/*.hpp
-    )
+   )
+
+file(GLOB_RECURSE ENTITY
+    EntitySystem/*.cpp
+    EntitySystem/*.hpp
+   )
 
 file(GLOB_RECURSE EVENTS
     Event/*.cpp
@@ -55,7 +60,9 @@ file(GLOB_RECURSE LOG
     )
 
 add_library(${NAME} STATIC
-            ${CURRENT_DIR} ${CORE} ${ENGINE} ${LOG} ${EVENTS} ${RENDER} ${PLATFORM_GRAPHICS_CONTEXT} ${PLATFORM_WINDOW} ${PLATFORM_RENDER} ${MATH}
+            ${CURRENT_DIR} ${CORE} ${ENGINE} ${LOG} ${EVENTS}
+            ${RENDER} ${PLATFORM_GRAPHICS_CONTEXT} ${PLATFORM_WINDOW}
+            ${PLATFORM_RENDER} ${MATH} ${ENTITY}
            )
 
 add_custom_target(CopyAssets ALL

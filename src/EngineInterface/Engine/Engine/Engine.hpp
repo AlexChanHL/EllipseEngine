@@ -20,6 +20,7 @@ class Engine
     virtual IModule& getModule(const char* name) = 0;
 
     virtual Vector<SharedPtr<IModule>>& modules() = 0;
+    virtual Vector<SharedPtr<ISystem>>& systems() = 0;
 
     static UniquePtr<Engine> createEngine();
 
