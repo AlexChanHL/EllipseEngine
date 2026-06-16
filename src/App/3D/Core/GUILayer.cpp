@@ -4,7 +4,6 @@
 
 GUILayer::GUILayer(Ellipse::Engine& engine)
 : Layer{engine},
-  m_modelList2D{engine},
   m_timeModule{static_cast<Ellipse::TimeModule&>(engine.getModule("TimeModule"))},
   m_renderModule{static_cast<Ellipse::RenderModule&>(engine.getModule("RenderModule"))},
   m_objects{m_renderModule.preDefinedObjects()}

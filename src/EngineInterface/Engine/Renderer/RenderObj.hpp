@@ -322,7 +322,7 @@ class RenderShaderObj
      template<typename T>
      void addUniform(const UniformVariable<T>& t) {
       m_uniformList.addUniform(t);
-      m_uniformList.setUniformLocations(findUniformLocationList(m_uniformList));
+      m_uniformList.setUniformLocation(t.name(), findUniformLocation(t.name()));
      }
 
      UniformList uniformList() {

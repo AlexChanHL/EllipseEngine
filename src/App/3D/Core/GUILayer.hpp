@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ModelList2D.hpp"
-
 #include "Ellipse.hpp"
 
  
@@ -16,7 +14,6 @@ class GUILayer : public Ellipse::Layer
      virtual void onEvent(Ellipse::Event& event) override;
 
     private:
-     ModelList2D m_modelList2D;
      Ellipse::TimeModule& m_timeModule;
      Ellipse::RenderModule& m_renderModule;
      Ellipse::PreDefinedObjects m_objects;

@@ -6,9 +6,10 @@
 namespace Ellipse {
  class RenderComponent : public Component {
     public:
+     RenderComponent() {} 
      RenderComponent(RenderModule& renderModule, RenderObjData& data) 
      : m_renderModule{&renderModule},
-       m_model{new EllipseMath::Mat4{1.0f}} {
+       m_model{createShared<EllipseMath::Mat4>(1.0f)} {
       m_renderObj = renderModule.renderer().createRenderObj(data);
       m_shaderObj = renderModule.renderer().createShaderObj("Assets/Shader/Quad.vert.glsl",
                                                             "Assets/Shader/Quad.frag.glsl");
@@ -26,7 +27,7 @@ namespace Ellipse {
      }
 
      virtual void onInit() override {
-      auto model = UniformVariable<EllipseMath::Mat4>{"model", m_model};
+      auto model = UniformVariable<EllipseMath::Mat4>{"model", m_model.get()};
       m_shaderObj->
        addUniform<EllipseMath::Mat4>(model);
       auto proj = UniformVariable<EllipseMath::Mat4>{"proj", &m_renderModule->proj()};
@@ -40,6 +41,7 @@ namespace Ellipse {
 
      SharedPtr<RenderObj> renderObj() { return m_renderObj; }
      SharedPtr<RenderShaderObj> shaderObj() { return m_shaderObj; }
+     SharedPtr<EllipseMath::Mat4> model() { return m_model; }
  
      void translate(EllipseMath::Vec4 pos) {
       // EllipseMath::Mat4& model = m_shaderObj.findUniform<EllipseMath::Mat4>("Model");
@@ -51,7 +53,7 @@ namespace Ellipse {
      SharedPtr<RenderObj> m_renderObj;
      SharedPtr<RenderShaderObj> m_shaderObj;
      RenderModule* m_renderModule;
-     EllipseMath::Mat4* m_model;
+     SharedPtr<EllipseMath::Mat4> m_model;
  };
 }
 

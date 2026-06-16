@@ -296,86 +296,81 @@ class UniformList
 
     }
 
-    void printUniformList()
-    {
-    for(const auto& uniform : m_boolUniforms)
-    {
-    for(uLong_t i = 0; i < uniform.size(); i++)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
-    }
-    }
+    void printUniformList() {
+     for(const auto& uniform : m_boolUniforms) {
+      for(uLong_t i = 0; i < uniform.size(); i++) {
+       ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
+      }
+     }
 
-    for(const auto& uniform : m_intUniforms)
-    {
-    for(uLong_t i = 0; i < uniform.size(); i++)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
-    }
-    }
+     for(const auto& uniform : m_intUniforms)
+     {
+     for(uLong_t i = 0; i < uniform.size(); i++)
+     {
+     ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
+     }
+     }
 
 
-    for(const auto& uniform : m_floatUniforms)
-    {
-    for(uLong_t i = 0; i < uniform.size(); i++)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
-    }
-    }
+     for(const auto& uniform : m_floatUniforms)
+     {
+     for(uLong_t i = 0; i < uniform.size(); i++)
+     {
+     ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
+     }
+     }
 
-    for(const auto& uniform : m_unsignedIntUniforms)
-    {
-    for(uLong_t i = 0; i < uniform.size(); i++)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
-    }
-    }
+     for(const auto& uniform : m_unsignedIntUniforms)
+     {
+     for(uLong_t i = 0; i < uniform.size(); i++)
+     {
+     ELLIPSE_ENGINE_LOG_INFO("Uniform value: {}", uniform.uniformAt(i));
+     }
+     }
 
-    for(const auto& uniform : m_vec2Uniforms)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {} {}",
-                           uniform.uniformAt(0).x,
-                           uniform.uniformAt(0).y
-                           );
-    }
+     for(const auto& uniform : m_vec2Uniforms)
+     {
+     ELLIPSE_ENGINE_LOG_INFO("Uniform value: {} {}",
+                            uniform.uniformAt(0).x,
+                            uniform.uniformAt(0).y
+                            );
+     }
 
-    for(const auto& uniform : m_vec3Uniforms)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {} {} {}",
-                           uniform.uniformAt(0).x,
-                           uniform.uniformAt(0).y,
-                           uniform.uniformAt(0).z
-                           );
-    }
+     for(const auto& uniform : m_vec3Uniforms)
+     {
+     ELLIPSE_ENGINE_LOG_INFO("Uniform value: {} {} {}",
+                            uniform.uniformAt(0).x,
+                            uniform.uniformAt(0).y,
+                            uniform.uniformAt(0).z
+                            );
+     }
 
-    for(const auto& uniform : m_vec4Uniforms)
-    {
-    ELLIPSE_ENGINE_LOG_INFO("Uniform value: {} {} {} {}",
-                           uniform.uniformAt(0).x,
-                           uniform.uniformAt(0).y,
-                           uniform.uniformAt(0).z,
-                           uniform.uniformAt(0).w
-                           );
-    }
+     for(const auto& uniform : m_vec4Uniforms)
+     {
+     ELLIPSE_ENGINE_LOG_INFO("Uniform value: {} {} {} {}",
+                            uniform.uniformAt(0).x,
+                            uniform.uniformAt(0).y,
+                            uniform.uniformAt(0).z,
+                            uniform.uniformAt(0).w
+                            );
+     }
 
-    for(const auto& uniform : m_mat4Uniforms)
-    {
-    // ELLIPSE_ENGINE_LOG_INFO("Uniform name: {}", uniform.name());
-    std::cout << "Uniform name: " << uniform.name() << '\n';
-    uniform.printUniforms();
-    }
+     for(const auto& uniform : m_mat4Uniforms) {
+      // ELLIPSE_ENGINE_LOG_INFO("Uniform name: {}", uniform.name());
+      std::cout << "Uniform name: " << uniform.name() << '\n';
+      uniform.printUniforms();
+     }
 
     }
 
-    void setUniformLocations(Map<const char*, i32_t> uniformLocations)
-    {
-    m_uniformLocations = uniformLocations;
+    void setUniformLocations(Map<const char*, i32_t> uniformLocations) {
+     m_uniformLocations = uniformLocations;
+    }
+    void setUniformLocation(const char* name, i32_t loc) {
+     m_uniformLocations[name] = loc;
     }
 
-    Map<const char*, i32_t> uniformLocations() const
-    {
-    return m_uniformLocations;
-    }
+    Map<const char*, i32_t> uniformLocations() const { return m_uniformLocations; }
 
 
    private:

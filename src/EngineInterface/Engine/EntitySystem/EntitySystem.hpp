@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/System.hpp"
+#include "Math/Random/Random.hpp"
 #include "Base.hpp"
 
 
@@ -23,7 +24,7 @@ class Component {
 // [ Derive entities form this class ]
 class Entity {
     public:
-     Entity() {
+     Entity() : m_id{-1} {
 
      }
      virtual ~Entity() {
@@ -31,7 +32,8 @@ class Entity {
      }
 
      Entity(const Entity& e) 
-     : m_components{e.components()} {
+     : m_components{e.components()}, 
+       m_id{e.id()} {
      }
 
      void onInit() {
@@ -81,6 +83,12 @@ class Entity {
 
      template<typename T>
      T& findComponent() {
+      if(m_components.find(T::name()) == m_components.end()) {
+       std::cout << "Not found in components\n" << "Name: " << T::name() << '\n';
+       auto e = new T();
+       return *e;
+      }
+      
       return static_cast<T&>(*m_components[T::name()]);
      }
 
@@ -92,6 +100,8 @@ class Entity {
      uint64_t componentAmount() {
       return m_components.size();
      }
+     i32_t& id() { return m_id; }
+     i32_t id() const { return m_id; }
 
      std::map<String, std::shared_ptr<Component>> components() const { return m_components; }
 
@@ -100,6 +110,7 @@ class Entity {
 
     private:
      std::map<String, std::shared_ptr<Component>> m_components;
+     i32_t m_id;
 };
 
 class EntitySystem : public ISystem {
@@ -130,12 +141,39 @@ class EntitySystem : public ISystem {
      
      template<typename T>
      void addEntity(Entity& entity) {
-      i32_t id = 1;
+      // [ 10000 Max ]
+      i32_t id = EllipseMath::randIntDist(0, 10000);
+      while(m_entities.find(id) != m_entities.end()) {
+       id = EllipseMath::randIntDist(0, 10000);
+      }
+      entity.id() = id;
       m_entities[id] = createShared<T>(static_cast<T&>(entity));
      }
 
-     Entity& findEntity(i32_t id) {
-      return *m_entities[id];
+     // [ Will leak memory but not crash ]
+     template<typename T>
+     T& findEntity(i32_t id) {
+      if(m_entities.find(id) == m_entities.end()) {
+       std::cout << "Not found in entities\n" << "ID: " << id << '\n';
+       auto e = new T();
+       return *e;
+      }
+
+      return static_cast<T&>(*m_entities[id]);
+     }
+
+     SharedPtr<Entity> findEntityWithIdx(i32_t idx) {
+      auto e = SharedPtr<Ellipse::Entity>();
+      auto count = 0;
+      for(auto [k, v] : m_entities) {
+       if(idx == count) {
+        e = v;
+        break;
+       }
+       count++;
+      }
+
+      return e;
      }
 
      void removeEntity(i32_t id) {
@@ -149,7 +187,7 @@ class EntitySystem : public ISystem {
 	   std::unordered_map<i32_t, SharedPtr<Entity>> entities() {
       return m_entities;
      }
-
+  
      static SharedPtr<EntitySystem> createEntitySystem() {
       return createShared<EntitySystem>(); 
      }

@@ -28,32 +28,16 @@ class RenderModule3D : public RenderModule
      virtual void setCameraRight(float amount) override;
      virtual void setCameraLeft(float amount) override;
 
-     virtual void setViewport(Ellipse::Viewspace viewspace) override;
-     virtual void setClearColor(Vec4 col) override;
+     virtual void setClearColor(EllipseMath::Vec4 col) override;
 
-     virtual Renderer& renderer() override
-     {
-          return m_renderer;
-     } 
+     virtual Renderer& renderer() override { return m_renderer; } 
 
-     virtual Mat4& proj() override
-     {
-         return m_proj;
-     }
-     virtual Mat4& view() override
-     {
-         return m_view;
-     }
+     virtual EllipseMath::Mat4& proj() override { return m_proj; }
+     virtual EllipseMath::Mat4& view() override { return m_view; }
 
-     virtual Camera& camera() override
-     {
-         return m_camera;
-     }
+     virtual Camera& camera() override { return m_camera; }
 
-     virtual void configureCameras() override
-     {
-
-     }
+     virtual void configureCameras() override { }
 
     private:
      Renderer& m_renderer;

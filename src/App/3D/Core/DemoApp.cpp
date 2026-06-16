@@ -36,6 +36,7 @@ Ellipse::ApplicationConfig::ApplicationConfig()
    m_systems.push_back(Pair<String, bool>{"Render", true});
    m_systems.push_back(Pair<String, bool>{"Model", true});
    m_systems.push_back(Pair<String, bool>{"RenderModule", true});
+   m_systems.push_back(Pair<String, bool>{"Entity", true});
    m_systems.push_back(Pair<String, bool>{"FontModule", true});
 }
 

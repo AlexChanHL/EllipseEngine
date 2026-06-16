@@ -7,6 +7,7 @@
 namespace Ellipse {
  class RenderEntity : public Entity {
   public:
+   RenderEntity() {}; 
    RenderEntity(Engine& engine) 
    : m_renderModule{&static_cast<RenderModule&>(engine.getModule("RenderModule"))} {
    }
@@ -22,7 +23,7 @@ namespace Ellipse {
    }
 
    virtual void initOverride() override {
-    auto rComp = Ellipse::RenderComponent{*m_renderModule, m_renderModule->preDefinedObjects()["Quad"]};
+    auto rComp = Ellipse::RenderComponent{*m_renderModule, m_renderModule->preDefinedObjects()[m_objectName]};
     addComponent<Ellipse::RenderComponent>(rComp);
    }
 
@@ -33,21 +34,22 @@ namespace Ellipse {
  
    void render() {
     auto rComp = findComponent<RenderComponent>();
-    if(m_renderModule == nullptr) {
-     std::cout << m_renderModule << " null\n";
+    if(rComp.renderObj().get() == nullptr) {
+     return;
     }
-    // if(rComp.renderObj().get() != nullptr) {
-    //  std::cout << "null\n";
-    // }
+    if(rComp.shaderObj().get() == nullptr) {
+     return;
+    }
     
-    // std::cout << "Mesh: " << rComp.renderObj()->meshes()[0]->positions().size() << '\n';
     m_renderModule->render(rComp.renderObj().get(), rComp.shaderObj().get(), rComp.shaderObj()->uniformList());
    }
  
    RenderModule* renderModule() const { return m_renderModule; }
+   String& objectName() { return m_objectName; }
    
   private:
    RenderModule* m_renderModule;
+   String m_objectName;
  };
 
 }

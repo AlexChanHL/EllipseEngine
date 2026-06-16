@@ -26,15 +26,8 @@ void DemoLayer::init() {
 
     auto quad = Ellipse::RenderEntity(m_engine);
     quad.onInit();
-    // std::cout << quad.renderModule() << '\n';
     m_entitySystem.addEntity<Ellipse::RenderEntity>(quad);
-
-    auto r = static_cast<Ellipse::RenderEntity&>(m_entitySystem.findEntity(1));
-    // std::cout << r.componentAmount() << "\n";
-
-    // auto rComp = quad.findComponent<Ellipse::RenderComponent>();
-    // Ellipse::EllipseMath::translate(rComp.model(), Ellipse::EllipseMath::Vec2(0, 0));
-  
+ 
     // m_renderModule.render(m_entitySystem.getFromID(id, "Render"));
   
 
@@ -95,8 +88,13 @@ void DemoLayer::onEvent(Ellipse::Event& e)
 }
 
 void DemoLayer::onUpdate(float dt) {
-    auto r = static_cast<Ellipse::RenderEntity&>(m_entitySystem.findEntity(1));
-    static_cast<Ellipse::RenderEntity&>(m_entitySystem.findEntity(1)).render();
+    auto time = double(m_timeModule.secAndNSec());
+    EllipseMath::Vec3 pos = EllipseMath::Vec3(cos(time), sin(time), 0.0f);
+    auto r =  m_entitySystem.findEntity<Ellipse::RenderEntity>(1);
+    Ellipse::RenderComponent& rComp = r.findComponent<Ellipse::RenderComponent>();
+    *rComp.model() = Ellipse::EllipseMath::translate(EllipseMath::Mat4(1.0f), pos);
+
+    m_entitySystem.findEntity<Ellipse::RenderEntity>(1).render();
 }
 
 bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e)

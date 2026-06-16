@@ -210,7 +210,6 @@ void OpenGLRenderPlugin::setUniforms(UniformList uniforms)
    {
    i32_t loc = uniforms.uniformLocations()[uniform.name()];
    glUniformMatrix4fv(loc, 1, GL_FALSE, &(uniform.uniformAt(0)[0][0]));
-   std::cout << loc << '\n';
    }
 
    for(UniformVariable<bool>& uniform : uniforms.getBoolUniforms())

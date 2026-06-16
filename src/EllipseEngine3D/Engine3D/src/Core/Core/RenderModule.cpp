@@ -12,7 +12,7 @@ RenderModule3D::RenderModule3D(Engine& engine)
   m_objectIDGenerator{i32_t(pow(10,3))}
 {
    setName("RenderModule");
-   setClearColor(Vec4{1.0f, 1.0f, 0.0f, 1.0f});
+   setClearColor(EllipseMath::Vec4{1.0f, 1.0f, 0.0f, 1.0f});
 
    Ellipse::RenderObjData cubeData;
    cubeData.setIndicies(Vector<u32_t>{0, 2, 3,
@@ -128,7 +128,6 @@ RenderModule3D::RenderModule3D(Engine& engine)
                                       }
                                      );
 
-
    Ellipse::RenderObjData quadData;
    quadData.setIndicies(Vector<u32_t>{0, 1, 2,
                                       1, 2, 3 
@@ -152,18 +151,19 @@ RenderModule3D::RenderModule3D(Engine& engine)
                                        1.0f, 1.0f
                                       }
                         );
+   quadData.textureData() = loadTexture("Assets/Images/Solar.jpeg", false);
 
    m_objects["Cube"] = cubeData;
    m_objects["Quad"] = quadData;
 
-   m_view = Mat4(1.0f);
+   m_view = EllipseMath::Mat4(1.0f);
 
    m_view = EllipseMath::lookAt(m_camera.position(),
                                 m_camera.position() + m_camera.front(),
                                 m_camera.upDirection()
                                 );
 
-   m_proj = Mat4{1.0f};
+   m_proj = EllipseMath::Mat4{1.0f};
 
    i32_t winWidth = m_renderer.getWindowFrameSize().first;
    i32_t winHeight = m_renderer.getWindowFrameSize().second;
@@ -182,13 +182,10 @@ RenderModule3D::~RenderModule3D()
 
 }
 
-void RenderModule3D::init()
-{
-   m_renderer.plugin()->enable(0);
+void RenderModule3D::init() { m_renderer.plugin()->enable(0);
 }
 
-void RenderModule3D::onUpdate()
-{
+void RenderModule3D::onUpdate() {
     m_view = EllipseMath::lookAt(m_camera.position(),
                                  m_camera.front() + m_camera.position(),
                                  m_camera.upDirection()
@@ -199,8 +196,7 @@ void RenderModule3D::setViewport(i32_t posX, i32_t posY, i32_t width, i32_t heig
  m_renderer.setViewport(posX, posY, width, height);
 }
 
-void RenderModule3D::setViewCamera(Camera camera)
-{
+void RenderModule3D::setViewCamera(Camera camera) {
     m_view = EllipseMath::lookAt(camera.position(),
                                  camera.front() + camera.position(),
                                  camera.upDirection()
@@ -228,18 +224,9 @@ void RenderModule3D::setCameraLeft(float amount)
     updateView();
 }
 
-void RenderModule3D::setClearColor(Vec4 col)
+void RenderModule3D::setClearColor(EllipseMath::Vec4 col)
 {
    m_renderer.setClearColor(col);
-}
-
-void RenderModule3D::setViewport(Viewspace viewspace)
-{
-   m_renderer.setViewport(static_cast<i32_t>(viewspace.m_posX),
-                          static_cast<i32_t>(viewspace.m_posY),
-                          static_cast<i32_t>(viewspace.m_width),
-                          static_cast<i32_t>(viewspace.m_height)
-                         );
 }
 
 void RenderModule3D::render(RenderObj* renderObj,

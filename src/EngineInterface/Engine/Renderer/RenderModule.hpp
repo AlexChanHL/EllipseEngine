@@ -184,7 +184,7 @@ class RenderModule : public IModule
     virtual void setCameraBackward(float amount) = 0;
     virtual void setCameraRight(float amount) = 0;
     virtual void setCameraLeft(float amount) = 0;
-    virtual void updateCamera(Pair<float, float> offsets) {
+    virtual void mouseUpdate(Pair<float, float> offsets) {
      camera().registerMouseUpdate(offsets);
      updateView();
     }
