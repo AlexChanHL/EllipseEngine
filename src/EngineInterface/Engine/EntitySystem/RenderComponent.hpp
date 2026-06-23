@@ -9,17 +9,18 @@ namespace Ellipse {
      RenderComponent() {} 
      RenderComponent(RenderModule& renderModule, RenderObjData& data) 
      : m_renderModule{&renderModule},
-       m_model{createShared<EllipseMath::Mat4>(1.0f)} {
-      m_renderObj = renderModule.renderer().createRenderObj(data);
-      m_shaderObj = renderModule.renderer().createShaderObj("Assets/Shader/Quad.vert.glsl",
-                                                            "Assets/Shader/Quad.frag.glsl");
+       m_modelData{createShared<ModelData3D>()} {
+      m_data = data;
+      m_renderObj = m_renderModule->renderer().createRenderObj(data);
+      m_shaderObj = m_renderModule->renderer().createShaderObj("Assets/Shader/Quad.vert.glsl",
+                                                                  "Assets/Shader/Quad.frag.glsl");
      };
      ~RenderComponent() {
  
      };
   
      virtual void onUpdate() override {
- 
+
      }
  
      static String name() {
@@ -27,7 +28,7 @@ namespace Ellipse {
      }
 
      virtual void onInit() override {
-      auto model = UniformVariable<EllipseMath::Mat4>{"model", m_model.get()};
+      auto model = UniformVariable<EllipseMath::Mat4>{"model", m_modelData->model().get()};
       m_shaderObj->
        addUniform<EllipseMath::Mat4>(model);
       auto proj = UniformVariable<EllipseMath::Mat4>{"proj", &m_renderModule->proj()};
@@ -38,22 +39,17 @@ namespace Ellipse {
        addUniform<EllipseMath::Mat4>(view);
 
      }
-
      SharedPtr<RenderObj> renderObj() { return m_renderObj; }
      SharedPtr<RenderShaderObj> shaderObj() { return m_shaderObj; }
-     SharedPtr<EllipseMath::Mat4> model() { return m_model; }
- 
-     void translate(EllipseMath::Vec4 pos) {
-      // EllipseMath::Mat4& model = m_shaderObj.findUniform<EllipseMath::Mat4>("Model");
-      // EllipseMath::translate(model, pos);
-      // m_renderObj;
-     }
-      
-    private:
+     RenderObjData& data() { return m_data; }
+     SharedPtr<ModelData> model() { return m_modelData; }
+
+    protected:
      SharedPtr<RenderObj> m_renderObj;
      SharedPtr<RenderShaderObj> m_shaderObj;
      RenderModule* m_renderModule;
-     SharedPtr<EllipseMath::Mat4> m_model;
+     RenderObjData m_data;
+     SharedPtr<ModelData> m_modelData;
  };
 }
 

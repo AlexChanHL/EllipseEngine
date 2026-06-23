@@ -6,33 +6,32 @@
 
 #include <glad/glad.h>
 
-namespace Ellipse
-{
 
-class OpenGLRenderPlugin final : public RenderPlugin
-{
-   public:
-    virtual void render(const RenderObj& rObj) override;
-    virtual void enable(u64_t glUint) override;
-    virtual void clearColorBuffer() override;
-    virtual void clearDepthBuffer() override;
-    virtual void setClearColor(const glm::vec4& col) override;
-    virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
-    virtual SharedPtr<RenderObj> createRenderObj(RenderObjData modelData) override;
-    virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader,
-                                                       String fShader) override;
-
-    virtual void setUniforms(UniformList uniforms) override;
-    virtual void bindTextures(const RenderObj& renderObj) override;
-
-    void renderGL(const OpenGLRenderObj& rObj);
-    void renderGLMesh(const OpenGLMesh& mesh);
-    
-
+namespace Ellipse {
+ class OpenGLRenderPlugin final : public RenderPlugin {
+    public:
+     virtual void render(const RenderObj& rObj) override;
+     virtual void enable(u64_t cap) override;
+     virtual void disable(u64_t cap) override;
+     virtual void clearColorBuffer() override;
+      virtual void clearDepthBuffer() override;
+     virtual void setClearColor(const glm::vec4& col) override;
+     virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
+     virtual SharedPtr<RenderObj> createRenderObj(RenderObjData modelData) override;
+     virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader,
+                                                        String fShader) override;
+ 
+     virtual void setUniforms(UniformList uniforms) override;
+     virtual void bindTextures(const RenderObj& renderObj) override;
+ 
+     void renderGL(const OpenGLRenderObj& rObj);
+     void renderGLMesh(const OpenGLMesh& mesh);
+     
+    private:
+     u32_t convertToGLCap(u64_t cap);
+     int findUniformLocation(const char* name, const ForwardList<UniformLoc>& locs);
+ 
    private:
-    int findUniformLocation(const char* name, const ForwardList<UniformLoc>& locs);
-
-  private:
-};
-
+ };
 }    //   namespace Ellipse
+

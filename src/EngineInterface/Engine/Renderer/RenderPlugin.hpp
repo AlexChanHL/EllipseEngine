@@ -8,34 +8,37 @@
 // Use own math library instead
 #include <glm/glm.hpp>
 
-namespace Ellipse
-{
+#define DEPTH_TEST Capability::depthTest
 
-enum class GraphicsSpec : uint32_t
-{
-    OpenGL
-};
+namespace Ellipse {
+ enum class GraphicsSpec : uint32_t {
+     OpenGL
+ };
 
-class RenderPlugin
-{
-   public:
-    RenderPlugin() = default;
-    virtual ~RenderPlugin() = default;
-    virtual void render(const RenderObj& rObj) = 0;
-    virtual void enable(u64_t glUint) = 0;
-    virtual void clearColorBuffer() = 0;
-    virtual void clearDepthBuffer() = 0;
-    virtual void setClearColor(const glm::vec4& col) = 0;
-    virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) = 0;
-    virtual SharedPtr<RenderObj> createRenderObj(RenderObjData verts) = 0;
-    virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader, String fShader) = 0;
-    virtual void setUniforms(UniformList uniforms) = 0;
-    virtual void bindTextures(const RenderObj& renderObj) = 0;
+ enum Capability : u64_t {
+  depthTest = 0x0001u
+ }; 
 
-    static UniquePtr<RenderPlugin> createRenderPlugin(GraphicsSpec spec);
-
-   private:
-
-};
-
+ class RenderPlugin {
+    public:
+     RenderPlugin() = default;
+     virtual ~RenderPlugin() = default;
+     virtual void render(const RenderObj& rObj) = 0;
+     virtual void enable(u64_t glUint) = 0;
+     virtual void disable(u64_t glUint) = 0;
+     virtual void clearColorBuffer() = 0;
+     virtual void clearDepthBuffer() = 0;
+     virtual void setClearColor(const glm::vec4& col) = 0;
+     virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) = 0;
+     virtual SharedPtr<RenderObj> createRenderObj(RenderObjData verts) = 0;
+     virtual SharedPtr<RenderShaderObj> createShaderObj(String vShader, String fShader) = 0;
+     virtual void setUniforms(UniformList uniforms) = 0;
+     virtual void bindTextures(const RenderObj& renderObj) = 0;
+ 
+     static UniquePtr<RenderPlugin> createRenderPlugin(GraphicsSpec spec);
+ 
+    private:
+ 
+ };
 }    // namespace Ellipse
+

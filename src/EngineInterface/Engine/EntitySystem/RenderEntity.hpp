@@ -32,7 +32,7 @@ namespace Ellipse {
     rComp.shaderObj()->uniformList().printUniformList();
    }
  
-   void render() {
+   virtual void render() {
     auto rComp = findComponent<RenderComponent>();
     if(rComp.renderObj().get() == nullptr) {
      return;
@@ -40,14 +40,14 @@ namespace Ellipse {
     if(rComp.shaderObj().get() == nullptr) {
      return;
     }
-    
+
     m_renderModule->render(rComp.renderObj().get(), rComp.shaderObj().get(), rComp.shaderObj()->uniformList());
    }
  
    RenderModule* renderModule() const { return m_renderModule; }
    String& objectName() { return m_objectName; }
    
-  private:
+  protected:
    RenderModule* m_renderModule;
    String m_objectName;
  };

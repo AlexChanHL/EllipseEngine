@@ -1,5 +1,6 @@
 
 #include "Ellipse.hpp"
+#include "Ellipse3D.hpp"
 
 #include "DemoLayer.hpp"
 
@@ -24,10 +25,10 @@ void DemoLayer::init() {
    Ellipse::RenderModule& renderer = static_cast<Ellipse::RenderModule&>(m_engine.getModule("RenderModule"));
    Pair<i32_t, i32_t> size = Ellipse::Application::get().getWindow().getWindowSize();
 
-   auto quad = Ellipse::RenderEntity(m_engine);
+   auto quad = Ellipse::RenderEntity2D(m_engine);
    quad.objectName() = "Quad";
    quad.onInit();
-   m_entitySystem.addEntity<Ellipse::RenderEntity>(quad);
+   m_entitySystem.addEntity<Ellipse::RenderEntity2D>(quad);
 
    auto cube = Ellipse::RenderEntity(m_engine);
    cube.objectName() = "Cube";
@@ -66,18 +67,21 @@ void DemoLayer::onEvent(Ellipse::Event& e) {
 void DemoLayer::onUpdate(float dt)
 {
     auto time = double(m_timeModule.secAndNSec());
-    EllipseMath::Vec3 pos = EllipseMath::Vec3(cos(time), sin(time), 0.0f);
+    // EllipseMath::Vec3 pos = EllipseMath::Vec3(cos(time), sin(time), 0.0f);
+    EllipseMath::Vec3 pos = EllipseMath::Vec3(0.0f, 0.1f, 0.0f);
 
     auto e = SharedPtr<Ellipse::Entity>();
     e = m_entitySystem.findEntityWithIdx(0);
     if(e->id() != -1) {
-     m_entitySystem.findEntity<Ellipse::RenderEntity>(e->id()).render();
+     m_entitySystem.findEntity<Ellipse::RenderEntity2D>(e->id()).render();
     }
 
     e = m_entitySystem.findEntityWithIdx(1); 
     if(e->id() != -1) {
      Ellipse::RenderComponent& rComp = e->findComponent<Ellipse::RenderComponent>();
-     *rComp.model() = Ellipse::EllipseMath::translate(EllipseMath::Mat4(1.0f), pos);
+     rComp.model()->translate(pos);
+     // rComp.model()->rotate(float(time));
+     // rComp.model()->scale(EllipseMath::Vec3(cos(time), cos(time), 0.f));
 
      m_entitySystem.findEntity<Ellipse::RenderEntity>(e->id()).render();
     }

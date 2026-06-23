@@ -73,8 +73,7 @@ void RenderModule2D::onUpdate()
 void RenderModule2D::render(RenderObj* renderObj,
                             RenderShaderObj* shaderObj,
                             const UniformList& uniformList
-                           )
-{
+                           ) {
     m_renderer.render(*renderObj, *shaderObj, uniformList);
 }
 

@@ -208,13 +208,9 @@ class OpenGLMesh : public RenderMesh
 struct OpenGLRenderObj : public RenderObj
 {
    public:
-    OpenGLRenderObj()
-    {
-
+    OpenGLRenderObj() {
     }
-    ~OpenGLRenderObj()
-    {
-
+    ~OpenGLRenderObj() {
     }
 
     virtual void initializeFromResources(RenderObjData& data) override {
@@ -230,14 +226,12 @@ struct OpenGLRenderObj : public RenderObj
     }
 
 
-    virtual Vector<UniquePtr<RenderMesh>> meshes() override
-    {
-        return createVectorFromDerived<RenderMesh, OpenGLMesh>(m_meshes);
+    virtual Vector<UniquePtr<RenderMesh>> meshes() override {
+     return createVectorFromDerived<RenderMesh, OpenGLMesh>(m_meshes);
     }
 
-    virtual Vector<UniquePtr<RenderMesh>> meshes() const override
-    {
-        return createVectorFromDerived<RenderMesh, OpenGLMesh>(m_meshes);
+    virtual Vector<UniquePtr<RenderMesh>> meshes() const override {
+     return createVectorFromDerived<RenderMesh, OpenGLMesh>(m_meshes);
     }
 
    public:

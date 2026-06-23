@@ -20,8 +20,6 @@ class RenderModule2D : public RenderModule
                          const UniformList& uniformaList
                         );
      virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
-
-     // virtual void render(RenderCompnent);
  
      virtual void setViewCamera(Camera camera) override;
 

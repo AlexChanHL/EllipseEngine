@@ -6,46 +6,41 @@
 // namespace Ellipse3D
 // {
 
-namespace Ellipse
-{
-
-class RenderModule3D : public RenderModule
-{
-    public:
-     RenderModule3D(Engine& engine); ~RenderModule3D();
-
-     virtual void init() override;
-     virtual void onUpdate() override;
-     
-     void render(RenderObj* renderObj, RenderShaderObj* shaderObj, const UniformList& uniformList) override;
-
-     virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
-
-     virtual void setViewCamera(Ellipse::Camera camera) override;
-
-     virtual void setCameraFront(float amount) override;
-     virtual void setCameraBackward(float amount) override;
-     virtual void setCameraRight(float amount) override;
-     virtual void setCameraLeft(float amount) override;
-
-     virtual void setClearColor(EllipseMath::Vec4 col) override;
-
-     virtual Renderer& renderer() override { return m_renderer; } 
-
-     virtual EllipseMath::Mat4& proj() override { return m_proj; }
-     virtual EllipseMath::Mat4& view() override { return m_view; }
-
-     virtual Camera& camera() override { return m_camera; }
-
-     virtual void configureCameras() override { }
-
-    private:
-     Renderer& m_renderer;
-     EllipseMath::RandomRemoveLast m_objectIDGenerator;
-     Camera m_camera;
-};
-
-
+namespace Ellipse {
+ class RenderModule3D : public RenderModule {
+     public:
+      RenderModule3D(Engine& engine); ~RenderModule3D();
+ 
+      virtual void init() override;
+      virtual void onUpdate() override;
+      virtual void render(RenderObj* renderObj, RenderShaderObj* shaderObj, const UniformList& uniformList) override;
+      void render2D(RenderObj* renderObj,
+                    RenderShaderObj* shaderObj,
+                    const UniformList& uniformList,
+                    EllipseMath::Vec3 translate,
+                    EllipseMath::Vec3 rotateAxis,
+                    float rotateAngle,
+                    EllipseMath::Vec3 scale
+                   );
+      virtual void setViewport(i32_t posX, i32_t posY, i32_t width, i32_t height) override;
+      virtual void setViewCamera(Ellipse::Camera camera) override;
+      virtual void setCameraFront(float amount) override;
+      virtual void setCameraBackward(float amount) override;
+      virtual void setCameraRight(float amount) override;
+      virtual void setCameraLeft(float amount) override;
+      virtual void setClearColor(EllipseMath::Vec4 col) override;
+      virtual Renderer& renderer() override { return m_renderer; } 
+      virtual EllipseMath::Mat4& proj() override { return m_proj; }
+      virtual EllipseMath::Mat4& view() override { return m_view; }
+      virtual Camera& camera() override { return m_camera; }
+      virtual void configureCameras() override { }
+ 
+     private:
+      Renderer& m_renderer;
+      EllipseMath::RandomRemoveLast m_objectIDGenerator;
+      Camera m_camera;
+ };
+ 
 }       // namespace Ellipse
 
 // }       // namespace Ellipse3D

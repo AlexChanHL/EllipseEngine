@@ -50,39 +50,32 @@ class UniformVariable
     return m_name;
     }
 
-    T uniformAt(unsigned long idx) const
-    {
-    return *(m_uniformValues.get()[idx]);
+    T uniformAt(unsigned long idx) const {
+     return *(m_uniformValues.get()[idx]);
     }
 
-    T* uniformPtr(uLong_t idx) const
-    {
-    return m_uniformValues.get()[idx];
+    T* uniformPtr(uLong_t idx) const {
+     return m_uniformValues.get()[idx];
     }
 
-    T** getUniformData()
-    {
-    return m_uniformValues.get();
+    T** getUniformData() {
+     return m_uniformValues.get();
     }
 
-    uLong_t size() const
-    {
-    return m_size;
+    uLong_t size() const {
+     return m_size;
     }
 
 
-    void createUniformLink(unsigned long idx, T* val)
-    {
-    m_uniformValues.get()[idx] = val;
+    void createUniformLink(unsigned long idx, T* val) {
+     m_uniformValues.get()[idx] = val;
     }
 
-    void printUniforms() const
-    {
-    ELLIPSE_ENGINE_LOG_INFO("Uniform name: {}", m_name);
-    for(unsigned int i = 0; i < m_size;i++)
-    {
-    std::cout << *(m_uniformValues.get()[i]) << '\n';;
-    }
+    void printUniforms() const {
+     ELLIPSE_ENGINE_LOG_INFO("Uniform name: {}", m_name);
+     for(unsigned int i = 0; i < m_size;i++) {
+      std::cout << *(m_uniformValues.get()[i]) << '\n';;
+     }
     }
 
    private:
@@ -177,35 +170,37 @@ class UniformList
 
     ELLIPSE_ENGINE_LOG_WARN("Couldn't find uniform when setting");
     }
-    void setUniform(const UniformVariable<u32_t>& uniform)
-    {
-    for(UniformVariable<uint32_t>& a : m_unsignedIntUniforms)
-    {
-    if(strcmp(a.name(), uniform.name()) == 0)
-    {
-    for(unsigned long i = 0; i < uniform.size(); i++)
-    {
-    uint32_t** aPtr = a.getUniformData();
-    uint32_t* uPtr = uniform.uniformPtr(i);
-    aPtr[i] = uPtr;
+    void setUniform(const UniformVariable<u32_t>& uniform) {
+     for(UniformVariable<uint32_t>& a : m_unsignedIntUniforms) {
+      if(strcmp(a.name(), uniform.name()) == 0) {
+       for(unsigned long i = 0; i < uniform.size(); i++) {
+        uint32_t** aPtr = a.getUniformData();
+        uint32_t* uPtr = uniform.uniformPtr(i);
+        aPtr[i] = uPtr;
+       }
+       return;
+      }
+     }
+    }
+    void setUniform(const UniformVariable<EllipseMath::Mat4>& uniform) {
+     for(UniformVariable<EllipseMath::Mat4>& a : m_mat4Uniforms) {
+      if(strcmp(a.name(), uniform.name()) == 0) {
+       EllipseMath::Mat4** aPtr = a.getUniformData();
+       EllipseMath::Mat4* uPtr = uniform.uniformPtr(0);
+       aPtr[0] = uPtr;
+       return;
+      }
+     }
+    }
 
-    }
-    return;
-    }
-    }
-    }
-    void setUniform(const UniformVariable<EllipseMath::Mat4>& uniform)
-    {
-    for(UniformVariable<EllipseMath::Mat4>& a : m_mat4Uniforms)
-    {
-    if(strcmp(a.name(), uniform.name()) == 0)
-    {
-    EllipseMath::Mat4** aPtr = a.getUniformData();
-    EllipseMath::Mat4* uPtr = uniform.uniformPtr(0);
-    aPtr[0] = uPtr;
-    return;
-    }
-    }
+    void setUniform(const char* name, EllipseMath::Mat4 mat) {
+     for(UniformVariable<EllipseMath::Mat4>& a : m_mat4Uniforms) {
+      if(strcmp(a.name(), name) == 0) {
+       EllipseMath::Mat4** aPtr = a.getUniformData();
+       *(aPtr[0]) = mat;
+       return;
+      }
+     }
     }
 
     Vector<UniformVariable<bool>> getBoolUniforms()
