@@ -5,23 +5,19 @@
 #include "Ellipse.hpp"
 
 
-ForwardList<SharedPtr<Ellipse::Layer>> Ellipse::Application::createUserProcesses()
-{
+ForwardList<SharedPtr<Ellipse::Layer>> Ellipse::Application::createUserProcesses() {
    ForwardList<SharedPtr<Ellipse::Layer>> layers;
 
    SharedPtr<GUILayer> guiLayer = createShared<GUILayer>(Ellipse::Application::get().getEngine());
    layers.push_front(std::move(guiLayer));
-
    SharedPtr<DemoLayer> demoLayer = createShared<DemoLayer>(Ellipse::Application::get().getEngine());
    layers.push_front(std::move(demoLayer));
-
    layers.reverse();
 
    return layers;
 }
 
-Ellipse::ApplicationConfig::ApplicationConfig()
-{
+Ellipse::ApplicationConfig::ApplicationConfig() {
    m_windowSettings.m_media = WindowLibrary::SDLWindow;
    m_windowSettings.m_graphics = GraphicsLibrary::OpenGL;
 

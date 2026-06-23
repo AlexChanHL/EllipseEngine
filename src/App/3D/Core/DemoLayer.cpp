@@ -67,8 +67,8 @@ void DemoLayer::onEvent(Ellipse::Event& e) {
 void DemoLayer::onUpdate(float dt)
 {
     auto time = double(m_timeModule.secAndNSec());
-    // EllipseMath::Vec3 pos = EllipseMath::Vec3(cos(time), sin(time), 0.0f);
-    EllipseMath::Vec3 pos = EllipseMath::Vec3(0.0f, 0.1f, 0.0f);
+    EllipseMath::Vec3 pos = EllipseMath::Vec3(cos(time), sin(time), 0.0f);
+    // EllipseMath::Vec3 pos = EllipseMath::Vec3(0.0f, 0.1f, 0.0f);
 
     auto e = SharedPtr<Ellipse::Entity>();
     e = m_entitySystem.findEntityWithIdx(0);
@@ -80,7 +80,7 @@ void DemoLayer::onUpdate(float dt)
     if(e->id() != -1) {
      Ellipse::RenderComponent& rComp = e->findComponent<Ellipse::RenderComponent>();
      rComp.model()->translate(pos);
-     // rComp.model()->rotate(float(time));
+     rComp.model()->rotate(float(time));
      // rComp.model()->scale(EllipseMath::Vec3(cos(time), cos(time), 0.f));
 
      m_entitySystem.findEntity<Ellipse::RenderEntity>(e->id()).render();

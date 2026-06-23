@@ -295,14 +295,14 @@ namespace Ellipse {
      m_renderer.plugin()->enable(DEPTH_TEST);
  }
 
- void RenderModule3D::render(RenderObj* renderObj,
-                             RenderShaderObj* shaderObj,
-                             const UniformList& uniformList,
-                             double precedence) {
-  // u64_t id = randIntDist(0, 10000);
-  // m_renderables[id] =createShared<Renderable>(id,renderObj, shaderObj);
-  // m_renderablesInPrecedence.push_back(id, precedence);
- }
+ // void RenderModule3D::render(RenderObj* renderObj,
+ //                             RenderShaderObj* shaderObj,
+ //                             const UniformList& uniformList,
+ //                             double precedence) {
+ //  // u64_t id = randIntDist(0, 10000);
+ //  // m_renderables[id] =createShared<Renderable>(id,renderObj, shaderObj);
+ //  // m_renderablesInPrecedence.push_back(id, precedence);
+ // }
 
 }       // namespace Ellipse
 // }       // namespace Ellipse3D
