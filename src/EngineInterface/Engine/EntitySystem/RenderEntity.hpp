@@ -18,8 +18,12 @@ namespace Ellipse {
      m_renderModule{e.renderModule()} {
    }
 
-   void operator=(const RenderEntity& e) {
-    m_renderModule = e.renderModule();
+   RenderEntity& operator=(const RenderEntity& e) {
+    this->m_renderModule = e.renderModule();
+    this->m_id = e.id();
+    this->m_components = e.components();
+
+    return *this;
    }
 
    virtual void initOverride() override {
@@ -29,7 +33,6 @@ namespace Ellipse {
 
    void onUpdate() override {
     auto rComp = findComponent<Ellipse::RenderComponent>();
-    rComp.shaderObj()->uniformList().printUniformList();
    }
  
    virtual void render() {

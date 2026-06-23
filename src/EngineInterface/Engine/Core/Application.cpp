@@ -58,7 +58,7 @@ namespace Ellipse {
    ForwardList<SharedPtr<Layer>> layers = createUserProcesses();
  
    for(auto i = layers.begin(); i != layers.end(); i++) {
-    pushLayer(*i);
+    m_layerStack.push(*i);
    }
  
    for(SharedPtr<ISystem> system : m_engine->systems()) {
@@ -77,10 +77,6 @@ namespace Ellipse {
  Application::~Application() {
  }
  
- void Application::pushLayer(SharedPtr<Layer> layer) {
-   pushLayerToStack(m_layerStack, layer);
- }
- 
  void Application::onEvent(Event& e) {
    EventDispatcher dispatcher(e);
    dispatcher.dispatchEvent<WindowUserQuitEvent>(
@@ -92,7 +88,7 @@ namespace Ellipse {
    BIND_EVENT_FN(onWindowResize)
                                                 );
  
-   updateLayerEvents(m_layerStack, e);
+   m_layerStack.updateEvents(e);
  }
  
  void Application::run() {
@@ -101,8 +97,7 @@ namespace Ellipse {
     m_renderer->clearDepthBuffer();
  
     float dt = 0.0f;
-    updateLayerStack(m_layerStack, dt);
-    // m_layerStack->update();
+    m_layerStack.update(dt);
     for(SharedPtr<ISystem> system : m_engine->systems()) {
      system->onUpdate();
     }

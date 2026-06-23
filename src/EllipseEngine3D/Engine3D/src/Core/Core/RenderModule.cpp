@@ -125,6 +125,7 @@ namespace Ellipse {
                                         1.0f, 1.0f,
                                        }
                                       );
+    cubeData.textureData() = loadTexture("Assets/Images/Solar.jpeg", false);
  
     Ellipse::RenderObjData quadData;
     quadData.setIndicies(Vector<u32_t>{0, 1, 2,
@@ -231,6 +232,7 @@ namespace Ellipse {
      //  m_renderables[precedence] = createShared<Renderable>();
     //  }
     
+     m_renderer.plugin()->enable(DEPTH_TEST);
      m_renderer.render(*renderObj, *shaderObj, uniformList);
  }
  
@@ -273,10 +275,6 @@ namespace Ellipse {
      if(yAxisAngle > 0) {
       cameraFrontAxisOrtho *= -1;
      }
- 
-     std::cout << "y-angle: " << yAxisAngle << '\n';
-     std::cout << "z-angle: " << zAxisAngle  << '\n';
- 
      translate = EllipseMath::rotate(translate, yAxisAngle, EllipseMath::Vec3(1.0f, 0.f, 0.f));
      translate = EllipseMath::rotate(translate, zAxisAngle, yAxis);
  

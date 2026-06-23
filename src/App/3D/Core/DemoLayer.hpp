@@ -76,9 +76,10 @@ class DemoLayer : public Ellipse::Layer
     Ellipse::EntitySystem& m_entitySystem;
     u32_t m_modelIncrement;
     float m_rotatedDegrees;
+    Vector<i32_t> m_entities;
+    Weapon m_weapon;
 
     // LightModel m_light;
-    // Weapon m_weapon;
     // CubeMadeCube m_cubeMadeCube;
     // Ellipse::PreDefinedObjects m_objects;
 };

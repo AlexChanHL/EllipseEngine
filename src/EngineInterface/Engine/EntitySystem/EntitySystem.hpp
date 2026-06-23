@@ -25,15 +25,19 @@ class Component {
 class Entity {
     public:
      Entity() : m_id{-1} {
-
      }
      virtual ~Entity() {
-
      }
 
      Entity(const Entity& e) 
      : m_components{e.components()}, 
        m_id{e.id()} {
+     }
+
+     virtual Entity& operator=(const Entity& e) {
+      m_components = e.components();
+      m_id = e.id();
+      return *this;
      }
 
      void onInit() {
@@ -108,7 +112,7 @@ class Entity {
     protected:
      virtual void initOverride() = 0;
 
-    private:
+    protected:
      std::map<String, std::shared_ptr<Component>> m_components;
      i32_t m_id;
 };
@@ -140,7 +144,7 @@ class EntitySystem : public ISystem {
       }
      
      template<typename T>
-     void addEntity(Entity& entity) {
+     i32_t addEntity(Entity& entity) {
       // [ 10000 Max ]
       i32_t id = EllipseMath::randIntDist(0, 10000);
       while(m_entities.find(id) != m_entities.end()) {
@@ -148,6 +152,18 @@ class EntitySystem : public ISystem {
       }
       entity.id() = id;
       m_entities[id] = createShared<T>(static_cast<T&>(entity));
+      return id;
+     }
+
+     template<typename T>
+     void addEntity(Entity& entity, i32_t* id) {
+      // [ 10000 Max ]
+      *id = EllipseMath::randIntDist(0, 10000);
+      while(m_entities.find(*id) != m_entities.end()) {
+       *id = EllipseMath::randIntDist(0, 10000);
+      }
+      entity.id() = *id;
+      m_entities[*id] = createShared<T>(static_cast<T&>(entity));
      }
 
      // [ Will leak memory but not crash ]
@@ -159,21 +175,8 @@ class EntitySystem : public ISystem {
        return *e;
       }
 
+      // std::cout << "Found in entities\n" << "ID: " << id << '\n';
       return static_cast<T&>(*m_entities[id]);
-     }
-
-     SharedPtr<Entity> findEntityWithIdx(i32_t idx) {
-      auto e = SharedPtr<Ellipse::Entity>();
-      auto count = 0;
-      for(auto [k, v] : m_entities) {
-       if(idx == count) {
-        e = v;
-        break;
-       }
-       count++;
-      }
-
-      return e;
      }
 
      void removeEntity(i32_t id) {

@@ -22,7 +22,7 @@ namespace Ellipse {
      }
      virtual ~RenderModule() {
      }
- 
+
      virtual void init() override = 0;
      virtual void onUpdate() override = 0;
      virtual void render(RenderObj* renderObj, RenderShaderObj* shaderObj, const UniformList& uniformList) = 0;

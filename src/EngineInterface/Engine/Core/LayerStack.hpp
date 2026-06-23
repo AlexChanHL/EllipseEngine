@@ -2,6 +2,7 @@
 
 #include "Layer.hpp"
 
+
 namespace Ellipse {
  struct LayerStack {
      public:
@@ -19,30 +20,41 @@ namespace Ellipse {
  
      public:
       LayerStack() {
-       first = new Page(Page::Header{nullptr, nullptr}, Layer::createDefaultLayer());
-       current = first;
+       m_first = new Page(Page::Header{nullptr, nullptr}, Layer::createDefaultLayer());
+       m_current = m_first;
       }
       ~LayerStack() {
-       Page* ptr = first;
-       Page* p = first;
+       Page* ptr = m_first;
+       Page* p = m_first;
        while(ptr) {
         ptr = ptr->m_header.next;
         delete p;
         p = ptr;
        }
       }
+      void push(SharedPtr<ILayer> layer);
+      void updateEvents(Event& event);
+      void update(float dt);
+
+      LayerStack::Page* begin() {
+         return m_first; 
+      }
+      
+      LayerStack::Page* end() {
+         LayerStack::Page* ptr = m_first;
+         while(ptr->m_header.next) {
+          ptr = ptr->m_header.next;
+         }
+         return ptr;
+      }
   
      public:
-      Page* first = nullptr;
-      Page* current = nullptr;
+      Page* m_first = nullptr;
+      Page* m_current = nullptr;
+
+     private:
+      Vector<SharedPtr<ILayer>> m_layers;
  };
- 
- LayerStack::Page* begin(LayerStack& stack);
- LayerStack::Page* end(LayerStack& stack);
-    // void debug(LayerStack::Page* ptr);
- void pushLayerToStack(LayerStack& stack, SharedPtr<ILayer> layer);
- void updateLayerStack(LayerStack& stack, float dt);
- void updateLayerEvents(LayerStack& stack, Event& event);
- // hideLayer
+
 }
 
