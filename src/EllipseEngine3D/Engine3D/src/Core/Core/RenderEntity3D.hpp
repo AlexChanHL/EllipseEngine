@@ -6,28 +6,28 @@
 #include "RenderComponent2D.hpp"
 
 namespace Ellipse {
- class RenderEntity2D : public RenderEntity {
+ class RenderEntity3D : public RenderEntity {
   public:
-   RenderEntity2D() {}; 
-   RenderEntity2D(Engine& engine) 
+   RenderEntity3D() {}; 
+   RenderEntity3D(Engine& engine) 
    : RenderEntity{engine} {
     m_renderModule3D = static_cast<RenderModule3D*>(m_renderModule);
    }
-   virtual ~RenderEntity2D() = default;
+   virtual ~RenderEntity3D() = default;
 
-   RenderEntity2D(const RenderEntity2D& e) 
+   RenderEntity3D(const RenderEntity3D& e) 
    : RenderEntity(e),
      m_renderModule3D{static_cast<RenderModule3D*>(e.renderModule())} {
    }
 
-   void operator=(const RenderEntity2D& e) {
+   void operator=(const RenderEntity3D& e) {
     m_renderModule = e.renderModule();
     m_renderModule3D = e.renderModule3D();
    }
 
    virtual void initOverride() override {
-    auto rComp = Ellipse::RenderComponent2D{*m_renderModule, m_renderModule->preDefinedObjects()[m_objectName]};
-    addComponent<Ellipse::RenderComponent2D>(rComp);
+    auto rComp = Ellipse::RenderComponent{*m_renderModule, m_renderModule->preDefinedObjects()[m_objectName]};
+    addComponent<Ellipse::RenderComponent>(rComp);
    }
 
    virtual void render() override {
@@ -39,7 +39,7 @@ namespace Ellipse {
      return;
     }
 
-    m_renderModule3D->render2D(rComp.renderObj().get(),
+    m_renderModule3D->render3D(rComp.renderObj().get(),
                                rComp.shaderObj().get(),
                                rComp.shaderObj()->uniformList(),
                                rComp.model()->translate(),

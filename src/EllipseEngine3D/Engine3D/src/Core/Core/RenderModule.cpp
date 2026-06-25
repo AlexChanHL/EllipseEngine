@@ -293,6 +293,25 @@ namespace Ellipse {
      m_renderer.plugin()->enable(DEPTH_TEST);
  }
 
+ void RenderModule3D::render3D(RenderObj* renderObj,
+                               RenderShaderObj* shaderObj,
+                               const UniformList& uniformList,
+                               EllipseMath::Vec3 translate,
+                               EllipseMath::Vec3 rotateAxis,
+                               float rotateAngle,
+                               EllipseMath::Vec3 scale
+                              ) {
+     EllipseMath::Mat4 model{1.0f};
+     model = EllipseMath::translate(model, translate);
+     model = EllipseMath::rotate(model, rotateAngle, EllipseMath::Vec3(0.f, 0.0f, 1.f));
+     model = EllipseMath::scale(model, scale);
+     shaderObj->uniformList().setUniform("model", model);
+ 
+     m_renderer.plugin()->enable(DEPTH_TEST);
+     m_renderer.render(*renderObj, *shaderObj, uniformList);
+     m_renderer.plugin()->disable(DEPTH_TEST);
+ }
+
  // void RenderModule3D::render(RenderObj* renderObj,
  //                             RenderShaderObj* shaderObj,
  //                             const UniformList& uniformList,

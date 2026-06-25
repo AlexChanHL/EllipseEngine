@@ -44,7 +44,10 @@ namespace Ellipse {
      return;
     }
 
-    m_renderModule->render(rComp.renderObj().get(), rComp.shaderObj().get(), rComp.shaderObj()->uniformList());
+    m_renderModule->render(rComp.renderObj().get(),
+                           rComp.shaderObj().get(),
+                           rComp.shaderObj()->uniformList()
+                          );
    }
  
    RenderModule* renderModule() const { return m_renderModule; }

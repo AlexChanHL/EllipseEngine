@@ -84,40 +84,12 @@ void DemoLayer::onUpdate(float dt)
 
       m_entitySystem.findEntity<Ellipse::RenderEntity2D>(e.id()).render();
      }
-
-     if(e.id() == -1) {
-      std::cout << "No model\n";
-     }
     }
-
-    // for(u32_t i=0; i<20;i++) {
-    //  e = m_entitySystem.findEntity<Ellipse::RenderEntity>(m_entities[i]);
-    //  if(e.id() != -1) {
-    //   m_entitySystem.removeEntity(e.id());
-    //  }
-    // }
-
     m_weapon.update();
   
     // if((m_weapon.weaponType() == WeaponType::AssaultRifle) && Ellipse::Input::isMousePressed(ELLIPSE_MOUSE_BUTTON_LEFT)) {
     //  m_weapon.fire();
     // }
-    // m_cubeMadeCube.linearFunc([&](Pixel& pixel) {
-    //  Vec3 position = pixel.worldPosition();
-    //
-    //  double time = m_timeModule.secAndNSec() * 16;
-    //  float radiansRotated = Ellipse::EllipseMath::radians(static_cast<float>(time));
-    //
-    //  position = Ellipse::EllipseMath::rotateXAxis(position, radiansRotated);
-    //
-    //  Mat3 yAxisMatrix{1.0f};
-    //
-    //  position = Ellipse::EllipseMath::rotateYAxis(position, radiansRotated);
-    //
-    //  Mat3 zAxisMatrix{1.0f};
-    //  pixel.setPosition(position); 
-    // }
-    // );
 }
 
 bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e)

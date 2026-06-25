@@ -13,8 +13,18 @@ namespace Ellipse {
  
       virtual void init() override;
       virtual void onUpdate() override;
-      virtual void render(RenderObj* renderObj, RenderShaderObj* shaderObj, const UniformList& uniformList) override;
+      virtual void render(RenderObj* renderObj,
+                          RenderShaderObj* shaderObj,
+                          const UniformList& uniformList) override;
       void render2D(RenderObj* renderObj,
+                    RenderShaderObj* shaderObj,
+                    const UniformList& uniformList,
+                    EllipseMath::Vec3 translate,
+                    EllipseMath::Vec3 rotateAxis,
+                    float rotateAngle,
+                    EllipseMath::Vec3 scale
+                   );
+      void render3D(RenderObj* renderObj,
                     RenderShaderObj* shaderObj,
                     const UniformList& uniformList,
                     EllipseMath::Vec3 translate,

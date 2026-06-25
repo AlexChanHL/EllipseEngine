@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ellipse.hpp"
+#include "Ellipse3D.hpp"
 
 
 class Bullet {
@@ -42,6 +43,7 @@ inline EllipseMath::Vec3 findBulletPosition(Bullet bullet, float dt) {
     float kl = 0.252f;
     float kc = 2.0f;
     float rate = static_cast<float>(pow((kq * static_cast<float>(pow(distanceBullet, 2)) + kl * distanceBullet + kc), -1));
+    // std::cout << bullet.position().x << ' ' << bullet.position().y << ' ' << bullet.position().z << '\n';
 
     return bullet.position() + (bullet.direction() * rate);
 }
@@ -69,21 +71,22 @@ class Weapon {
 //     {
 //   
 //     }
-//     ~Weapon()
-//     {
-//
-//     }
-//
+    ~Weapon() {
+
+    }
+
     void update() {
      float dt = static_cast<float>(m_timeModule.secAndNSec());
  
      for(u64_t i=0;i<m_bullets.size();i++) {
       EllipseMath::Vec3 position = findBulletPosition(m_bullets[i], dt);
-      auto e = m_entitySystem.findEntity<Ellipse::RenderEntity>(m_bullets[i].id());
+      auto e = m_entitySystem.findEntity<Ellipse::RenderEntity3D>(m_bullets[i].id());
       if(e.id() != -1) {
        auto rComp = e.findComponent<Ellipse::RenderComponent>();
        rComp.model()->translate(position);
        m_bullets[i].setPosition(position);
+       e.render();
+       std::cout << e.id() << '\n';
        if(m_bullets[i].isExpired(dt)) {
         m_entitySystem.removeEntity(e.id());
         m_bullets.erase(m_bullets.begin() + static_cast<i64_t>(i));
@@ -99,7 +102,7 @@ class Weapon {
       cube.objectName() = "Cube";
       cube.onInit();
       i32_t id = 0;
-      m_entitySystem.addEntity<Ellipse::RenderEntity>(cube, &id);
+      m_entitySystem.addEntity<Ellipse::RenderEntity3D>(cube, &id);
       m_bullets.push_back(Bullet{id, m_addCount, m_camera.position(), Ellipse::EllipseMath::normalize(m_camera.front()), static_cast<float>(m_timeModule.secAndNSec()), 3.0f});
       m_addCount++;
       auto rComp = cube.findComponent<Ellipse::RenderComponent>();
