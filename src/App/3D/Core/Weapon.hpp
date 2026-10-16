@@ -88,7 +88,7 @@ class Weapon {
     void fire() {
      switch(m_weaponType) {
       case WeaponType::Pistol: {
-       auto cube = Ellipse::RenderEntity(m_engine, "Cube");
+       auto cube = Ellipse::RenderEntity3D(m_engine, "Cube");
        i32_t id = 0;
        m_entitySystem.addEntity<Ellipse::RenderEntity3D>(cube, &id);
        m_bullets.push_back(Bullet{id, m_addCount, m_camera.position(), Ellipse::EllipseMath::normalize(m_camera.front()), static_cast<float>(m_timeModule.secAndNSec()), 3.0f});

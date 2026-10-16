@@ -13,6 +13,12 @@ namespace Ellipse {
      m_objectName{objectName} {
     onInit();
    }
+   RenderEntity(Engine& engine, ObjectType type, String objectName, const RenderObjData& data)
+   : m_renderModule{&static_cast<RenderModule&>(engine.getModule("RenderModule"))},
+     m_objectName{objectName} {
+    m_renderModule->preDefinedObjects()[objectName] = data;
+    onInit();
+   }
    virtual ~RenderEntity() = default;
 
    RenderEntity(const RenderEntity& e) 
@@ -30,7 +36,12 @@ namespace Ellipse {
    }
 
    virtual void initOverride() override {
-    auto rComp = Ellipse::RenderComponent{*m_renderModule, m_renderModule->preDefinedObjects()[m_objectName]};
+    auto rComp = Ellipse::RenderComponent{};
+    if(m_renderModule->preDefinedObjects().count(m_objectName) == 0) {
+     
+    } else {
+     rComp = Ellipse::RenderComponent{*m_renderModule, m_renderModule->preDefinedObjects()[m_objectName]};
+    }
     addComponent<Ellipse::RenderComponent>(rComp);
    }
 

@@ -29,19 +29,42 @@ void DemoLayer::init() {
     m_entities.push_back(id);
    }
 
-   auto cube = Ellipse::RenderEntity(m_engine, "Cube");
+   auto cube = Ellipse::RenderEntity3D(m_engine, "Cube");
    i32_t id = 0;
    m_entitySystem.addEntity<Ellipse::RenderEntity>(cube, &id);
    m_entities.push_back(id);
 
-   // auto quad = Ellipse::RenderEntity2D(m_engine);
-   // quad.objectName() = "Custom";
-   // quad.onInit();
-   // id = 0;
-
-   // auto quad = Ellipse::RenderEntity2D(m_engine, "Custom");
-   // m_entitySystem.addEntity<Ellipse::RenderEntity2D>(quad, &id);
-   // m_entities.push_back(id);
+   Ellipse::RenderObjData quadData;
+   quadData.setIndicies(Vector<u32_t>{0, 1, 2,
+                                      1, 2, 3 
+                                      }
+                        );
+   quadData.setPositions(Vector<float>{-0.8f, 0.7f, 0.0f,
+                                        0.8f, 0.5f, 0.0f,
+                                       -0.8f, -0.6f, 0.0f,
+                                        0.8f, -0.3f, 0.0f
+                                      }
+                        );
+   quadData.setNormals(Vector<float>{0.0f, 0.0f, 1.0f,
+                                     0.0f, 0.0f, 1.0f,
+                                     0.0f, 0.0f, 1.0f,
+                                     0.0f, 0.0f, 1.0f
+                                    }
+                      );
+   quadData.setTexCoords(Vector<float>{0.0f, 0.0f,
+                                       1.0f, 0.0f,
+                                       0.0f, 1.0f,
+                                       1.0f, 1.0f
+                                      }
+                        );
+   quadData.textureData() = Ellipse::loadTexture("Assets/Images/Solar.jpeg", false);
+   auto quad = Ellipse::RenderEntity2D(m_engine,
+                                       Ellipse::ObjectType::Custom,
+                                       "Custom1",
+                                       quadData
+                                      );
+   m_entitySystem.addEntity<Ellipse::RenderEntity2D>(quad, &id);
+   m_namedEntities["Custom"] = id;
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e) {
@@ -87,9 +110,8 @@ void DemoLayer::onUpdate(float dt) {
      }
     }
 
-    // RenderEntity2D
-
     m_weapon.update();
+    m_entitySystem.findEntity<Ellipse::RenderEntity2D>(m_namedEntities["Custom"]).render();
     // m_textModule.display("Hello", 0.1f, 0.1f);
   
     // if((m_weapon.weaponType() == WeaponType::AssaultRifle) && Ellipse::Input::isMousePressed(ELLIPSE_MOUSE_BUTTON_LEFT)) {

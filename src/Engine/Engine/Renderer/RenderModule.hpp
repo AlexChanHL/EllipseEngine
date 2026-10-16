@@ -10,6 +10,9 @@
 
 
 namespace Ellipse {
+ enum class ObjectType {
+  Quad, Cube, Custom
+ };
  class RenderModule : public IModule {
     public:
      RenderModule() {
@@ -58,9 +61,7 @@ namespace Ellipse {
      virtual EllipseMath::Mat4& proj() = 0;
      virtual EllipseMath::Mat4& view() = 0;
      virtual Camera& camera() = 0;
-     Map<String, RenderObjData>& preDefinedObjects() {
-      return m_objects;
-     }
+     Map<String, RenderObjData>& preDefinedObjects() { return m_objects; }
      // virtual Vector<SharedPtr<>> renderables() = 0;
      // virtual Vector<u64_t> renderableToBeRendered() = 0;
  

@@ -5,7 +5,6 @@
 // {
 
 namespace Ellipse {
- 
  RenderModule3D::RenderModule3D(Engine& engine)
  : m_renderer{static_cast<Renderer&>(engine.getSystem("Renderer"))},
    m_objectIDGenerator{i32_t(pow(10,3))} {

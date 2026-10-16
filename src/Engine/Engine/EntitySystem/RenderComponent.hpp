@@ -28,6 +28,9 @@ namespace Ellipse {
      }
 
      virtual void onInit() override {
+      if((m_shaderObj == nullptr) || (m_renderObj.get() == nullptr)) {
+       return;
+      }
       auto model = UniformVariable<EllipseMath::Mat4>{"model", m_modelData->model().get()};
       m_shaderObj->
        addUniform<EllipseMath::Mat4>(model);

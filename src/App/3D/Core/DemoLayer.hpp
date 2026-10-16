@@ -73,6 +73,7 @@ class DemoLayer : public Ellipse::Layer {
     u32_t m_modelIncrement;
     float m_rotatedDegrees;
     Vector<i32_t> m_entities;
+    Map<String, i32_t> m_namedEntities;
     Weapon m_weapon;
     // LightModel m_light;
 };

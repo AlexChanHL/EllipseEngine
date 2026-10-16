@@ -25,10 +25,17 @@ namespace Ellipse {
     m_renderModule3D = e.renderModule3D();
    }
 
-   virtual void initOverride() override {
-    auto rComp = Ellipse::RenderComponent{*m_renderModule, m_renderModule->preDefinedObjects()[m_objectName]};
-    addComponent<Ellipse::RenderComponent>(rComp);
-   }
+   // [ If init sequence for 3D objects changes, then uncomment
+   //    and edit this. The function is unused for now. ]
+   // virtual void initOverride() override {
+   //  auto rComp = Ellipse::RenderComponent{};
+   //  if(m_renderModule->preDefinedObjects().count(m_objectName) == 0) {
+   //   
+   //  } else {
+   //   rComp = Ellipse::RenderComponent{*m_renderModule, m_renderModule->preDefinedObjects()[m_objectName]};
+   //  }
+   //  addComponent<Ellipse::RenderComponent>(rComp);
+   // }
 
    virtual void render() override {
     auto rComp = findComponent<RenderComponent>();

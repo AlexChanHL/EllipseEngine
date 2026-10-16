@@ -13,6 +13,10 @@ namespace Ellipse {
    : RenderEntity{engine, objectName} {
     m_renderModule3D = static_cast<RenderModule3D*>(m_renderModule);
    }
+   RenderEntity2D(Engine& engine, ObjectType type, String objectName, const RenderObjData& data)
+   : RenderEntity{engine, type, objectName, data} {
+    m_renderModule3D = static_cast<RenderModule3D*>(m_renderModule);
+   }
    virtual ~RenderEntity2D() = default;
 
    RenderEntity2D(const RenderEntity2D& e) 
@@ -26,12 +30,13 @@ namespace Ellipse {
    }
 
    virtual void initOverride() override {
+    auto rComp = Ellipse::RenderComponent2D{};
     if(m_renderModule->preDefinedObjects().count(m_objectName) == 0) {
      
     } else {
-     auto rComp = Ellipse::RenderComponent2D{*m_renderModule, m_renderModule->preDefinedObjects()[m_objectName]};
-     addComponent<Ellipse::RenderComponent2D>(rComp);
+     rComp = Ellipse::RenderComponent2D{*m_renderModule, m_renderModule->preDefinedObjects()[m_objectName]};
     }
+    addComponent<Ellipse::RenderComponent2D>(rComp);
    }
 
    virtual void render() override {
