@@ -9,8 +9,8 @@ namespace Ellipse {
  class RenderEntity3D : public RenderEntity {
   public:
    RenderEntity3D() {}; 
-   RenderEntity3D(Engine& engine) 
-   : RenderEntity{engine} {
+   RenderEntity3D(Engine& engine, String objectName) 
+   : RenderEntity{engine, objectName} {
     m_renderModule3D = static_cast<RenderModule3D*>(m_renderModule);
    }
    virtual ~RenderEntity3D() = default;

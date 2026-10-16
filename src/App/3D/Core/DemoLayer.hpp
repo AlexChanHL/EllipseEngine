@@ -50,19 +50,15 @@
 // };
 
 
-class DemoLayer : public Ellipse::Layer
-{
+class DemoLayer : public Ellipse::Layer {
    public:
     DemoLayer(Ellipse::Engine& engine);
     virtual ~DemoLayer() = default;
 
     void init() override;
     virtual void onEvent(Ellipse::Event& e) override;
-
     void onUpdate(float dt) override;
-
     void setName(String name) { m_name = name; }
-
     bool onKeyPressed(Ellipse::KeyboardPressedEvent& e);
     bool onMouseMotion(Ellipse::MouseMotionEvent& e);
     bool onMousePressed(Ellipse::MousePressedEvent& e);
@@ -78,9 +74,6 @@ class DemoLayer : public Ellipse::Layer
     float m_rotatedDegrees;
     Vector<i32_t> m_entities;
     Weapon m_weapon;
-
     // LightModel m_light;
-    // CubeMadeCube m_cubeMadeCube;
-    // Ellipse::PreDefinedObjects m_objects;
 };
 

@@ -4,7 +4,7 @@ if(ELLIPSE_TEST_APP)
 endif()
 
 
-add_subdirectory(EngineInterface)
+add_subdirectory(Engine)
 
 
 if(${BUILD_ENGINE_2D} STREQUAL ${BUILD_ENGINE_3D})

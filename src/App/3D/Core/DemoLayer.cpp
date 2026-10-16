@@ -13,12 +13,9 @@ DemoLayer::DemoLayer(Ellipse::Engine& engine)
    m_entitySystem{static_cast<Ellipse::EntitySystem&>(engine.getSystem("Entity"))},
    m_modelIncrement{0},
    m_rotatedDegrees{0.0f},
-   m_weapon{engine}
-   // m_cubeMadeCube{m_modelList, engine, m_light.light()},
-   // m_objects{m_renderModule.preDefinedObjects()}
-{
-   m_name = "Placeholder";
-   m_throughLayer = false;
+   m_weapon{engine} {
+    m_name = "Placeholder";
+    m_throughLayer = false;
 }
 
 void DemoLayer::init() {
@@ -26,20 +23,25 @@ void DemoLayer::init() {
    Pair<i32_t, i32_t> size = Ellipse::Application::get().getWindow().getWindowSize();
 
    for(i32_t i=0;i<20;i++) {
-    auto quad = Ellipse::RenderEntity2D(m_engine);
-    quad.objectName() = "Quad";
-    quad.onInit();
+    auto quad = Ellipse::RenderEntity2D(m_engine, "Quad");
     i32_t id = 0;
     m_entitySystem.addEntity<Ellipse::RenderEntity2D>(quad, &id);
     m_entities.push_back(id);
    }
 
-   auto cube = Ellipse::RenderEntity(m_engine);
-   cube.objectName() = "Cube";
-   cube.onInit();
+   auto cube = Ellipse::RenderEntity(m_engine, "Cube");
    i32_t id = 0;
    m_entitySystem.addEntity<Ellipse::RenderEntity>(cube, &id);
    m_entities.push_back(id);
+
+   // auto quad = Ellipse::RenderEntity2D(m_engine);
+   // quad.objectName() = "Custom";
+   // quad.onInit();
+   // id = 0;
+
+   // auto quad = Ellipse::RenderEntity2D(m_engine, "Custom");
+   // m_entitySystem.addEntity<Ellipse::RenderEntity2D>(quad, &id);
+   // m_entities.push_back(id);
 }
 
 void DemoLayer::onEvent(Ellipse::Event& e) {
@@ -62,8 +64,7 @@ void DemoLayer::onEvent(Ellipse::Event& e) {
     );
 }
 
-void DemoLayer::onUpdate(float dt)
-{
+void DemoLayer::onUpdate(float dt) {
     auto time = double(m_timeModule.secAndNSec());
     EllipseMath::Vec3 pos = EllipseMath::Vec3(cos(time), sin(time), 0.0f);
 
@@ -85,15 +86,18 @@ void DemoLayer::onUpdate(float dt)
       m_entitySystem.findEntity<Ellipse::RenderEntity2D>(e.id()).render();
      }
     }
+
+    // RenderEntity2D
+
     m_weapon.update();
+    // m_textModule.display("Hello", 0.1f, 0.1f);
   
     // if((m_weapon.weaponType() == WeaponType::AssaultRifle) && Ellipse::Input::isMousePressed(ELLIPSE_MOUSE_BUTTON_LEFT)) {
     //  m_weapon.fire();
     // }
 }
 
-bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e)
-{
+bool DemoLayer::onKeyPressed(Ellipse::KeyboardPressedEvent& e) {
      switch(e.keyCode()) {
       case ELLIPSE_KEY_w:
       m_renderModule.setCameraFront(1.0f);

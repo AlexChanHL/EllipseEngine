@@ -63,16 +63,7 @@ class Weapon {
       m_weaponType{WeaponType::Pistol},
       m_shotgunBulletCount{16} {
     }
-    // Weapon(ModelList& modelList, Ellipse::Engine& engine, Light& light)
-//     : m_modelList{modelList},
-//       m_timeModule{static_cast<Ellipse::TimeModule&>(engine.getModule("TimeModule"))},
-//       m_light{light},
-//       m_weaponType{WeaponType::Pistol},
-//     {
-//   
-//     }
     ~Weapon() {
-
     }
 
     void update() {
@@ -86,7 +77,6 @@ class Weapon {
        rComp.model()->translate(position);
        m_bullets[i].setPosition(position);
        e.render();
-       std::cout << e.id() << '\n';
        if(m_bullets[i].isExpired(dt)) {
         m_entitySystem.removeEntity(e.id());
         m_bullets.erase(m_bullets.begin() + static_cast<i64_t>(i));
@@ -96,47 +86,45 @@ class Weapon {
     }
 
     void fire() {
-    switch(m_weaponType) {
-     case WeaponType::Pistol: {
-      auto cube = Ellipse::RenderEntity(m_engine);
-      cube.objectName() = "Cube";
-      cube.onInit();
-      i32_t id = 0;
-      m_entitySystem.addEntity<Ellipse::RenderEntity3D>(cube, &id);
-      m_bullets.push_back(Bullet{id, m_addCount, m_camera.position(), Ellipse::EllipseMath::normalize(m_camera.front()), static_cast<float>(m_timeModule.secAndNSec()), 3.0f});
-      m_addCount++;
-      auto rComp = cube.findComponent<Ellipse::RenderComponent>();
-      rComp.model()->translate(m_camera.position());
-      std::cout << "Fire\n";
+     switch(m_weaponType) {
+      case WeaponType::Pistol: {
+       auto cube = Ellipse::RenderEntity(m_engine, "Cube");
+       i32_t id = 0;
+       m_entitySystem.addEntity<Ellipse::RenderEntity3D>(cube, &id);
+       m_bullets.push_back(Bullet{id, m_addCount, m_camera.position(), Ellipse::EllipseMath::normalize(m_camera.front()), static_cast<float>(m_timeModule.secAndNSec()), 3.0f});
+       m_addCount++;
+       auto rComp = cube.findComponent<Ellipse::RenderComponent>();
+       rComp.model()->translate(m_camera.position());
+       std::cout << "Fire\n";
+      }
+      break;
+      case WeaponType::Shotgun: {
+       // for(u64_t i=0;i<m_shotgunBulletCount;i++) {
+       //  EllipseMath::Vec3 shotgunBulletDirection = Ellipse::EllipseMath::normalize(EllipseMath::Vec3{Ellipse::EllipseMath::randRealDist(-1.0f, 1.0f),
+       //                                                                     Ellipse::EllipseMath::randRealDist(-1.0f, 1.0f),
+       //                                                                     Ellipse::EllipseMath::randRealDist(-1.0f, 1.0f)
+       //                                                                    }
+       //                                                               );
+       //  if(shotgunBulletDirection == -Ellipse::EllipseMath::normalize(m_camera.front())) {
+       //   shotgunBulletDirection = -shotgunBulletDirection;
+       //  }
+       //  shotgunBulletDirection = Ellipse::EllipseMath::normalize((shotgunBulletDirection / 4.0f) + Ellipse::EllipseMath::normalize(m_camera.front())); 
+       //  m_bullets.push_back(Bullet{m_addCount, m_camera.position(), shotgunBulletDirection, static_cast<float>(m_timeModule.secAndNSec()), 3.0f});
+       //  m_addCount++;
+       //  // m_modelList.addModel(m_bullets[m_bullets.size() - 1].name().c_str(), "Cube", m_camera, m_light);
+       //  // m_modelList.model(m_bullets[m_bullets.size() - 1].name().c_str()).setTranslateAmount(m_bullets[m_bullets.size() - 1].position());
+       // }
+      }
+      break;
+      case WeaponType::AssaultRifle:
+       // m_bullets.push_back(Bullet{m_addCount, m_camera.position(), Ellipse::EllipseMath::normalize(m_camera.front()), static_cast<float>(m_timeModule.secAndNSec()), 3.0f});
+       // m_addCount++;
+       // m_modelList.addModel(m_bullets[m_bullets.size() - 1].name().c_str(), "Cube", m_camera, m_light);
+       // m_modelList.model(m_bullets[m_bullets.size() - 1].name().c_str()).setTranslateAmount(m_bullets[m_bullets.size() - 1].position());
+      break;
+      default:
+      break;
      }
-     break;
-     case WeaponType::Shotgun: {
-      // for(u64_t i=0;i<m_shotgunBulletCount;i++) {
-      //  EllipseMath::Vec3 shotgunBulletDirection = Ellipse::EllipseMath::normalize(EllipseMath::Vec3{Ellipse::EllipseMath::randRealDist(-1.0f, 1.0f),
-      //                                                                     Ellipse::EllipseMath::randRealDist(-1.0f, 1.0f),
-      //                                                                     Ellipse::EllipseMath::randRealDist(-1.0f, 1.0f)
-      //                                                                    }
-      //                                                               );
-      //  if(shotgunBulletDirection == -Ellipse::EllipseMath::normalize(m_camera.front())) {
-      //   shotgunBulletDirection = -shotgunBulletDirection;
-      //  }
-      //  shotgunBulletDirection = Ellipse::EllipseMath::normalize((shotgunBulletDirection / 4.0f) + Ellipse::EllipseMath::normalize(m_camera.front())); 
-      //  m_bullets.push_back(Bullet{m_addCount, m_camera.position(), shotgunBulletDirection, static_cast<float>(m_timeModule.secAndNSec()), 3.0f});
-      //  m_addCount++;
-      //  // m_modelList.addModel(m_bullets[m_bullets.size() - 1].name().c_str(), "Cube", m_camera, m_light);
-      //  // m_modelList.model(m_bullets[m_bullets.size() - 1].name().c_str()).setTranslateAmount(m_bullets[m_bullets.size() - 1].position());
-      // }
-     }
-     break;
-     case WeaponType::AssaultRifle:
-      // m_bullets.push_back(Bullet{m_addCount, m_camera.position(), Ellipse::EllipseMath::normalize(m_camera.front()), static_cast<float>(m_timeModule.secAndNSec()), 3.0f});
-      // m_addCount++;
-      // m_modelList.addModel(m_bullets[m_bullets.size() - 1].name().c_str(), "Cube", m_camera, m_light);
-      // m_modelList.model(m_bullets[m_bullets.size() - 1].name().c_str()).setTranslateAmount(m_bullets[m_bullets.size() - 1].position());
-     break;
-     default:
-     break;
-    }
 
     }
 //     void changeWeaponType(WeaponType weaponType) { m_weaponType = weaponType; }
