@@ -12,118 +12,95 @@ namespace Ellipse {
     setClearColor(EllipseMath::Vec4{1.0f, 1.0f, 0.0f, 1.0f});
  
     Ellipse::RenderObjData cubeData;
-    cubeData.setIndicies(Vector<u32_t>{0, 2, 3,
-                                       0, 1, 3,
- 
-                                       4, 5, 7,
-                                       4, 6, 7,
- 
-                                       8, 9, 11,
-                                       8, 10, 11,
- 
-                                       12, 13, 15,
-                                       12, 14, 15,
- 
-                                       16, 17, 19,
-                                       16, 18, 19,
- 
-                                       20, 21, 23,
-                                       20, 22, 23
-                                       }
-                                      );
-    cubeData.setPositions(Vector<float>{-0.5f,  0.5f,  0.5f,  
-                                        0.5f,  0.5f,  0.5f,  
-                                       -0.5f, -0.5f,  0.5f,  
-                                        0.5f, -0.5f,  0.5f,  
- 
-                                        0.5f,  0.5f,  0.5f,  
-                                        0.5f,  0.5f, -0.5f,  
-                                        0.5f, -0.5f,  0.5f,  
-                                        0.5f, -0.5f, -0.5f,  
- 
-                                       -0.5f,  0.5f, -0.5f,  
-                                        0.5f,  0.5f, -0.5f,  
-                                       -0.5f, -0.5f, -0.5f,  
-                                        0.5f, -0.5f, -0.5f,  
- 
-                                       -0.5f,  0.5f,  0.5f,  
-                                       -0.5f,  0.5f, -0.5f,  
-                                       -0.5f, -0.5f,  0.5f,  
-                                       -0.5f, -0.5f, -0.5f,  
- 
-                                       -0.5f,  0.5f, -0.5f,  
-                                        0.5f,  0.5f, -0.5f,  
-                                       -0.5f,  0.5f,  0.5f,  
-                                        0.5f,  0.5f,  0.5f,  
- 
-                                       -0.5f, -0.5f,  0.5f,  
-                                        0.5f, -0.5f,  0.5f,  
-                                       -0.5f, -0.5f, -0.5f,
-                                        0.5f, -0.5f, -0.5f
-                                       }
-                                      );
-    cubeData.setNormals(std::vector<float>{0,  0,  1,
-                                           0,  0,  1,
-                                           0,  0,  1,
-                                           0,  0,  1,
- 
-                                           1,  0,  0,
-                                           1,  0,  0,
-                                           1,  0,  0,
-                                           1,  0,  0,
- 
-                                           0,  0, -1,
-                                           0,  0, -1,
-                                           0,  0, -1,
-                                           0,  0, -1,
- 
-                                          -1,  0,  0,
-                                          -1,  0,  0,
-                                          -1,  0,  0,
-                                          -1,  0,  0,
- 
-                                           0,  1,  0,
-                                           0,  1,  0,
-                                           0,  1,  0,
-                                           0,  1,  0,
- 
-                                           0, -1,  0,
-                                           0, -1,  0,
-                                           0, -1,  0,
-                                           0, -1,  0
-                                         }
-                                        );
-    cubeData.setTexCoords(Vector<float>{0.0f, 0.0f,
-                                        1.0f, 0.0f,
-                                        0.0f, 1.0f,
-                                        1.0f, 1.0f,
- 
-                                        0.0f, 0.0f,
-                                        1.0f, 0.0f,
-                                        0.0f, 1.0f,
-                                        1.0f, 1.0f,
- 
-                                        0.0f, 0.0f,
-                                        1.0f, 0.0f,
-                                        0.0f, 1.0f,
-                                        1.0f, 1.0f,
- 
-                                        0.0f, 0.0f,
-                                        1.0f, 0.0f,
-                                        0.0f, 1.0f,
-                                        1.0f, 1.0f,
- 
-                                        0.0f, 0.0f,
-                                        1.0f, 0.0f,
-                                        0.0f, 1.0f,
-                                        1.0f, 1.0f,
- 
-                                        0.0f, 0.0f,
-                                        1.0f, 0.0f,
-                                        0.0f, 1.0f,
-                                        1.0f, 1.0f,
-                                       }
-                                      );
+    std::vector<std::array<float,3>> points{
+     std::array<float,3>{-0.5f,0.5f,0.5f}, 
+     std::array<float,3>{-0.5f,-0.5f,0.5f},
+     std::array<float,3>{-0.5f,-0.5f,-0.5f},
+     std::array<float,3>{-0.5f,0.5f,-0.5f},
+     std::array<float,3>{0.5f,0.5f,-0.5f},
+     std::array<float,3>{0.5f,-0.5f,-0.5f},
+     std::array<float,3>{0.5f,-0.5f,0.5f},
+     std::array<float,3>{0.5f,0.5f,0.5f}
+    };
+    std::vector<float> positions;
+    uint32_t current = 0;
+    for(uint32_t i=0;i<4;i++) {
+     for(uint32_t j=0;j<3;j++) {
+      positions.push_back(points[current][j]);
+     }
+     for(uint32_t j=0;j<3;j++) {
+      positions.push_back(points[current+1][j]);
+     }
+     for(uint32_t j=0;j<3;j++) {
+      positions.push_back(points[(current+2)%8][j]);
+     }
+     for(uint32_t j=0;j<3;j++) {
+      positions.push_back(points[(current+3)%8][j]);
+     }
+     current += 2;
+    }
+    current = 0;
+    for(uint32_t i=0;i<2;i++) {
+     for(uint32_t j=0;j<3;j++) {
+      positions.push_back(points[current][j]);
+     }
+     for(uint32_t j=0;j<3;j++) {
+      positions.push_back(points[current+3][j]);
+     }
+     for(uint32_t j=0;j<3;j++) {
+      positions.push_back(points[current+4][j]);
+     }
+     for(uint32_t j=0;j<3;j++) {
+      positions.push_back(points[(current+7) % 8][j]);
+     }
+     current = 2;
+    }
+    current = 0;
+    std::vector<uint32_t> indicies;
+    for(uint32_t i=0;i<6;i++) {
+     for(uint32_t j=0;j<2;j++) {
+      indicies.push_back(current);
+      indicies.push_back(current+(j+1));
+      indicies.push_back(current+(j+2));
+     }
+     current += 4;
+    }
+
+    // -x, -z, x, z, y, -y in this order
+    float x=-1, y=0, z=0;
+    std::vector<float> normals;
+    for(uint32_t i=0;i<6;i++) {
+     switch(i) {
+      case 1: { z=-1; } break;
+      case 2: { x=1; } break;
+      case 3: { z=1; } break;
+      case 4: { y=1; } break;
+      case 5: { y=-1; } break;
+      default: break;
+     }
+     for(uint32_t j=0;j<4;j++) {
+      normals.push_back(x);
+      normals.push_back(y);
+      normals.push_back(z);
+     }
+     x=0, y=0, z=0;
+    }
+    std::vector<float> texCoords;
+    std::vector<float> sides{
+     0.0f, 1.0f,
+     0.0f, 0.0f,
+     1.0f, 0.0f,
+     1.0f, 1.0f
+    };
+    for(uint32_t i=0;i<6;i++) {
+     for(uint32_t j=0;j<8;j++) {
+      texCoords.push_back(sides[j]);
+     }
+    }
+    cubeData.setIndicies(indicies);
+    cubeData.setPositions(positions);
+    cubeData.setNormals(normals);
+    cubeData.setTexCoords(texCoords);
     cubeData.textureData() = loadTexture("Assets/Images/Solar.jpeg", false);
  
     Ellipse::RenderObjData quadData;

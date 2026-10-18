@@ -111,7 +111,7 @@ void DemoLayer::onUpdate(float dt) {
     }
 
     m_weapon.update();
-    m_entitySystem.findEntity<Ellipse::RenderEntity2D>(m_namedEntities["Custom"]).render();
+    // m_entitySystem.findEntity<Ellipse::RenderEntity2D>(m_namedEntities["Custom"]).render();
     // m_textModule.display("Hello", 0.1f, 0.1f);
   
     // if((m_weapon.weaponType() == WeaponType::AssaultRifle) && Ellipse::Input::isMousePressed(ELLIPSE_MOUSE_BUTTON_LEFT)) {
